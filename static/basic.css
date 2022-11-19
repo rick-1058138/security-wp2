@@ -19,6 +19,7 @@
     --green: #01bd5d;
     --white: #fff;
     --creamwhite: #eee;
+    --blueaccent: #0038c6;
 
 }
 
@@ -40,13 +41,15 @@ html {
 
 body {
     margin: 0;
-    font: var(--sans);
+    font-family: Nunito ,sans-serif;
     font-weight: 400;
     font-style: normal;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     background-color: var(--c3);
     color: var(--c4);
+    position: relative;
+    min-height: 100vh
 }
 img, iframe {
     border: none; max-width: 100%
@@ -57,7 +60,7 @@ a {
 }
 
 a:hover {
-    color: var(--c1); text-decoration: underline
+    color: var(--c1);
 }
 
 pre {
@@ -261,6 +264,62 @@ section>section {
     letter-spacing: 0.5px;
 }
 
+.nav-bar{
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    padding: 0.4rem 0;
+}
+
+.nav-bar>li>a{
+    padding: 1rem 2rem;
+    display: block;
+    color: var(--darkblue);
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 1.1rem;
+}
+
+.nav-bar>li>a:hover{
+    color: var(--blue);
+}
+
+.nav-logo{
+    max-width: 100%;
+    height: auto;
+}
+
+.logo-box{
+    display: flex;
+    align-items: center;
+}
+
+.logout-btn{
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.8rem;
+    background: var(--blueaccent);
+    color: var(--white);
+    display: block;
+    height: min-content;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+
+footer{
+    background: var(--darkblue);
+    color: var(--white);
+    text-align: center;
+    padding: 3rem 0;
+    font-weight: bold;
+    letter-spacing: 1px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
 
 @media (max-width: 481px) {
     body {font-size: 18px}
