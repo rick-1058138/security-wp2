@@ -150,12 +150,12 @@ article {background: var(--c2); border-radius: var(--rc); padding: 1em; box-shad
 [style*="--c:"]:last-child, section>section:last-child, article:last-child {margin-right:0}
 
 /* Mark: Toegevoegd aan basic.css */
-main,footer {
+/* main,footer {
     margin: 0 auto;
     width: 60%;
     text-align: left;
     padding: 0 20px;
-}
+} */
 
 section>section {
     color: #fff;
