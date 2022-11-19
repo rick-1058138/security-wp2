@@ -18,16 +18,17 @@
     --darkblue: #041f74;
     --green: #01bd5d;
     --white: #fff;
+    --creamwhite: #eee;
 
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
 	:root {
         --c2:#333;
         --c3:#1e1f20;
         --c4:#fff;
 	}
-}
+} */
 
 html {
     -ms-text-size-adjust: 100%;
@@ -109,11 +110,31 @@ pre,code,input,select,textarea,button,img {border-radius: var(--rc)}
 
 /* Forms */
 
-input, select, textarea {font-size: 1em; color:var(--c4); background: var(--c2); border: 0; padding: 0.6em}
+input, select, textarea {
+    font-size: 1em; 
+    color:var(--c4); 
+    background: var(--c2); 
+    border: 0; 
+    padding: 0.6em}
 
-button, input[type=submit], input[type=reset], input[type="button"] { -webkit-appearance: none; font-size: 1em; display: inline-block; color: var(--c5); background: var(--c1);  border: 0; margin: 4px;  padding: 0.6em; cursor: pointer; text-align: center}
+/* button, input[type=submit], input[type=reset], input[type="button"] {
+    -webkit-appearance: none;
+    font-size: 1em; 
+    display: inline-block; 
+    color: var(--c5); 
+    background: var(--c1);  
+    border: 0; 
+    margin: 4px;  
+    padding: 0.6em; 
+    cursor: pointer; 
+    text-align: center} */
 
-button:hover, button:focus, input:hover, textarea:hover, select:hover {opacity: 0.8}
+button:hover, button:focus, input:hover, textarea:hover, select:hover {opacity: 0.8;}
+
+
+input:hover, select{
+    cursor: pointer;
+}
 
 /* Infinite Grid */
 
@@ -143,6 +164,103 @@ section>section {
     margin: 10px 8px 10px 8px;
     text-align: center;
 }
+
+.top-section{
+    background: var(--blue);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header{
+    text-align: center;
+}
+
+.sub-header{
+    color: white;
+    background: #01bd5d;
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    padding: 1rem 0;
+    font-weight: bold;
+}
+
+
+.content-section{
+    background: var(--creamwhite);
+    width: 90%;
+    margin: 1rem auto;
+    box-shadow: 0 0 8px 3px rgb(0 0 0 / 2%);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.table-items{
+    padding: 2rem;
+    width: 100%;
+}
+
+.table-item{
+    border-left: 5px solid grey;
+    padding: 0.2rem 2rem;
+    box-shadow: 0 0 8px 3px rgba(0, 0, 0, 0.048);
+    border-radius: var(--rc);
+    margin-bottom: 0.4rem;
+    background-color: rgba(255, 255, 255, 0.24);
+    transition: 0.3s;
+}
+
+.table-item:hover{
+    cursor: pointer;
+    background: #eee;
+    translate: 0 -5px;
+    border-left: 5px solid var(--green);
+
+}
+
+.item-id{
+    color: rgb(99, 99, 99);
+    font-weight: bold;
+    border-right: 1px solid lightgrey;
+    padding-right: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.item-id>span{
+    opacity: 0.6;
+    margin-left: 0.3rem;
+}
+
+.search-form{
+    margin: 0 auto;
+    display: flex;
+    padding-bottom: 1rem;
+}
+
+.custom-select{
+    width: min-content;
+    padding: 0.5rem 1rem;
+    border: 2px solid transparent;
+    transition: 0.3s;
+    margin-right: 0.5rem;
+}
+
+.custom-select:focus-visible{
+    border-color: var(--darkblue);
+    outline: none;
+}
+
+
+.green-submit{
+    background: var(--green) !important;
+    border-radius: var(--rc);
+    padding: 0.5rem 1rem;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
 
 @media (max-width: 481px) {
     body {font-size: 18px}
