@@ -41,6 +41,11 @@ def incorrect_data():
         "incorrect_data.html"
     )
 
+@app.route("/login")
+def login():
+    return render_template(
+        "login.html"
+    )
 
 # The table route displays the content of a table
 @app.route("/table_details/<table_name>")

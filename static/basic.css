@@ -254,6 +254,14 @@ section>section {
     outline: none;
 }
 
+.user-form{
+    display: flex;
+    flex-direction: column;
+    width: min-content;
+    margin: 0 auto;
+    gap: 0.5rem
+}
+
 
 .green-submit{
     background: var(--green) !important;
