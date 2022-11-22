@@ -47,6 +47,12 @@ def login():
         "login.html"
     )
 
+@app.route("/edit")
+def edit():
+    return render_template(
+        "edit.html"
+    )
+
 # The table route displays the content of a table
 @app.route("/table_details/<table_name>")
 def table_content(table_name=None):
