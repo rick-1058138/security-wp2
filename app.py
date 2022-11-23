@@ -47,17 +47,32 @@ def index():
 def question_data(table = 'vragen'):
     if request.method == 'GET':
         table = request.args.get('table_choice')
+        type = request.args.get('error_type')
+        column = request.args.get('column')
     if not table:
         # set default table 
         DEFAULT = 'vragen'
         data, columns = dbm.get_content(DEFAULT)
         table = DEFAULT
+        type = 'leerdoel'
+        column = 'id'
+
     else:
         # set chosen table
         data, columns = dbm.get_content(table)
+    if type == 'leerdoel':
+        print(1)
+        data, columns = dbm.get_no_leerdoel()
+
+    elif type == 'html':
+        print(2)
+
+    elif type == 'empty':
+        print(3)
+        data, columns = dbm.get_empty_column(table, column)
 
     return render_template(
-        "db_data.html", data = data, columns = columns, tables = ['auteurs', 'leerdoelen', 'vragen'], current = table
+        "db_data.html", data = data, columns = columns, tables = ['auteurs', 'leerdoelen', 'vragen'], current_table = table, current_column = column, current_type = type
     )
 
 @app.route("/login")

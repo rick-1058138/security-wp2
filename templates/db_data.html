@@ -6,7 +6,7 @@
         <form action="/data" class="search-form" method="GET">
             <select class="custom-select" name="table_choice" id="">
                 {% for table in tables %}  
-                    {% if current==table %} 
+                    {% if current_table==table %} 
                         <option value="{{table}}" selected>{{table}}</option>
                     {% else%}
                         <option value="{{table}}" >{{table}}</option>
@@ -14,13 +14,35 @@
                     {% endif %}
                 {% endfor%}
             </select>
+
+
+
             <input type="submit" value="Zoeken" class="green-submit">
         </form>
 
     </section>
 
     <section class="content-section">
-        <h2 class="sub-header">{{current}}</h2>
+        <h2 class="sub-header">{{current_table}}</h2>
+        <form action="/data" class="search-form" method="get">
+            <!-- {% if current_table == 'vragen'%} -->
+                <select class="custom-select" name="error_type" id="">
+                    <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
+                    <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
+                    <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
+                </select>
+
+                <select class="custom-select" name="column" id="">
+                    {% for column in columns%}
+                        <option value="{{column}}" {% if current_culumn==column %} selected {% endif %}>{{column}}</option>
+                    {% endfor%}
+                </select>
+            <!-- {%endif%} -->
+
+
+            <input type="submit" value="Zoeken" class="green-submit">
+
+        </form>
         <div class="table-items">
             <!-- <div class="table-item">
                 <p><span class="item-id">ID: <span>58</span> </span> Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestias beatae ab quas sit recusandae, </p>

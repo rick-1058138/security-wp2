@@ -39,3 +39,20 @@ class DatabaseModel:
         columns = [column_name[0] for column_name in cursor.description]
         # Note that this method returns 2 variables!
         return data, columns
+
+    def get_no_leerdoel(self):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute("SELECT * FROM vragen WHERE leerdoel NOT IN (SELECT id FROM leerdoelen);")
+        data = cursor.fetchall()
+        columns = [column_name[0] for column_name in cursor.description]
+        return data, columns
+
+    def get_empty_column(self, table, column):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"SELECT * FROM {table} WHERE {column} IS NULL")
+        data = cursor.fetchall()
+        columns = [column_name[0] for column_name in cursor.description]
+        return data, columns
+
+
+

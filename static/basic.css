@@ -204,6 +204,13 @@ section>section {
     overflow: hidden;
 }
 
+.content-section>.search-form{
+    padding: 0.5rem;
+    background:#2ae082b2;
+    width: 100%;
+    justify-content: center;
+}
+
 .table-items{
     padding: 2rem;
     width: 100%;
