@@ -43,9 +43,10 @@ def index():
 
 
 @app.route("/data")
-def incorrect_data():
+def question_data():
+    data, columns = dbm.get_content('auteurs')
     return render_template(
-        "incorrect_data.html"
+        "db_data.html", data = data, columns = columns
     )
 
 @app.route("/login")
