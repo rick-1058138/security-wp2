@@ -254,6 +254,15 @@ section>section {
     outline: none;
 }
 
+.user-form{
+    display: flex;
+    flex-direction: column;
+    width: min-content;
+    margin: 0 auto;
+    gap: 0.5rem;
+    padding-bottom: 1rem;
+}
+
 
 .green-submit{
     background: var(--green) !important;
@@ -262,6 +271,60 @@ section>section {
     color: white;
     font-weight: bold;
     letter-spacing: 0.5px;
+}
+
+.hti {
+    min-height: 400px;
+}
+
+.hti {
+    -webkit-align-items: center;
+    align-items: center;
+    background-position: 50%;
+    background-size: cover;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    min-height: 500px;
+    position: relative;
+    width: 100%;
+}
+
+.hti__video {
+    height: 80vh;
+    left: 0;
+    object-fit: cover;
+    object-position: center;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.hti__overlay {
+    z-index: 0;
+}
+
+.hti__overlay {
+    background: #041f74;
+    height: 80vh;
+    left: 0;
+    opacity: .7;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.hti__content {
+    min-height: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+.container__large {
+    padding: 0 30px;
+    margin: 0 auto;
+    max-width: 1145px;
 }
 
 .nav-bar{
