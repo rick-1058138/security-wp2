@@ -28,12 +28,19 @@ dbm = DatabaseModel(DATABASE_FILE)
 # It is a way to "decorate" a function with additional functionality. You
 # can safely ignore this for now - or look into it as it is a really powerful
 # concept in Python.
+# @app.route("/")
+# def index():
+#     tables = dbm.get_table_list()
+#     return render_template(
+#         "tables.html", table_list=tables, database_file=DATABASE_FILE
+#     )
+
 @app.route("/")
 def index():
-    tables = dbm.get_table_list()
     return render_template(
-        "tables.html", table_list=tables, database_file=DATABASE_FILE
+        "home.html"
     )
+
 
 @app.route("/data")
 def incorrect_data():
@@ -52,6 +59,7 @@ def edit():
     return render_template(
         "edit.html"
     )
+
 
 # The table route displays the content of a table
 @app.route("/table_details/<table_name>")
