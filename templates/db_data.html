@@ -26,6 +26,7 @@
         <h2 class="sub-header">{{current_table}}</h2>
         <form action="/data" class="search-form" method="get">
             <!-- {% if current_table == 'vragen'%} -->
+                <input type="hidden" name="table_choice" value="{{current_table}}">
                 <select class="custom-select" name="error_type" id="">
                     <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
                     <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
@@ -34,7 +35,7 @@
 
                 <select class="custom-select" name="column" id="">
                     {% for column in columns%}
-                        <option value="{{column}}" {% if current_culumn==column %} selected {% endif %}>{{column}}</option>
+                        <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
                     {% endfor%}
                 </select>
             <!-- {%endif%} -->
