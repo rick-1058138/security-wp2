@@ -211,6 +211,11 @@ section>section {
     justify-content: center;
 }
 
+.error{
+    font-weight: bold;
+    color: red;
+}
+
 .table-items{
     padding: 2rem;
     width: 100%;

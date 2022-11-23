@@ -25,7 +25,7 @@
     <section class="content-section">
         <h2 class="sub-header">{{current_table}}</h2>
         <form action="/data" class="search-form" method="get">
-            <!-- {% if current_table == 'vragen'%} -->
+            {% if current_table == 'vragen'%}
                 <input type="hidden" name="table_choice" value="{{current_table}}">
                 <select class="custom-select" name="error_type" id="">
                     <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
@@ -38,10 +38,12 @@
                         <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
                     {% endfor%}
                 </select>
-            <!-- {%endif%} -->
+
+                <input type="submit" value="Zoeken" class="green-submit">
+
+            {%endif%}
 
 
-            <input type="submit" value="Zoeken" class="green-submit">
 
         </form>
         <div class="table-items">
@@ -65,7 +67,7 @@
                                     </span> 
                                 </p>
                             {% else %}
-                                <p class="item-attribute">
+                                <p class="item-attribute {% if current_column==columns[loop.index-1] %} error {% endif %}" >
                                     <strong>{{columns[loop.index-1]}}:</strong> {{ part }}
                                 </p>
                             {% endif %}

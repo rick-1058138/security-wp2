@@ -54,7 +54,7 @@ def question_data(table = 'vragen'):
         DEFAULT = 'vragen'
         data, columns = dbm.get_content(DEFAULT)
         table = DEFAULT
-        type = 'leerdoel'
+        type = 'empty'
         column = 'id'
 
     else:
