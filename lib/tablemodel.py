@@ -54,5 +54,14 @@ class DatabaseModel:
         columns = [column_name[0] for column_name in cursor.description]
         return data, columns
 
+    def get_html_codes(self):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute("SELECT * FROM vragen WHERE vraag LIKE '%<br>%' OR vraag LIKE '%&nbsp;%';")
+        data = cursor.fetchall()
+        columns = [column_name[0] for column_name in cursor.description]
+        return data, columns
+
+    
+
 
 

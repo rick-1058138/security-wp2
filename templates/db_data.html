@@ -19,7 +19,6 @@
 
             <input type="submit" value="Zoeken" class="green-submit">
         </form>
-
     </section>
 
     <section class="content-section">
@@ -75,6 +74,10 @@
                         {% endfor %}
                 </div>
             {% endfor %}
+
+            {% if data == [] %}
+                <p>Geen resultaten, probeer een andere zoekopdracht</p>
+            {% endif %}
         </div>
     </section>
     

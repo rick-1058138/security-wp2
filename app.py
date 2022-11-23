@@ -49,27 +49,28 @@ def question_data(table = 'vragen'):
         table = request.args.get('table_choice')
         type = request.args.get('error_type')
         column = request.args.get('column')
+
     if not table:
         # set default table 
+        print("default")
         DEFAULT = 'vragen'
-        data, columns = dbm.get_content(DEFAULT)
         table = DEFAULT
         type = 'empty'
         column = 'id'
-
+        data, columns = dbm.get_content(table)
     else:
         # set chosen table
         data, columns = dbm.get_content(table)
-    if type == 'leerdoel':
-        print(1)
-        data, columns = dbm.get_no_leerdoel()
 
-    elif type == 'html':
-        print(2)
+        if type == 'leerdoel':
+            column = 'leerdoel'
+            data, columns = dbm.get_no_leerdoel()
+        elif type == 'html':
+            column = 'vraag'
+            data, columns = dbm.get_html_codes()
+        elif type == 'empty':
+            data, columns = dbm.get_empty_column(table, column)
 
-    elif type == 'empty':
-        print(3)
-        data, columns = dbm.get_empty_column(table, column)
 
     return render_template(
         "db_data.html", data = data, columns = columns, tables = ['auteurs', 'leerdoelen', 'vragen'], current_table = table, current_column = column, current_type = type
