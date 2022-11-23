@@ -49,7 +49,9 @@ def question_data(table = 'vragen'):
         table = request.args.get('table_choice')
     if not table:
         # set default table 
-        data, columns = dbm.get_content('vragen')
+        DEFAULT = 'vragen'
+        data, columns = dbm.get_content(DEFAULT)
+        table = DEFAULT
     else:
         # set chosen table
         data, columns = dbm.get_content(table)

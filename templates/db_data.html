@@ -42,14 +42,12 @@
                                     </span> 
                                 </p>
                             {% else %}
-                                <p>
+                                <p class="item-attribute">
                                     <strong>{{columns[loop.index-1]}}:</strong> {{ part }}
                                 </p>
                             {% endif %}
 
                         {% endfor %}
-                        
-                    </p>
                 </div>
             {% endfor %}
         </div>

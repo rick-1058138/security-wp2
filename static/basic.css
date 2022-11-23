@@ -22,6 +22,10 @@
     --blueaccent: #0038c6;
 
 }
+* {
+    margin: 0;
+    padding: 0;
+}
 
 /* @media (prefers-color-scheme: dark) {
 	:root {
@@ -179,6 +183,7 @@ section>section {
     text-align: center;
 }
 
+
 .sub-header{
     color: white;
     background: #01bd5d;
@@ -206,12 +211,19 @@ section>section {
 
 .table-item{
     border-left: 5px solid grey;
-    padding: 0.2rem 2rem;
+    padding: 0.6rem 2rem;
     box-shadow: 0 0 8px 3px rgba(0, 0, 0, 0.048);
     border-radius: var(--rc);
     margin-bottom: 0.4rem;
     background-color: rgba(255, 255, 255, 0.24);
     transition: 0.3s;
+}
+
+.table-item>.item-attribute{
+    margin: 0.2rem 0;
+    font-size: 0.9rem;
+    padding: 0.2rem 0;
+    border-bottom: 1px solid lightgrey;
 }
 
 .table-item:hover{
