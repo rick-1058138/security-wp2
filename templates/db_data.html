@@ -6,16 +6,21 @@
         <form action="/data" class="search-form" method="GET">
             <select class="custom-select" name="table_choice" id="">
                 {% for table in tables %}  
-                    <option value="{{table}}">{{table}}</option>
+                    {% if current==table %} 
+                        <option value="{{table}}" selected>{{table}}</option>
+                    {% else%}
+                        <option value="{{table}}" >{{table}}</option>
+
+                    {% endif %}
                 {% endfor%}
             </select>
             <input type="submit" value="Zoeken" class="green-submit">
         </form>
-        <!-- {{ data }} -->
+
     </section>
 
     <section class="content-section">
-        <h2 class="sub-header">Content titel</h2>
+        <h2 class="sub-header">{{current}}</h2>
         <div class="table-items">
             <!-- <div class="table-item">
                 <p><span class="item-id">ID: <span>58</span> </span> Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestias beatae ab quas sit recusandae, </p>

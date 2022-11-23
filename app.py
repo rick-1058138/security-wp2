@@ -47,7 +47,6 @@ def index():
 def question_data(table = 'vragen'):
     if request.method == 'GET':
         table = request.args.get('table_choice')
-        print(request.form)
     if not table:
         # set default table 
         data, columns = dbm.get_content('vragen')
@@ -56,7 +55,7 @@ def question_data(table = 'vragen'):
         data, columns = dbm.get_content(table)
 
     return render_template(
-        "db_data.html", data = data, columns = columns, tables = ['auteurs', 'leerdoelen', 'vragen']
+        "db_data.html", data = data, columns = columns, tables = ['auteurs', 'leerdoelen', 'vragen'], current = table
     )
 
 @app.route("/login")
