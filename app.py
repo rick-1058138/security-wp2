@@ -1,7 +1,7 @@
 import os.path
 import sys
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 from lib.tablemodel import DatabaseModel
 from lib.demodatabase import create_demo_database
@@ -42,11 +42,21 @@ def index():
     )
 
 
-@app.route("/data")
-def question_data():
-    data, columns = dbm.get_content('auteurs')
+@app.route("/data/<table>")
+@app.route("/data", methods=['GET'])
+def question_data(table = 'vragen'):
+    if request.method == 'GET':
+        table = request.args.get('table_choice')
+        print(request.form)
+    if not table:
+        # set default table 
+        data, columns = dbm.get_content('vragen')
+    else:
+        # set chosen table
+        data, columns = dbm.get_content(table)
+
     return render_template(
-        "db_data.html", data = data, columns = columns
+        "db_data.html", data = data, columns = columns, tables = ['auteurs', 'leerdoelen', 'vragen']
     )
 
 @app.route("/login")

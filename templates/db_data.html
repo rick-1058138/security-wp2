@@ -3,12 +3,11 @@
 {% block content %}
     <section class="top-section">
         <h1 class="page-header">Tabellen</h1>
-        <form action="" class="search-form">
+        <form action="/data" class="search-form" method="GET">
             <select class="custom-select" name="table_choice" id="">
-                <option value="">Value 1</option>
-                <option value="">Value 2</option>
-                <option value="">Value 3</option>
-                <option value="">Value 4</option>
+                {% for table in tables %}  
+                    <option value="{{table}}">{{table}}</option>
+                {% endfor%}
             </select>
             <input type="submit" value="Zoeken" class="green-submit">
         </form>
