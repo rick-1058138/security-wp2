@@ -35,6 +35,23 @@ def index():
         "tables.html", table_list=tables, database_file=DATABASE_FILE
     )
 
+@app.route("/data")
+def incorrect_data():
+    return render_template(
+        "incorrect_data.html"
+    )
+
+@app.route("/login")
+def login():
+    return render_template(
+        "login.html"
+    )
+
+@app.route("/edit")
+def edit():
+    return render_template(
+        "edit.html"
+    )
 
 # The table route displays the content of a table
 @app.route("/table_details/<table_name>")
