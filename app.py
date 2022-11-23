@@ -54,6 +54,12 @@ def login():
         "login.html"
     )
 
+@app.route("/logout")
+def logout():
+    return render_template(
+        "home.html"
+    )
+
 @app.route("/edit")
 def edit():
     return render_template(
