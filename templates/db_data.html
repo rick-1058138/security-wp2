@@ -26,13 +26,13 @@
         <form action="/data" class="search-form" method="get">
             {% if current_table == 'vragen'%}
                 <input type="hidden" name="table_choice" value="{{current_table}}">
-                <select class="custom-select" name="error_type" id="">
+                <select class="custom-select" name="error_type" id="error_type_select" >
                     <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
                     <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
                     <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
                 </select>
 
-                <select class="custom-select" name="column" id="">
+                <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' %} style="display: none;" {% endif %}>
                     {% for column in columns%}
                         <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
                     {% endfor%}
@@ -80,5 +80,19 @@
             {% endif %}
         </div>
     </section>
+
+    <!-- Script used to hide unnecessary select by choice of error type  -->
+    <script>
+        // get correct select element
+        var select = document.getElementById('error_type_select'),
+        onChange = function() {
+            // check for option where the select needs to be shown, so when this is true : it is shown
+            var shown = this.options[this.selectedIndex].value == 'empty';
+            // hide or show select element
+            document.getElementById('column_select').style.display = shown ? 'block' : 'none';
+        };
+        // execute onChange if select option changes
+        select.addEventListener('change', onChange);
+    </script>
     
 {% endblock %}
