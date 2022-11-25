@@ -67,7 +67,18 @@
                                 </p>
                             {% else %}
                                 <p class="item-attribute {% if current_column==columns[loop.index-1] %} error {% endif %}" >
-                                    <strong>{{columns[loop.index-1]}}:</strong> {{ part }}
+                                    <strong>{{columns[loop.index-1]}}:</strong> 
+                                    {% if current_table == 'vragen' and loop.index == 2 %}
+                                        {% if not leerdoelen[0][part]%}
+                                            <span class="error">{{part}}, Bestaat niet</span>
+                                        {% else %}
+                                            {{leerdoelen[0][part][1]}}
+
+                                        {%endif%}
+                                    {% else %}
+                                        {{ part }}
+
+                                    {% endif%}
                                 </p>
                             {% endif %}
 

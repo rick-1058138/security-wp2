@@ -46,10 +46,14 @@ def index():
 @app.route("/data", methods=['GET'])
 def question_data(table = 'vragen'):
     if request.method == 'GET':
+        # needs validation ( only allowed tables: auteurs, leerdoelen, vragen)
         table = request.args.get('table_choice')
         type = request.args.get('error_type')
         column = request.args.get('column')
-
+        if(table == 'vragen'):
+            leerdoelen = dbm.get_content('leerdoelen')
+        else:
+            leerdoelen = None
     if not table:
         # set default table 
         print("default")
@@ -73,7 +77,14 @@ def question_data(table = 'vragen'):
 
 
     return render_template(
-        "db_data.html", data = data, columns = columns, tables = ['auteurs', 'leerdoelen', 'vragen'], current_table = table, current_column = column, current_type = type
+        "db_data.html", 
+        data = data, 
+        columns = columns, 
+        tables = ['auteurs', 'leerdoelen', 'vragen'], 
+        current_table = table, 
+        current_column = column, 
+        current_type = type, 
+        leerdoelen = leerdoelen
     )
 
 @app.route("/login")
