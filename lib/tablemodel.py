@@ -28,3 +28,9 @@ class DatabaseModel:
 
         # Note that this method returns 2 variables!
         return table_content, table_headers
+
+    def validate_login(self, table_name, username, password):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"SELECT * FROM {table_name} WHERE username = '{username}' AND password = '{password}'")
+        account = cursor.fetchone()
+        return account
