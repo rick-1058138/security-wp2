@@ -64,8 +64,8 @@
                                 <p class="item-attribute {% if current_column==columns[loop.index-1] %} error {% endif %}" >
 
                                     <strong>{{columns[loop.index-1]}}:</strong> 
-                                    <!-- if index == 2 for leerdoel field -->
-                                    {% if current_table == 'vragen' and loop.index == 2 %}
+                                    <!-- if index == 2 for leerdoel field -->   
+                                    {% if current_table == 'vragen' and loop.index == 2 and leerdoelen != None %}
                                         <!-- check if leerdoel id exists -->
                                         {% if not leerdoelen[0][part]%}
                                             <!-- does not exist  -->
