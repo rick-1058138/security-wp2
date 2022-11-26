@@ -1,7 +1,7 @@
 import os.path
 import sys
 
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request
 
 from lib.tablemodel import DatabaseModel
 from lib.demodatabase import create_demo_database
@@ -105,6 +105,9 @@ def edit():
         "edit.html"
     )
 
+@app.route('/question/<id>')
+def test(id):
+    return redirect("https://www.test-correct.nl/?vraag=" + id)
 
 # The table route displays the content of a table
 @app.route("/table_details/<table_name>")
