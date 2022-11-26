@@ -195,6 +195,25 @@ section>section {
     font-weight: bold;
 }
 
+.error-header{
+    text-align: center;
+    font-size: 3rem;
+}
+
+.error-btn{
+    padding: 1rem;
+    border-radius: var(--rc);
+    margin: 1rem auto;
+    background: var(--green);
+    color: white;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.error-btn:hover{
+    color: white;
+    opacity: 0.8;
+}
 
 .content-section{
     background: var(--creamwhite);

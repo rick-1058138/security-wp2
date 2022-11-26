@@ -48,15 +48,26 @@ def index():
 @app.route("/data/<table>")
 @app.route("/data", methods=['GET'])
 def question_data(table = 'vragen'):
+    # allowed tables and none because none is the first value when visiting without filters
+    allowed_tables = ['auteurs', 'leerdoelen', 'vragen', None]
     if request.method == 'GET':
         # needs validation ( only allowed tables: auteurs, leerdoelen, vragen)
         table = request.args.get('table_choice')
         type = request.args.get('error_type')
         column = request.args.get('column')
-        if(table == 'vragen'):
-            leerdoelen = dbm.get_content('leerdoelen')
+
+        # check if table is allowed to be shown 
+        if table in allowed_tables:
+            # get leerdoelen data is table = vragen, else return none
+            if(table == 'vragen'):
+                leerdoelen = dbm.get_content('leerdoelen')
+            else:
+                leerdoelen = None
         else:
-            leerdoelen = None
+            # when not allowed return 404 page 
+            return render_template(
+                "404.html"
+            )
     if not table:
         # set default table 
         print("default")
