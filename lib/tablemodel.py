@@ -29,6 +29,39 @@ class DatabaseModel:
         # Note that this method returns 2 variables!
         return table_content, table_headers
 
+    def get_content(self, table_name):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"SELECT * FROM {table_name}")
+        # An alternative for this 2 var approach is to set a sqlite row_factory on the connection
+        # table_headers = [column_name[0] for column_name in cursor.description]
+        # table_content = cursor.fetchall()
+        data = cursor.fetchall()
+        columns = [column_name[0] for column_name in cursor.description]
+        # Note that this method returns 2 variables!
+        return data, columns
+
+    def get_no_leerdoel(self):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute("SELECT * FROM vragen WHERE leerdoel NOT IN (SELECT id FROM leerdoelen);")
+        data = cursor.fetchall()
+        columns = [column_name[0] for column_name in cursor.description]
+        return data, columns
+
+    def get_empty_column(self, table, column):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"SELECT * FROM {table} WHERE {column} IS NULL")
+        data = cursor.fetchall()
+        columns = [column_name[0] for column_name in cursor.description]
+        return data, columns
+
+    def get_html_codes(self):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute("SELECT * FROM vragen WHERE vraag LIKE '%<br>%' OR vraag LIKE '%&nbsp;%';")
+        data = cursor.fetchall()
+        columns = [column_name[0] for column_name in cursor.description]
+        return data, columns
+
+   
     def validate_login(self, table_name, username, password):
         cursor = sqlite3.connect(self.database_file).cursor()
         cursor.execute(f"SELECT * FROM {table_name} WHERE username = '{username}' AND password = '{password}'")

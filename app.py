@@ -1,6 +1,7 @@
 import os.path
 import sys
 
+
 from flask import Flask, render_template, request, redirect, url_for, session
 
 from lib.tablemodel import DatabaseModel
@@ -44,10 +45,49 @@ def index():
     )
 
 
-@app.route("/data")
-def incorrect_data():
+@app.route("/data/<table>")
+@app.route("/data", methods=['GET'])
+def question_data(table = 'vragen'):
+    if request.method == 'GET':
+        # needs validation ( only allowed tables: auteurs, leerdoelen, vragen)
+        table = request.args.get('table_choice')
+        type = request.args.get('error_type')
+        column = request.args.get('column')
+        if(table == 'vragen'):
+            leerdoelen = dbm.get_content('leerdoelen')
+        else:
+            leerdoelen = None
+    if not table:
+        # set default table 
+        print("default")
+        DEFAULT = 'vragen'
+        table = DEFAULT
+        type = 'leerdoel'
+        column = 'id'
+        data, columns = dbm.get_content(table)
+    else:
+        # set chosen table
+        data, columns = dbm.get_content(table)
+
+        if type == 'leerdoel':
+            column = 'leerdoel'
+            data, columns = dbm.get_no_leerdoel()
+        elif type == 'html':
+            column = 'vraag'
+            data, columns = dbm.get_html_codes()
+        elif type == 'empty':
+            data, columns = dbm.get_empty_column(table, column)
+
+
     return render_template(
-        "incorrect_data.html"
+        "db_data.html", 
+        data = data, 
+        columns = columns, 
+        tables = ['auteurs', 'leerdoelen', 'vragen'], 
+        current_table = table, 
+        current_column = column, 
+        current_type = type, 
+        leerdoelen = leerdoelen
     )
 
 # Website used: https://codeshack.io/login-system-python-flask-mysql/
