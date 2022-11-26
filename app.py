@@ -1,7 +1,8 @@
 import os.path
 import sys
 
-from flask import Flask, render_template, request
+
+from flask import Flask, render_template, request, redirect, url_for, session
 
 from lib.tablemodel import DatabaseModel
 from lib.demodatabase import create_demo_database
@@ -22,6 +23,8 @@ if not os.path.isfile(DATABASE_FILE):
     print(f"Could not find database {DATABASE_FILE}, creating a demo database.")
     create_demo_database(DATABASE_FILE)
 dbm = DatabaseModel(DATABASE_FILE)
+
+app.secret_key = 'Software inc.'
 
 # Main route that shows a list of tables in the database
 # Note the "@app.route" decorator. This might be a new concept for you.
@@ -87,14 +90,34 @@ def question_data(table = 'vragen'):
         leerdoelen = leerdoelen
     )
 
-@app.route("/login")
+# Website used: https://codeshack.io/login-system-python-flask-mysql/
+@app.route("/login", methods=['POST', 'GET'])
 def login():
+    table_name = 'users'
+    error = None
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        username = request.form['username']
+        password = request.form['password']
+        account = dbm.validate_login(table_name, username, password)
+        if(account):
+            session['loggedin'] = True
+            session['id'] = account[0]
+            session['username'] = account[1]
+            return 'Logged in successfully!'
+        else:
+            error = "Invalid username or password"
     return render_template(
-        "login.html"
+        "login.html", 
+        error = error
     )
 
+# Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/logout")
 def logout():
+    # Remove session data, this will log the user out
+    session.pop('loggedin', None)
+    session.pop('id', None)
+    session.pop('username', None)
     return render_template(
         "home.html"
     )

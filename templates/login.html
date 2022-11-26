@@ -10,13 +10,16 @@
 			  <div class="hti__content">
 				  <div class="container__large">
 					<h1 class="page-header">Login</h1>
-					<form action="" class="user-form">
+					<form action="{{ url_for('login') }}" class="user-form" method="post">
 						<label for="username">Username:</label>
-						<input type="text" id="username" name="username" class="text-input">
+						<input type="text" id="username" name="username" class="text-input" placeholder="Username" required>
 						<label for="password">Wachtwoord:</label>
-						<input type="text" id="password" name="password" class="text-input">
+						<input type="text" id="password" name="password" class="text-input" placeholder="Password" required>
 						<input type="submit" value="Inloggen" class="green-submit">
 					</form>
+					{% if error %}
+						<p class="error"><strong>Error:</strong> {{ error }}
+				  	{% endif %}
 				  </div>
 			  </div>
 		  </div>

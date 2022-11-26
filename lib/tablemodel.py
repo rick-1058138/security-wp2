@@ -61,7 +61,9 @@ class DatabaseModel:
         columns = [column_name[0] for column_name in cursor.description]
         return data, columns
 
-    
-
-
-
+   
+    def validate_login(self, table_name, username, password):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"SELECT * FROM {table_name} WHERE username = '{username}' AND password = '{password}'")
+        account = cursor.fetchone()
+        return account
