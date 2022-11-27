@@ -127,7 +127,12 @@ def edit():
     return render_template(
         "edit.html"
     )
-
+    
+@app.route("/user")
+def incorrect_data():
+    return render_template(
+        "user.html"
+    )
 
 # The table route displays the content of a table
 @app.route("/table_details/<table_name>")
