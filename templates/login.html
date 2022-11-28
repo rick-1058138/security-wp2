@@ -6,9 +6,9 @@
   
 			<video class="hti__video" src="https://26318898.fs1.hubspotusercontent-eu1.net/hubfs/26318898/Homepagina%20vid-2.mp4" loop="" muted="" autoplay=""></video>
 			
-			  <div class="hti__overlay" style="background-image: linear-gradient(to right, #004df5 0%, #4781ff 100%);"></div>
-			  <div class="hti__content">
-				  <div class="container__large">
+			<div class="hti__overlay" style="background-image: linear-gradient(to right, #004df5 0%, #4781ff 100%);"></div>
+			<div class="hti__content">
+				<div class="container__large">
 					<h1 class="page-header">Login</h1>
 					<form action="{{ url_for('login') }}" class="user-form" method="post">
 						<label for="username">Username:</label>
@@ -19,11 +19,9 @@
 					</form>
 					{% if error %}
 						<p class="error"><strong>Error:</strong> {{ error }}
-				  	{% endif %}
-				  </div>
-			  </div>
-		  </div>
-
+					{% endif %}
+				</div>
+			</div>
+		</div>
     </section>
-    
 {% endblock %}
