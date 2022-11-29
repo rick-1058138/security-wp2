@@ -48,6 +48,8 @@ def index():
 @app.route("/data/<table>")
 @app.route("/data", methods=['GET'])
 def question_data(table = 'vragen'):
+    # min and max value for each column of vragen (can later contain other tables as well)
+    minmax = dbm.get_tables_min_max()
     # allowed tables and none because none is the first value when visiting without filters
     allowed_tables = ['auteurs', 'leerdoelen', 'vragen', None]
     if request.method == 'GET':
@@ -98,7 +100,8 @@ def question_data(table = 'vragen'):
         current_table = table, 
         current_column = column, 
         current_type = type, 
-        leerdoelen = leerdoelen
+        leerdoelen = leerdoelen,
+        minmax = minmax
     )
 
 # Website used: https://codeshack.io/login-system-python-flask-mysql/

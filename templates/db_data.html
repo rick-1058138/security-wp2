@@ -30,32 +30,34 @@
             <!-- if current table == vragen show these selects for further sorting -->
             {% if current_table == 'vragen'%}
                 <!-- hidden field for current table for next query's  -->
-                <input type="hidden" name="table_choice" value="{{current_table}}">
-                <select class="custom-select" name="error_type" id="error_type_select" >
-                    <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
-                    <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
-                    <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
-                </select>
+                <div class="form-row">
+                    <input type="hidden" name="table_choice" value="{{current_table}}">
+                    <select class="custom-select" name="error_type" id="error_type_select" >
+                        <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
+                        <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
+                        <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
+                    </select>
 
-                <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' %} style="display: none;" {% endif %}>
-                    <!-- option for every column in table  -->
-                    {% for column in columns%}
-                        <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
-                    {% endfor%}
-                </select>
-
-                <!-- for select between 2 values -->
-                <div>
-                    <span for="">Op Kolom:</span>
-                    <select class="custom-select" name="between_column" id="between_column">
+                    <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' %} style="display: none;" {% endif %}>
+                        <!-- option for every column in table  -->
                         {% for column in columns%}
                             <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
                         {% endfor%}
                     </select>
+
+                    <!-- for select between 2 values -->
+                    <div>
+                        <span for="">Op Kolom:</span>
+                        <select class="custom-select" name="between_column" id="between_column">
+                            {% for column in columns%}
+                                <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
+                            {% endfor%}
+                        </select>
+                    </div>
                 </div>
                 <!-- kolommen met mogelijkheid min-max: leerdoel, id, auteur -->
-                <div id="min-max">
-                    <span for="">Waardes tussen: {min} - {max}</span>
+                <div id="min-max" class="min-max-div">
+                    <span for="" id="min_max_text">Laden...</span>
                     <input value="min" placeholder="minimaal" type="number" class="text-input">
                     <input value="max" placeholder="maximaal" type="number" class="text-input">
                 </div>
@@ -117,6 +119,13 @@
         var errorSelect = document.getElementById('error_type_select');
         var betweenSelect = document.getElementById('between_column');
 
+        // convert minmax to JSON so javascript can use it
+        var minmax = JSON.parse('{{minmax | tojson}}');
+
+        // if user loads in set to right min max values
+        selected = betweenSelect.options[betweenSelect.selectedIndex].value
+        document.getElementById('min_max_text').innerText = "Tussen: "+minmax[selected][0]+" - "+minmax[selected][1]
+
         onChange = function() {
             // check for option where the select needs to be shown, so when this is true : it is shown
             var shown = this.options[this.selectedIndex].value == 'empty';
@@ -125,11 +134,14 @@
         };
 
         onChangeBetween = function() {
-            console.log(this.options[this.selectedIndex].value)
+            selected = this.options[this.selectedIndex].value
+            // console.log(selected)
             allowedColumns = ['leerdoel','id','auteur']
             // check for option where the select needs to be shown, so when this is true : it is shown
-            if(allowedColumns.includes(this.options[this.selectedIndex].value) ){
-                document.getElementById('min-max').style.display = 'block';
+            if(allowedColumns.includes(selected) ){
+                document.getElementById('min-max').style.display = 'flex';
+                // set min and max for selected column in dropdown
+                document.getElementById('min_max_text').innerText = "Tussen: "+minmax[selected][0]+" - "+minmax[selected][1]
             }
             else{
                 document.getElementById('min-max').style.display = 'none';

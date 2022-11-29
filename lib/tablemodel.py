@@ -67,3 +67,12 @@ class DatabaseModel:
         cursor.execute(f"SELECT * FROM {table_name} WHERE username = '{username}' AND password = '{password}'")
         account = cursor.fetchone()
         return account
+
+
+    def get_tables_min_max(self):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        data = {}
+        data["id"] = cursor.execute(f"SELECT MIN(id),MAX(id) FROM vragen").fetchone()
+        data["leerdoel"] = cursor.execute(f"SELECT MIN(leerdoel),MAX(leerdoel) FROM vragen").fetchone()
+        data["auteur"] = cursor.execute(f"SELECT MIN(auteur),MAX(auteur) FROM vragen").fetchone()
+        return data
