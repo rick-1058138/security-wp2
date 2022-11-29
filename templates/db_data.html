@@ -44,6 +44,23 @@
                     {% endfor%}
                 </select>
 
+                <!-- for select between 2 values -->
+                <div>
+                    <span for="">Op Kolom:</span>
+                    <select class="custom-select" name="between_column" id="between_column">
+                        {% for column in columns%}
+                            <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
+                        {% endfor%}
+                    </select>
+                </div>
+                <!-- kolommen met mogelijkheid min-max: leerdoel, id, auteur -->
+                <div id="min-max">
+                    <span for="">Waardes tussen: {min} - {max}</span>
+                    <input value="min" placeholder="minimaal" type="number" class="text-input">
+                    <input value="max" placeholder="maximaal" type="number" class="text-input">
+                </div>
+
+                <!-- submit form  -->
                 <input type="submit" value="Zoeken" class="green-submit">
 
             {%endif%}
@@ -97,15 +114,32 @@
     <!-- Script used to hide unnecessary select by choice of error type  -->
     <script>
         // get correct select element
-        var select = document.getElementById('error_type_select'),
+        var errorSelect = document.getElementById('error_type_select');
+        var betweenSelect = document.getElementById('between_column');
+
         onChange = function() {
             // check for option where the select needs to be shown, so when this is true : it is shown
             var shown = this.options[this.selectedIndex].value == 'empty';
             // hide or show select element
             document.getElementById('column_select').style.display = shown ? 'block' : 'none';
         };
+
+        onChangeBetween = function() {
+            console.log(this.options[this.selectedIndex].value)
+            allowedColumns = ['leerdoel','id','auteur']
+            // check for option where the select needs to be shown, so when this is true : it is shown
+            if(allowedColumns.includes(this.options[this.selectedIndex].value) ){
+                document.getElementById('min-max').style.display = 'block';
+            }
+            else{
+                document.getElementById('min-max').style.display = 'none';
+            }
+        };
+
+
         // execute onChange if select option changes
-        select.addEventListener('change', onChange);
+        errorSelect.addEventListener('change', onChange);
+        betweenSelect.addEventListener('change', onChangeBetween);
     </script>
     
 {% endblock %}
