@@ -1,0 +1,109 @@
+
+{% extends "layout.html" %}
+{% block content %}
+    <section class="top-section">
+        <h1 class="page-header">Tabellen</h1>
+        <form action="/data" class="search-form" method="GET">
+            <select class="custom-select" name="table_choice" id="">
+                <!-- for every table an option in select, with selected attribute if that is the current table  -->
+                {% for table in tables %}  
+                    {% if current_table==table %} 
+                        <option value="{{table}}" selected>{{table}}</option>
+                    {% else%}
+                        <option value="{{table}}" >{{table}}</option>
+
+                    {% endif %}
+                {% endfor%}
+            </select>
+
+
+
+            <input type="submit" value="Zoeken" class="green-submit">
+        </form>
+    </section>
+
+    <section class="content-section">
+        <h2 class="sub-header">{{current_table}}</h2>
+        <form action="/data" class="search-form" method="get">
+            <!-- if current table == vragen show these selects for further sorting -->
+            {% if current_table == 'vragen'%}
+                <!-- hidden field for current table for next query's  -->
+                <input type="hidden" name="table_choice" value="{{current_table}}">
+                <select class="custom-select" name="error_type" id="error_type_select" >
+                    <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
+                    <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
+                    <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
+                </select>
+
+                <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' %} style="display: none;" {% endif %}>
+                    <!-- option for every column in table  -->
+                    {% for column in columns%}
+                        <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
+                    {% endfor%}
+                </select>
+
+                <input type="submit" value="Zoeken" class="green-submit">
+
+            {%endif%}
+
+
+
+        </form>
+        <div class="table-items">
+            {% for item in data %}  
+                <div class="table-item">
+                        {% for part in item %}
+                            <!-- check for index 1 because this is the id -->
+                            {% if(loop.index == 1) %}
+                                <p>
+                                    <span class="item-id">ID:   
+                                        <span>{{ part }}</span> 
+                                    </span> 
+                                </p>
+                            {% else %}
+                                <p class="item-attribute {% if current_column==columns[loop.index-1] %} error {% endif %}" >
+
+                                    <strong>{{columns[loop.index-1]}}:</strong> 
+                                    <!-- if index == 2 for leerdoel field -->   
+                                    {% if current_table == 'vragen' and loop.index == 2 and leerdoelen != None %}
+                                        <!-- check if leerdoel id exists -->
+                                        {% if not leerdoelen[0][part]%}
+                                            <!-- does not exist  -->
+                                            <span class="error">{{part}}, Bestaat niet</span>
+                                        {% else %}
+                                            <!-- does exist, show text form  -->
+                                            {{leerdoelen[0][part][1]}}
+                                        {%endif%}
+                                    {% else %}
+                                        {{ part }}
+
+                                    {% endif%}
+                                </p>
+                            {% endif %}
+
+                        {% endfor %}
+                </div>
+            {% endfor %}
+
+            {% if data == [] %}
+                <!-- if there are no rows from query -->
+                <p>Geen resultaten, probeer een andere zoekopdracht</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Script used to hide unnecessary select by choice of error type  -->
+    <script>
+        // get correct select element
+        var select = document.getElementById('error_type_select'),
+        onChange = function() {
+            // check for option where the select needs to be shown, so when this is true : it is shown
+            var shown = this.options[this.selectedIndex].value == 'empty';
+            // hide or show select element
+            document.getElementById('column_select').style.display = shown ? 'block' : 'none';
+        };
+        // execute onChange if select option changes
+        select.addEventListener('change', onChange);
+    </script>
+    
+{% endblock %}
