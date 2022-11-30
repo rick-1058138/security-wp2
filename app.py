@@ -53,6 +53,9 @@ def question_data(table = 'vragen'):
     # allowed tables and none because none is the first value when visiting without filters
     allowed_tables = ['auteurs', 'leerdoelen', 'vragen', None]
 
+    # columns with integers that can be filtered by min and max values 
+    allowed_between_columns = ['id', 'leerdoel', 'auteur', 'geboortejaar']
+
     if request.method == 'GET':
         # needs validation ( only allowed tables: auteurs, leerdoelen, vragen)
         table = request.args.get('table_choice')
@@ -94,26 +97,27 @@ def question_data(table = 'vragen'):
         if not table:
             # set default table 
             print("default")
-            DEFAULT = 'vragen'
-            table = DEFAULT
-            type = 'leerdoel'
-            column = 'id'
+            DEFAULT_TABLE = 'vragen'
+            DEFAULT_TYPE = 'alles'
+            DEFAULT_COLUMN = 'id'
+            table = DEFAULT_TABLE
+            type = DEFAULT_TYPE
+            column = DEFAULT_COLUMN
             data, columns = dbm.get_content(table)
         else:
             # get data for chosen error type
             if type == 'leerdoel':
                 column = 'leerdoel'
                 data, columns = dbm.get_no_leerdoel(min_max_filter, between_column, min, max)
-                # print(data)
-                print(min)
-                print(max)
             elif type == 'html':
                 column = 'vraag'
                 data, columns = dbm.get_html_codes(min_max_filter, between_column, min, max)
             elif type == 'empty':
-                print(min)
-                print(max)
                 data, columns = dbm.get_empty_column(table, column, min_max_filter, between_column, min, max)
+            else:
+                print("else")
+                # if type == 'alles' and else
+                data, columns = dbm.get_requested_rows(table, min_max_filter, between_column, min, max)
 
 
         return render_template(
@@ -128,7 +132,8 @@ def question_data(table = 'vragen'):
             minmax = minmax,
             current_between_column = between_column,
             chosen_min = min,
-            chosen_max = max
+            chosen_max = max,
+            allowed_between_columns = allowed_between_columns
         )
 
 # Website used: https://codeshack.io/login-system-python-flask-mysql/

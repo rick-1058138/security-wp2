@@ -54,6 +54,7 @@ class DatabaseModel:
 
 
 
+
     def get_no_leerdoel(self, min_max_filter, between_column, min, max):
         if(min_max_filter):
             query = f"SELECT * FROM vragen WHERE leerdoel NOT IN (SELECT id FROM leerdoelen) AND {between_column} >= {min} AND {between_column} <= {max}"
@@ -81,6 +82,14 @@ class DatabaseModel:
         data, columns = self.return_filter_content(query)
         return data, columns
 
+    def get_requested_rows(self, table_name, min_max_filter, between_column, min, max):
+        if(min_max_filter):
+            query = f"SELECT * FROM {table_name} WHERE {between_column} >= {min} AND {between_column} <= {max}"
+        else:
+            query = f"SELECT * FROM {table_name}"
+        print(query)
+        data, columns = self.return_filter_content(query)
+        return data, columns
 
 ###
 
