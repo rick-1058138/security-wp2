@@ -50,7 +50,6 @@ def index():
 def question_data(table = 'vragen'):
     # min and max value for each column of vragen (can later contain other tables as well)
     minmax = dbm.get_tables_min_max()
-
     # allowed tables and none because none is the first value when visiting without filters
     allowed_tables = ['auteurs', 'leerdoelen', 'vragen', None]
 
@@ -63,11 +62,22 @@ def question_data(table = 'vragen'):
         between_column = request.args.get('between_column')
         min = request.args.get('min')
         max = request.args.get('max')
+        # check if min or max input is filled else set to none
+        if min == '' or max == '':
+            min = None
+            max = None
 
+        min_max_filter = False
+        
         # check if min and max are set
         if(min != None and max != None):
+            min_max_filter = True
             print("min & max value zijn gezet")
 
+        else:
+            min_max_filter = False
+
+        
 
         # check if table is allowed to be shown 
         if table in allowed_tables:
@@ -90,17 +100,20 @@ def question_data(table = 'vragen'):
             column = 'id'
             data, columns = dbm.get_content(table)
         else:
-            # set chosen table
-            data, columns = dbm.get_content(table)
-
+            # get data for chosen error type
             if type == 'leerdoel':
                 column = 'leerdoel'
-                data, columns = dbm.get_no_leerdoel()
+                data, columns = dbm.get_no_leerdoel(min_max_filter, between_column, min, max)
+                # print(data)
+                print(min)
+                print(max)
             elif type == 'html':
                 column = 'vraag'
-                data, columns = dbm.get_html_codes()
+                data, columns = dbm.get_html_codes(min_max_filter, between_column, min, max)
             elif type == 'empty':
-                data, columns = dbm.get_empty_column(table, column)
+                print(min)
+                print(max)
+                data, columns = dbm.get_empty_column(table, column, min_max_filter, between_column, min, max)
 
 
         return render_template(
