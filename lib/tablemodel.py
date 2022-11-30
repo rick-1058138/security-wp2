@@ -98,9 +98,19 @@ class DatabaseModel:
     def get_tables_min_max(self):
         cursor = sqlite3.connect(self.database_file).cursor()
         data = {}
-        data["id"] = cursor.execute(f"SELECT MIN(id),MAX(id) FROM vragen").fetchone()
-        data["leerdoel"] = cursor.execute(f"SELECT MIN(leerdoel),MAX(leerdoel) FROM vragen").fetchone()
-        data["auteur"] = cursor.execute(f"SELECT MIN(auteur),MAX(auteur) FROM vragen").fetchone()
+        data["vragen"] = {}
+        data["vragen"]["id"] = cursor.execute(f"SELECT MIN(id),MAX(id) FROM vragen").fetchone()
+        data["vragen"]["leerdoel"] = cursor.execute(f"SELECT MIN(leerdoel),MAX(leerdoel) FROM vragen").fetchone()
+        data["vragen"]["auteur"] = cursor.execute(f"SELECT MIN(auteur),MAX(auteur) FROM vragen").fetchone()
+
+        data["auteurs"] = {}
+        data["auteurs"]["id"] = cursor.execute(f"SELECT MIN(id),MAX(id) FROM auteurs").fetchone()
+        data["auteurs"]["geboortejaar"] = cursor.execute(f"SELECT MIN(geboortejaar),MAX(geboortejaar) FROM auteurs").fetchone()
+
+        data["leerdoelen"] = {}
+        data["leerdoelen"]["id"] = cursor.execute(f"SELECT MIN(id),MAX(id) FROM leerdoelen").fetchone()
+        data["leerdoelen"]["leerdoel"] = cursor.execute(f"SELECT MIN(leerdoel),MAX(leerdoel) FROM leerdoelen").fetchone()
+        # print(data["auteurs"]["geboortejaar"])
         return data
 
        

@@ -131,6 +131,7 @@
 
         chosen_min = '{{chosen_min}}'
         chosen_max = '{{chosen_max}}'
+        var selectedTable = '{{current_table}}'
         // Check if min and max are already set by user
         if( chosen_min != "None" && chosen_max != "None"){
             // place chosen values in inputs
@@ -144,8 +145,8 @@
             // if user loads in set to right min max values
             selected = betweenSelect.options[betweenSelect.selectedIndex].value
             // document.getElementById('min_max_text').innerText = "Tussen: "+minmax[selected][0]+" - "+minmax[selected][1]
-            document.getElementById('min-input').value = minmax[selected][0]
-            document.getElementById('max-input').value = minmax[selected][1]
+            document.getElementById('min-input').value = minmax[selectedTable][selected][0]
+            document.getElementById('max-input').value = minmax[selectedTable][selected][1]
         }
 
 
@@ -159,15 +160,20 @@
 
         onChangeBetween = function() {
             // change min max values according to selected option
+            console.log(selectedTable)
             selected = this.options[this.selectedIndex].value
-            document.getElementById('min-input').value = minmax[selected][0]
-            document.getElementById('max-input').value = minmax[selected][1]
+            document.getElementById('min-input').value = minmax[selectedTable][selected][0]
+            document.getElementById('max-input').value = minmax[selectedTable][selected][1]
 
         };
 
 
         // execute onChange if select option changes
-        errorSelect.addEventListener('change', onChange);
+        if(selectedTable == 'vragen'){
+            // element only exists if table == vragen
+            errorSelect.addEventListener('change', onChange);
+        }
+        
         betweenSelect.addEventListener('change', onChangeBetween);
     </script>
     
