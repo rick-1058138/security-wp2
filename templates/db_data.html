@@ -3,7 +3,7 @@
 {% block content %}
     <section class="top-section">
         <h1 class="page-header">Tabellen</h1>
-        <form action="/data" class="search-form" method="GET">
+        <form action="/data" class="top-search-form" method="GET">
             <select class="custom-select" name="table_choice" id="">
                 <!-- for every table an option in select, with selected attribute if that is the current table  -->
                 {% for table in tables %}  
@@ -45,16 +45,19 @@
                         {% endfor%}
                     </select>
 
-                    <!-- for select between 2 values -->
-                    <div>
-                        <span for="">Op Kolom:</span>
-                        <select class="custom-select" name="between_column" id="between_column">
-                            {% for column in columns%}
-                                <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
-                            {% endfor%}
-                        </select>
-                    </div>
+      
                 </div>
+
+                <!-- for select between 2 values -->
+                <div class="min-max-div">
+                    <span for="">Op Kolom:</span>
+                    <select class="custom-select" name="between_column" id="between_column">
+                        {% for column in columns%}
+                            <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
+                        {% endfor%}
+                    </select>
+                </div>
+
                 <!-- kolommen met mogelijkheid min-max: leerdoel, id, auteur -->
                 <div id="min-max" class="min-max-div">
                     <span for="" id="min_max_text">Laden...</span>
@@ -67,7 +70,7 @@
 
             {%endif%}
 
-
+                    item.style.display = 'block' : 'none'
 
         </form>
         <div class="table-items">
@@ -112,7 +115,6 @@
             {% endif %}
         </div>
     </section>
-
     <!-- Script used to hide unnecessary select by choice of error type  -->
     <script>
         // get correct select element
