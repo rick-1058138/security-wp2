@@ -1,5 +1,6 @@
 import os.path
 import sys
+import datetime
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from functools import wraps
@@ -52,6 +53,12 @@ def login_required(f):
             flash('You need to login first')
             return redirect(url_for('login'))
     return wrap
+
+@app.before_request
+def before_request():
+    session.permanent = True
+    app.permanent_session_lifetime = datetime.timedelta(days=1)
+    session.modified = True
 
 @app.route("/")
 def index():
