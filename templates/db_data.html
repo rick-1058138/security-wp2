@@ -32,6 +32,7 @@
                 <!-- hidden field for current table for next query's  -->
                 <div class="form-row">
                     <input type="hidden" name="table_choice" value="{{current_table}}">
+                    <span>Type fout: </span>
                     <select class="custom-select" name="error_type" id="error_type_select" >
                         <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
                         <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
@@ -48,29 +49,29 @@
       
                 </div>
 
-                <!-- for select between 2 values -->
+                <!-- column for select between 2 values -->
+                <p class="explain-text">Selecteer een kolom voor sorteren van minimaal, maximaal waardes</p>
                 <div class="min-max-div">
-                    <span for="">Op Kolom:</span>
+                    <span for="">Kolom:</span>
                     <select class="custom-select" name="between_column" id="between_column">
                         {% for column in columns%}
-                            <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
+                            <option value="{{column}}" {% if current_between_column==column %} selected {% endif %}>{{column}}</option>
                         {% endfor%}
                     </select>
                 </div>
 
                 <!-- kolommen met mogelijkheid min-max: leerdoel, id, auteur -->
                 <div id="min-max" class="min-max-div">
-                    <span for="" id="min_max_text">Laden...</span>
-                    <input value="min" placeholder="minimaal" type="number" class="text-input">
-                    <input value="max" placeholder="maximaal" type="number" class="text-input">
+                    <!-- <p class="explain-text" id="min_max_text">Laden...</p> -->
+                    <span>Minimaal: </span>
+                    <input id="min-input" name="min" placeholder="minimaal" type="number" class="text-input" value="">
+                    <span>Maximaal: </span>
+                    <input id="max-input" name="max" placeholder="maximaal" type="number" class="text-input" value="">
                 </div>
-
                 <!-- submit form  -->
                 <input type="submit" value="Zoeken" class="green-submit">
 
             {%endif%}
-
-                    item.style.display = 'block' : 'none'
 
         </form>
         <div class="table-items">
@@ -124,9 +125,26 @@
         // convert minmax to JSON so javascript can use it
         var minmax = JSON.parse('{{minmax | tojson}}');
 
-        // if user loads in set to right min max values
-        selected = betweenSelect.options[betweenSelect.selectedIndex].value
-        document.getElementById('min_max_text').innerText = "Tussen: "+minmax[selected][0]+" - "+minmax[selected][1]
+        chosen_min = '{{chosen_min}}'
+        chosen_max = '{{chosen_max}}'
+        // Check if min and max are already set by user
+        if( chosen_min != "None" && chosen_max != "None"){
+            // place chosen values in inputs
+            console.log(chosen_max)
+            document.getElementById('min-input').value = chosen_min
+            document.getElementById('max-input').value = chosen_max
+            
+        }else{
+            // set value of min max inputs with values from database
+
+            // if user loads in set to right min max values
+            selected = betweenSelect.options[betweenSelect.selectedIndex].value
+            // document.getElementById('min_max_text').innerText = "Tussen: "+minmax[selected][0]+" - "+minmax[selected][1]
+            document.getElementById('min-input').value = minmax[selected][0]
+            document.getElementById('max-input').value = minmax[selected][1]
+        }
+
+
 
         onChange = function() {
             // check for option where the select needs to be shown, so when this is true : it is shown
@@ -142,8 +160,10 @@
             // check for option where the select needs to be shown, so when this is true : it is shown
             if(allowedColumns.includes(selected) ){
                 document.getElementById('min-max').style.display = 'flex';
-                // set min and max for selected column in dropdown
-                document.getElementById('min_max_text').innerText = "Tussen: "+minmax[selected][0]+" - "+minmax[selected][1]
+                // set min and max for selected column in dropdown, and value in inputs
+                // document.getElementById('min_max_text').innerText = "Tussen: "+minmax[selected][0]+" - "+minmax[selected][1]
+                document.getElementById('min-input').value = minmax[selected][0]
+                document.getElementById('max-input').value = minmax[selected][1]
             }
             else{
                 document.getElementById('min-max').style.display = 'none';

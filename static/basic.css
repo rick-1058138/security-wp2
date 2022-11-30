@@ -430,6 +430,8 @@ section>section {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
+    gap: 0.2rem;
 }
 
 .min-max-div{
@@ -452,6 +454,11 @@ footer{
     position: absolute;
     bottom: 0;
     width: 100%;
+}
+
+.explain-text{
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
 }
 
 @media (max-width: 481px) {

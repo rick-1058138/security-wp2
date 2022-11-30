@@ -45,18 +45,29 @@ def index():
     )
 
 
-@app.route("/data/<table>")
+# @app.route("/data/<table>")
 @app.route("/data", methods=['GET'])
 def question_data(table = 'vragen'):
     # min and max value for each column of vragen (can later contain other tables as well)
     minmax = dbm.get_tables_min_max()
+
     # allowed tables and none because none is the first value when visiting without filters
     allowed_tables = ['auteurs', 'leerdoelen', 'vragen', None]
+
     if request.method == 'GET':
         # needs validation ( only allowed tables: auteurs, leerdoelen, vragen)
         table = request.args.get('table_choice')
         type = request.args.get('error_type')
         column = request.args.get('column')
+
+        between_column = request.args.get('between_column')
+        min = request.args.get('min')
+        max = request.args.get('max')
+
+        # check if min and max are set
+        if(min != None and max != None):
+            print("min & max value zijn gezet")
+
 
         # check if table is allowed to be shown 
         if table in allowed_tables:
@@ -70,39 +81,42 @@ def question_data(table = 'vragen'):
             return render_template(
                 "404.html"
             )
-    if not table:
-        # set default table 
-        print("default")
-        DEFAULT = 'vragen'
-        table = DEFAULT
-        type = 'leerdoel'
-        column = 'id'
-        data, columns = dbm.get_content(table)
-    else:
-        # set chosen table
-        data, columns = dbm.get_content(table)
+        if not table:
+            # set default table 
+            print("default")
+            DEFAULT = 'vragen'
+            table = DEFAULT
+            type = 'leerdoel'
+            column = 'id'
+            data, columns = dbm.get_content(table)
+        else:
+            # set chosen table
+            data, columns = dbm.get_content(table)
 
-        if type == 'leerdoel':
-            column = 'leerdoel'
-            data, columns = dbm.get_no_leerdoel()
-        elif type == 'html':
-            column = 'vraag'
-            data, columns = dbm.get_html_codes()
-        elif type == 'empty':
-            data, columns = dbm.get_empty_column(table, column)
+            if type == 'leerdoel':
+                column = 'leerdoel'
+                data, columns = dbm.get_no_leerdoel()
+            elif type == 'html':
+                column = 'vraag'
+                data, columns = dbm.get_html_codes()
+            elif type == 'empty':
+                data, columns = dbm.get_empty_column(table, column)
 
 
-    return render_template(
-        "db_data.html", 
-        data = data, 
-        columns = columns, 
-        tables = ['auteurs', 'leerdoelen', 'vragen'], 
-        current_table = table, 
-        current_column = column, 
-        current_type = type, 
-        leerdoelen = leerdoelen,
-        minmax = minmax
-    )
+        return render_template(
+            "db_data.html", 
+            data = data, 
+            columns = columns, 
+            tables = ['auteurs', 'leerdoelen', 'vragen'], 
+            current_table = table, 
+            current_column = column, 
+            current_type = type, 
+            leerdoelen = leerdoelen,
+            minmax = minmax,
+            current_between_column = between_column,
+            chosen_min = min,
+            chosen_max = max
+        )
 
 # Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/login", methods=['POST', 'GET'])
