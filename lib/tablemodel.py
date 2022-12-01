@@ -67,3 +67,9 @@ class DatabaseModel:
         cursor.execute(f"SELECT * FROM {table_name} WHERE username = '{username}' AND password = '{password}'")
         account = cursor.fetchone()
         return account
+    
+    def get_vraag_by_id(self, id):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"SELECT * FROM vragen WHERE id = '{id}'")
+        item = cursor.fetchone()
+        return item

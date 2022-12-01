@@ -2,7 +2,7 @@ import os.path
 import sys
 
 
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, jsonify, render_template, request, redirect, url_for, session
 
 from lib.tablemodel import DatabaseModel
 from lib.demodatabase import create_demo_database
@@ -138,7 +138,12 @@ def edit():
     return render_template(
         "edit.html"
     )
-
+    
+@app.route("/getitem", methods=["GET", "POST"])
+def getitem():
+    data = dbm.get_vraag_by_id(request.args.get('id'))
+    print(request.args.get('id'));
+    return jsonify(data);
 
 # The table route displays the content of a table
 @app.route("/table_details/<table_name>")
