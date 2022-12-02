@@ -144,11 +144,15 @@ def logout():
         "home.html"
     )
 
-@app.route("/edit")
+@app.route("/edit", methods=['GET'])
 @login_required
-def edit():
+def admin():
+    if request.method == 'GET':
+        data, columns = dbm.get_content('users')
     return render_template(
-        "edit.html"
+        "admin.html", 
+        data = data, 
+        columns = columns
     )
     
 @app.route("/user")
