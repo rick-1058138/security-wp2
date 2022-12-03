@@ -195,6 +195,25 @@ section>section {
     font-weight: bold;
 }
 
+.error-header{
+    text-align: center;
+    font-size: 3rem;
+}
+
+.error-btn{
+    padding: 1rem;
+    border-radius: var(--rc);
+    margin: 1rem auto;
+    background: var(--green);
+    color: white;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.error-btn:hover{
+    color: white;
+    opacity: 0.8;
+}
 
 .content-section{
     background: var(--creamwhite);
@@ -210,6 +229,7 @@ section>section {
     background:#2ae082b2;
     width: 100%;
     justify-content: center;
+    align-items: center;
 }
 
 .error{
@@ -264,6 +284,15 @@ section>section {
     margin: 0 auto;
     display: flex;
     padding-bottom: 1rem;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.top-search-form{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    margin-bottom: 0.5rem;
 }
 
 .custom-select{
@@ -416,6 +445,24 @@ form{
 }
 
 
+.form-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.min-max-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0.3rem 0;
+    gap: 0.2rem;
+}
+
+
 footer{
     background: var(--darkblue);
     color: var(--white);
@@ -426,6 +473,11 @@ footer{
     position: absolute;
     bottom: 0;
     width: 100%;
+}
+
+.explain-text{
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
 }
 
 @media (max-width: 481px) {

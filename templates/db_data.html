@@ -3,7 +3,7 @@
 {% block content %}
     <section class="top-section">
         <h1 class="page-header">Tabellen</h1>
-        <form action="/data" class="search-form" method="GET">
+        <form action="/data" class="top-search-form" method="GET">
             <select class="custom-select" name="table_choice" id="">
                 <!-- for every table an option in select, with selected attribute if that is the current table  -->
                 {% for table in tables %}  
@@ -14,6 +14,8 @@
 
                     {% endif %}
                 {% endfor%}
+                <!-- <option value="users" >users</option> -->
+
             </select>
 
 
@@ -25,27 +27,54 @@
     <section class="content-section">
         <h2 class="sub-header">{{current_table}}</h2>
         <form action="/data" class="search-form" method="get">
+            <!-- hidden field for current table for next query's  -->
+            <input type="hidden" name="table_choice" value="{{current_table}}">
+
             <!-- if current table == vragen show these selects for further sorting -->
             {% if current_table == 'vragen'%}
-                <!-- hidden field for current table for next query's  -->
-                <input type="hidden" name="table_choice" value="{{current_table}}">
-                <select class="custom-select" name="error_type" id="error_type_select" >
-                    <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
-                    <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
-                    <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
-                </select>
+                <div class="form-row">
+                    <span>Type fout: </span>
+                    <select class="custom-select" name="error_type" id="error_type_select" >
+                        <option value="alles" {% if current_type=='alles' %} selected {% endif %} >Alles</option>
+                        <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
+                        <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
+                        <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
+                    </select>
 
-                <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' %} style="display: none;" {% endif %}>
-                    <!-- option for every column in table  -->
-                    {% for column in columns%}
-                        <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
-                    {% endfor%}
-                </select>
-
-                <input type="submit" value="Zoeken" class="green-submit">
-
+                    <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' %} style="display: none;" {% endif %}>
+                        <!-- option for every column in table  -->
+                        {% for column in columns%}
+                            <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
+                        {% endfor%}
+                    </select>
             {%endif%}
+            
+      
+                </div>
+                <!-- column for select between 2 values -->
+                <p class="explain-text">Selecteer een kolom voor sorteren van minimaal, maximaal waardes</p>
+                <div class="min-max-div">
+                    <span for="">Kolom:</span>
+                    <select class="custom-select" name="between_column" id="between_column">
+                        {% for column in columns%}
+                            <!-- check if column is in the allowed_between_column list (only columns with integers) -->
+                            {%if column in allowed_between_columns %}
+                                <option value="{{column}}" {% if current_between_column==column %} selected {% endif %}>{{column}}</option>
+                            {%endif%}
+                        {% endfor%}
+                    </select>
+                </div>
 
+                <!-- kolommen met mogelijkheid min-max: leerdoel, id, auteur -->
+                <div id="min-max" class="min-max-div">
+                    <!-- <p class="explain-text" id="min_max_text">Laden...</p> -->
+                    <span>Minimaal: </span>
+                    <input id="min-input" name="min" placeholder="minimaal" type="number" class="text-input" value="">
+                    <span>Maximaal: </span>
+                    <input id="max-input" name="max" placeholder="maximaal" type="number" class="text-input" value="">
+                </div>
+                <!-- submit form  -->
+                <input type="submit" value="Zoeken" class="green-submit">
 
 
         </form>
@@ -72,7 +101,7 @@
                                             <span class="error">{{part}}, Bestaat niet</span>
                                         {% else %}
                                             <!-- does exist, show text form  -->
-                                            {{leerdoelen[0][part][1]}}
+                                            {{leerdoelen[0][part][1]}} ({{part}})
                                         {%endif%}
                                     {% else %}
                                         {{ part }}
@@ -91,19 +120,61 @@
             {% endif %}
         </div>
     </section>
-
     <!-- Script used to hide unnecessary select by choice of error type  -->
     <script>
         // get correct select element
-        var select = document.getElementById('error_type_select'),
+        var errorSelect = document.getElementById('error_type_select');
+        var betweenSelect = document.getElementById('between_column');
+
+        // convert minmax to JSON so javascript can use it
+        var minmax = JSON.parse('{{minmax | tojson}}');
+
+        chosen_min = '{{chosen_min}}'
+        chosen_max = '{{chosen_max}}'
+        var selectedTable = '{{current_table}}'
+        // Check if min and max are already set by user
+        if( chosen_min != "None" && chosen_max != "None"){
+            // place chosen values in inputs
+            console.log(chosen_max)
+            document.getElementById('min-input').value = chosen_min
+            document.getElementById('max-input').value = chosen_max
+            
+        }else{
+            // set value of min max inputs with values from database
+
+            // if user loads in set to right min max values
+            selected = betweenSelect.options[betweenSelect.selectedIndex].value
+            // document.getElementById('min_max_text').innerText = "Tussen: "+minmax[selected][0]+" - "+minmax[selected][1]
+            document.getElementById('min-input').value = minmax[selectedTable][selected][0]
+            document.getElementById('max-input').value = minmax[selectedTable][selected][1]
+        }
+
+
+
         onChange = function() {
             // check for option where the select needs to be shown, so when this is true : it is shown
             var shown = this.options[this.selectedIndex].value == 'empty';
             // hide or show select element
             document.getElementById('column_select').style.display = shown ? 'block' : 'none';
         };
+
+        onChangeBetween = function() {
+            // change min max values according to selected option
+            console.log(selectedTable)
+            selected = this.options[this.selectedIndex].value
+            document.getElementById('min-input').value = minmax[selectedTable][selected][0]
+            document.getElementById('max-input').value = minmax[selectedTable][selected][1]
+
+        };
+
+
         // execute onChange if select option changes
-        select.addEventListener('change', onChange);
+        if(selectedTable == 'vragen'){
+            // element only exists if table == vragen
+            errorSelect.addEventListener('change', onChange);
+        }
+        
+        betweenSelect.addEventListener('change', onChangeBetween);
     </script>
     
 {% endblock %}
