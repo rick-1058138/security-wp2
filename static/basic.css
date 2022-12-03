@@ -425,6 +425,25 @@ section>section {
     letter-spacing: 0.5px;
 }
 
+label{
+    display: flex;
+    margin-top: 1rem;
+}
+
+input{
+    display: flex;
+    margin-top: 1rem;
+}
+
+form{
+    position: absolute;
+    right: 50%;
+}
+
+#userHeader{
+    text-align: center;
+}
+
 
 .form-row{
     display: flex;

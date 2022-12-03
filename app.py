@@ -1,8 +1,8 @@
 import os.path
 import sys
 
-
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from functools import wraps
 
 from lib.tablemodel import DatabaseModel
 from lib.demodatabase import create_demo_database
@@ -38,15 +38,29 @@ app.secret_key = 'Software inc.'
 #         "tables.html", table_list=tables, database_file=DATABASE_FILE
 #     )
 
+
+# Used sources:
+# https://stackoverflow.com/questions/35307676/check-login-status-flask
+#
+# https://flask.palletsprojects.com/en/2.0.x/patterns/viewdecorators/?highlight=wrap
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'loggedin' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('You need to login first')
+            return redirect(url_for('login'))
+    return wrap
+
 @app.route("/")
 def index():
     return render_template(
         "home.html"
     )
 
-
-# @app.route("/data/<table>")
 @app.route("/data", methods=['GET'])
+@login_required
 def question_data(table = 'vragen'):
     # min and max value for each column of vragen (can later contain other tables as well)
     minmax = dbm.get_tables_min_max()
@@ -136,6 +150,7 @@ def question_data(table = 'vragen'):
             allowed_between_columns = allowed_between_columns
         )
 
+
 # Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/login", methods=['POST', 'GET'])
 def login():
@@ -149,7 +164,8 @@ def login():
             session['loggedin'] = True
             session['id'] = account[0]
             session['username'] = account[1]
-            return 'Logged in successfully!'
+            flash('Logged in succefully!')
+            return redirect(url_for('index'))
         else:
             error = "Invalid username or password"
     return render_template(
@@ -169,14 +185,21 @@ def logout():
     )
 
 @app.route("/edit")
+@login_required
 def edit():
     return render_template(
         "edit.html"
     )
-
+    
+@app.route("/user")
+def incorrect_data():
+    return render_template(
+        "user.html"
+    )
 
 # The table route displays the content of a table
 @app.route("/table_details/<table_name>")
+@login_required
 def table_content(table_name=None):
     if not table_name:
         return "Missing table name", 400  # HTTP 400 = Bad Request
