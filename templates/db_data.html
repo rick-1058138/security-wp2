@@ -30,7 +30,12 @@
             <!-- Modal content -->
             <div class="modal-content">
             <span id="close-popup" class="close">&times;</span>
-            <p id="popup-text"> This is question </p>
+            <form> 
+                <label> This is question </label>
+                <input id="popup-id" name="popup-id" value="" disabled> <br><br>
+                <label> Vraag </label>
+                <input id="popup-vraag" name="popup-vraag" value="">
+            </form>
             </div>
         
         </div>
@@ -142,9 +147,10 @@
                 url: "/getitem",
                 data: {id : attribute},
                 success: function (res) {
-                    document.getElementById("popup-text").innerText = res
-                   console.log("worked");
-                   console.log(res);
+                   //document.getElementById("popup-id").innerText = res[0]
+                   document.getElementById("popup-id").value = res[0];
+                   document.getElementById("popup-vraag").value = res[2];
+
                 },
                 error: function (res, options, error) {
                     console.log(res.status);
