@@ -1,5 +1,6 @@
 import os
 import sqlite3
+from passlib.hash import pbkdf2_sha256
 
 
 class DatabaseModel:
@@ -64,6 +65,18 @@ class DatabaseModel:
    
     def validate_login(self, table_name, username, password):
         cursor = sqlite3.connect(self.database_file).cursor()
-        cursor.execute(f"SELECT * FROM {table_name} WHERE username = '{username}' AND password = '{password}'")
+        cursor.execute(f"SELECT * FROM {table_name} WHERE username = {username} AND password = {password}")
         account = cursor.fetchone()
         return account
+
+    def create_user(self, table_name, username, email, password, isAdmin=0):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"INSERT INTO {table_name} (username, email, password, isAdmin) VALUES ({username}, {email}, {password}, {isAdmin})")
+
+    def update_user(self, table_name, id, username, email, password):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"UPDATE {table_name} SET username = {username}, email = {email}, password = {password} WHERE id = {id}")
+
+    def delete_user(self, table_name, id):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"DELETE FROM {table_name} WHERE id = {id}")
