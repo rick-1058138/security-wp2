@@ -62,18 +62,21 @@ class DatabaseModel:
         columns = [column_name[0] for column_name in cursor.description]
         return data, columns
 
-   
+    # The password in the query should be replaced with hashed_password later!
     def validate_login(self, table_name, username, password):
+        hashed_password = pbkdf2_sha256.hash(password)
         cursor = sqlite3.connect(self.database_file).cursor()
         cursor.execute(f"SELECT * FROM {table_name} WHERE username = {username} AND password = {password}")
         account = cursor.fetchone()
         return account
 
     def create_user(self, table_name, username, email, password, isAdmin=0):
+        hashed_password = pbkdf2_sha256.hash(password)
         cursor = sqlite3.connect(self.database_file).cursor()
         cursor.execute(f"INSERT INTO {table_name} (username, email, password, isAdmin) VALUES ({username}, {email}, {password}, {isAdmin})")
 
     def update_user(self, table_name, id, username, email, password):
+        hashed_password = pbkdf2_sha256.hash(password)
         cursor = sqlite3.connect(self.database_file).cursor()
         cursor.execute(f"UPDATE {table_name} SET username = {username}, email = {email}, password = {password} WHERE id = {id}")
 
