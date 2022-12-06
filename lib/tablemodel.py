@@ -75,8 +75,10 @@ class DatabaseModel:
         return item
 
     def change_question_by_id(self, question, id):
-        cursor = sqlite3.connect(self.database_file).cursor()
+        connection = sqlite3.connect(self.database_file)
+        cursor = connection.cursor()
         cursor.execute(f"UPDATE vragen SET vraag = '{question}' WHERE id = '{id}'")
-        vraagItem = cursor.fetchone()
-        return vraagItem
+        connection.commit()
+        cursor.close()
+  
     

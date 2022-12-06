@@ -32,7 +32,8 @@
             <span id="close-popup" class="close">&times;</span>
             <form action="/editquestion" method="POST"> 
                 <label for="id"> This is question </label>
-                <input type="text" id="id" name="id" value="" disabled> <br><br>
+                <input type="hidden" id="id" name="id" value="">
+                <!-- <input type="text" id="id" name="id" value="" disabled> <br><br> -->
                 <label for="popup-vraag"> Vraag </label>
                 <input type="text" id="question" name="question" value="">
                 <input type="submit" value="Edit">
