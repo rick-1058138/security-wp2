@@ -2,7 +2,10 @@ import os.path
 import sys
 
 
-from flask import Flask, jsonify, render_template, request, redirect, url_for, session
+
+from flask import Flask, jsonify, render_template, request, redirect, url_for, session, flash
+from functools import wraps
+
 
 from lib.tablemodel import DatabaseModel
 from lib.demodatabase import create_demo_database
@@ -38,23 +41,63 @@ app.secret_key = 'Software inc.'
 #         "tables.html", table_list=tables, database_file=DATABASE_FILE
 #     )
 
+
+# Used sources:
+# https://stackoverflow.com/questions/35307676/check-login-status-flask
+#
+# https://flask.palletsprojects.com/en/2.0.x/patterns/viewdecorators/?highlight=wrap
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'loggedin' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('You need to login first')
+            return redirect(url_for('login'))
+    return wrap
+
 @app.route("/")
 def index():
     return render_template(
         "home.html"
     )
 
-
-@app.route("/data/<table>")
 @app.route("/data", methods=['GET'])
+@login_required
 def question_data(table = 'vragen'):
+    # min and max value for each column of vragen (can later contain other tables as well)
+    minmax = dbm.get_tables_min_max()
     # allowed tables and none because none is the first value when visiting without filters
     allowed_tables = ['auteurs', 'leerdoelen', 'vragen', None]
+
+    # columns with integers that can be filtered by min and max values 
+    allowed_between_columns = ['id', 'leerdoel', 'auteur', 'geboortejaar']
+
     if request.method == 'GET':
         # needs validation ( only allowed tables: auteurs, leerdoelen, vragen)
         table = request.args.get('table_choice')
         type = request.args.get('error_type')
         column = request.args.get('column')
+
+        between_column = request.args.get('between_column')
+        min = request.args.get('min')
+        max = request.args.get('max')
+        # check if min or max input is filled else set to none
+        if min == '' or max == '':
+            min = None
+            max = None
+
+        min_max_filter = False
+        
+        # check if min and max are set
+        if(min != None and max != None):
+            min_max_filter = True
+            print("min & max value zijn gezet")
+
+        else:
+            min_max_filter = False
+
+        
 
         # check if table is allowed to be shown 
         if table in allowed_tables:
@@ -68,38 +111,48 @@ def question_data(table = 'vragen'):
             return render_template(
                 "404.html"
             )
-    if not table:
-        # set default table 
-        print("default")
-        DEFAULT = 'vragen'
-        table = DEFAULT
-        type = 'leerdoel'
-        column = 'id'
-        data, columns = dbm.get_content(table)
-    else:
-        # set chosen table
-        data, columns = dbm.get_content(table)
+        if not table:
+            # set default table 
+            print("default")
+            DEFAULT_TABLE = 'vragen'
+            DEFAULT_TYPE = 'alles'
+            DEFAULT_COLUMN = 'id'
+            table = DEFAULT_TABLE
+            type = DEFAULT_TYPE
+            column = DEFAULT_COLUMN
+            data, columns = dbm.get_content(table)
+        else:
+            # get data for chosen error type
+            if type == 'leerdoel':
+                column = 'leerdoel'
+                data, columns = dbm.get_no_leerdoel(min_max_filter, between_column, min, max)
+            elif type == 'html':
+                column = 'vraag'
+                data, columns = dbm.get_html_codes(min_max_filter, between_column, min, max)
+            elif type == 'empty':
+                data, columns = dbm.get_empty_column(table, column, min_max_filter, between_column, min, max)
+            else:
+                print("else")
+                # if type == 'alles' and else
+                data, columns = dbm.get_requested_rows(table, min_max_filter, between_column, min, max)
 
-        if type == 'leerdoel':
-            column = 'leerdoel'
-            data, columns = dbm.get_no_leerdoel()
-        elif type == 'html':
-            column = 'vraag'
-            data, columns = dbm.get_html_codes()
-        elif type == 'empty':
-            data, columns = dbm.get_empty_column(table, column)
 
+        return render_template(
+            "db_data.html", 
+            data = data, 
+            columns = columns, 
+            tables = ['auteurs', 'leerdoelen', 'vragen'], 
+            current_table = table, 
+            current_column = column, 
+            current_type = type, 
+            leerdoelen = leerdoelen,
+            minmax = minmax,
+            current_between_column = between_column,
+            chosen_min = min,
+            chosen_max = max,
+            allowed_between_columns = allowed_between_columns
+        )
 
-    return render_template(
-        "db_data.html", 
-        data = data, 
-        columns = columns, 
-        tables = ['auteurs', 'leerdoelen', 'vragen'], 
-        current_table = table, 
-        current_column = column, 
-        current_type = type, 
-        leerdoelen = leerdoelen
-    )
 
 # Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/login", methods=['POST', 'GET'])
@@ -114,7 +167,8 @@ def login():
             session['loggedin'] = True
             session['id'] = account[0]
             session['username'] = account[1]
-            return 'Logged in successfully!'
+            flash('Logged in succefully!')
+            return redirect(url_for('index'))
         else:
             error = "Invalid username or password"
     return render_template(
@@ -134,6 +188,7 @@ def logout():
     )
 
 @app.route("/edit")
+@login_required
 def edit():
     return render_template(
         "edit.html"
@@ -151,8 +206,20 @@ def edit_question():
     if request.method == 'POST':
         return redirect("/data", code=302)
 
+@app.route('/question/<id>')
+def test(id):
+    return redirect("https://www.test-correct.nl/?vraag=" + id)
+    
+@app.route("/user")
+def incorrect_data():
+    return render_template(
+        "user.html"
+    )
+
+
 # The table route displays the content of a table
 @app.route("/table_details/<table_name>")
+@login_required
 def table_content(table_name=None):
     if not table_name:
         return "Missing table name", 400  # HTTP 400 = Bad Request

@@ -229,6 +229,7 @@ section>section {
     background:#2ae082b2;
     width: 100%;
     justify-content: center;
+    align-items: center;
 }
 
 .error{
@@ -283,6 +284,15 @@ section>section {
     margin: 0 auto;
     display: flex;
     padding-bottom: 1rem;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.top-search-form{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    margin-bottom: 0.5rem;
 }
 
 .custom-select{
@@ -403,6 +413,14 @@ section>section {
     display: flex;
     align-items: center;
 }
+.id-link{
+    transition: 0.2s;
+}
+
+.id-link:hover>span{
+    color:rgb(51, 102, 204);
+
+}
 
 .logout-btn{
     padding: 0.6rem 0.8rem;
@@ -414,6 +432,7 @@ section>section {
     font-weight: bold;
     letter-spacing: 0.5px;
 }
+
 
 /* The Modal (background) */
 .modal {
@@ -453,6 +472,24 @@ section>section {
     cursor: pointer;
   }
 
+
+.form-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.min-max-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0.3rem 0;
+    gap: 0.2rem;
+}
+
 footer{
     background: var(--darkblue);
     color: var(--white);
@@ -463,6 +500,11 @@ footer{
     position: absolute;
     bottom: 0;
     width: 100%;
+}
+
+.explain-text{
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
 }
 
 @media (max-width: 481px) {
