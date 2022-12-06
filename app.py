@@ -149,7 +149,7 @@ def getitem():
 def edit_question():
     dbm.change_question_by_id(request.form.get('question'), request.form.get('id'))
     if request.method == 'POST':
-        return redirect("http://192.168.2.4:81/data", code=302)
+        return redirect("/data", code=302)
 
 # The table route displays the content of a table
 @app.route("/table_details/<table_name>")
