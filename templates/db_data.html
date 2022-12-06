@@ -31,10 +31,8 @@
             <div class="modal-content">
             <span id="close-popup" class="close">&times;</span>
             <form action="/editquestion" method="POST"> 
-                <label for="id"> This is question </label>
+                <label for="id" id="text-vraag"> Je bewerkt nu vraag </label><br><br>
                 <input type="hidden" id="id" name="id" value="">
-                <!-- <input type="text" id="id" name="id" value="" disabled> <br><br> -->
-                <label for="popup-vraag"> Vraag </label>
                 <input type="text" id="question" name="question" value="">
                 <input type="submit" value="Edit">
             </form>
@@ -152,7 +150,7 @@
                    //document.getElementById("popup-id").innerText = res[0]
                    document.getElementById("id").value = res[0];
                    document.getElementById("question").value = res[2];
-
+                   document.getElementById("text-vraag").innerHTML = "Je bewerkt nu vraag " + res[0]
                 },
                 error: function (res, options, error) {
                     console.log(res.status);
