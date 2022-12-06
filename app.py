@@ -147,7 +147,7 @@ def getitem():
 
 @app.route("/editquestion", methods=['POST', 'GET'])
 def edit_question():
-    dbm.change_question_by_id(request.args.get('question'), request.args.get('id'))
+    dbm.change_question_by_id(request.form.get('question'), request.form.get('id'))
     if request.method == 'POST':
         return "Question has been edited"
 
