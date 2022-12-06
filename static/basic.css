@@ -413,6 +413,14 @@ section>section {
     display: flex;
     align-items: center;
 }
+.id-link{
+    transition: 0.2s;
+}
+
+.id-link:hover>span{
+    color:rgb(51, 102, 204);
+
+}
 
 .logout-btn{
     padding: 0.6rem 0.8rem;

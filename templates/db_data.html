@@ -85,9 +85,11 @@
                             <!-- check for index 1 because this is the id -->
                             {% if(loop.index == 1) %}
                                 <p>
-                                    <span class="item-id">ID:   
-                                        <span>{{ part }}</span> 
-                                    </span> 
+                                    <a class="id-link" href="question/{{ part }}" target="_blank">
+                                        <span class="item-id">ID:   
+                                            <span>{{ part }}</span> 
+                                        </span> 
+                                    </a>
                                 </p>
                             {% else %}
                                 <p class="item-attribute {% if current_column==columns[loop.index-1] %} error {% endif %}" >
