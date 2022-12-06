@@ -2,7 +2,8 @@ import os.path
 import sys
 
 
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+
+from flask import Flask, jsonify, render_template, request, redirect, url_for, session, flash
 from functools import wraps
 
 
@@ -192,7 +193,18 @@ def edit():
     return render_template(
         "edit.html"
     )
+    
+@app.route("/getitem", methods=["GET", "POST"])
+def getitem():
+    data = dbm.get_vraag_by_id(request.args.get('id'))
+    print(request.args.get('id'));
+    return jsonify(data);
 
+@app.route("/editquestion", methods=['POST', 'GET'])
+def edit_question():
+    dbm.change_question_by_id(request.form.get('question'), request.form.get('id'))
+    if request.method == 'POST':
+        return redirect("/data", code=302)
 
 @app.route('/question/<id>')
 def test(id):
