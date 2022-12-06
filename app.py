@@ -145,6 +145,12 @@ def getitem():
     print(request.args.get('id'));
     return jsonify(data);
 
+@app.route("/editquestion", methods=['POST', 'GET'])
+def edit_question():
+    dbm.change_question_by_id(request.args.get('question'), request.args.get('id'))
+    if request.method == 'POST':
+        return "Question has been edited"
+
 # The table route displays the content of a table
 @app.route("/table_details/<table_name>")
 def table_content(table_name=None):

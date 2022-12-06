@@ -30,11 +30,11 @@
             <!-- Modal content -->
             <div class="modal-content">
             <span id="close-popup" class="close">&times;</span>
-            <form> 
-                <label for="popup-id"> This is question </label>
-                <input type="text" id="popup-id" name="popup-id" value="" disabled> <br><br>
+            <form action="/editquestion" method="POST"> 
+                <label for="id"> This is question </label>
+                <input type="text" id="id" name="id" value="" disabled> <br><br>
                 <label for="popup-vraag"> Vraag </label>
-                <input type="text" id="popup-vraag" name="popup-vraag" value="">
+                <input type="text" id="question" name="question" value="">
                 <input type="submit" value="Edit">
             </form>
             </div>
@@ -149,8 +149,8 @@
                 data: {id : attribute},
                 success: function (res) {
                    //document.getElementById("popup-id").innerText = res[0]
-                   document.getElementById("popup-id").value = res[0];
-                   document.getElementById("popup-vraag").value = res[2];
+                   document.getElementById("id").value = res[0];
+                   document.getElementById("question").value = res[2];
 
                 },
                 error: function (res, options, error) {
