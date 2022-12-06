@@ -1,7 +1,10 @@
 import os.path
 import sys
 
-from flask import Flask, redirect, render_template, request
+
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from functools import wraps
+
 
 from lib.tablemodel import DatabaseModel
 from lib.demodatabase import create_demo_database
@@ -23,6 +26,8 @@ if not os.path.isfile(DATABASE_FILE):
     create_demo_database(DATABASE_FILE)
 dbm = DatabaseModel(DATABASE_FILE)
 
+app.secret_key = 'Software inc.'
+
 # Main route that shows a list of tables in the database
 # Note the "@app.route" decorator. This might be a new concept for you.
 # It is a way to "decorate" a function with additional functionality. You
@@ -35,82 +40,174 @@ dbm = DatabaseModel(DATABASE_FILE)
 #         "tables.html", table_list=tables, database_file=DATABASE_FILE
 #     )
 
+
+# Used sources:
+# https://stackoverflow.com/questions/35307676/check-login-status-flask
+#
+# https://flask.palletsprojects.com/en/2.0.x/patterns/viewdecorators/?highlight=wrap
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'loggedin' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('You need to login first')
+            return redirect(url_for('login'))
+    return wrap
+
 @app.route("/")
 def index():
     return render_template(
         "home.html"
     )
 
-
-@app.route("/data/<table>")
 @app.route("/data", methods=['GET'])
+@login_required
 def question_data(table = 'vragen'):
+    # min and max value for each column of vragen (can later contain other tables as well)
+    minmax = dbm.get_tables_min_max()
+    # allowed tables and none because none is the first value when visiting without filters
+    allowed_tables = ['auteurs', 'leerdoelen', 'vragen', None]
+
+    # columns with integers that can be filtered by min and max values 
+    allowed_between_columns = ['id', 'leerdoel', 'auteur', 'geboortejaar']
+
     if request.method == 'GET':
         # needs validation ( only allowed tables: auteurs, leerdoelen, vragen)
         table = request.args.get('table_choice')
         type = request.args.get('error_type')
         column = request.args.get('column')
-        if(table == 'vragen'):
-            leerdoelen = dbm.get_content('leerdoelen')
+
+        between_column = request.args.get('between_column')
+        min = request.args.get('min')
+        max = request.args.get('max')
+        # check if min or max input is filled else set to none
+        if min == '' or max == '':
+            min = None
+            max = None
+
+        min_max_filter = False
+        
+        # check if min and max are set
+        if(min != None and max != None):
+            min_max_filter = True
+            print("min & max value zijn gezet")
+
         else:
-            leerdoelen = None
-    if not table:
-        # set default table 
-        print("default")
-        DEFAULT = 'vragen'
-        table = DEFAULT
-        type = 'leerdoel'
-        column = 'id'
-        data, columns = dbm.get_content(table)
-    else:
-        # set chosen table
-        data, columns = dbm.get_content(table)
+            min_max_filter = False
 
-        if type == 'leerdoel':
-            column = 'leerdoel'
-            data, columns = dbm.get_no_leerdoel()
-        elif type == 'html':
-            column = 'vraag'
-            data, columns = dbm.get_html_codes()
-        elif type == 'empty':
-            data, columns = dbm.get_empty_column(table, column)
+        
+
+        # check if table is allowed to be shown 
+        if table in allowed_tables:
+            # get leerdoelen data is table = vragen, else return none
+            if(table == 'vragen'):
+                leerdoelen = dbm.get_content('leerdoelen')
+            else:
+                leerdoelen = None
+        else:
+            # when not allowed return 404 page 
+            return render_template(
+                "404.html"
+            )
+        if not table:
+            # set default table 
+            print("default")
+            DEFAULT_TABLE = 'vragen'
+            DEFAULT_TYPE = 'alles'
+            DEFAULT_COLUMN = 'id'
+            table = DEFAULT_TABLE
+            type = DEFAULT_TYPE
+            column = DEFAULT_COLUMN
+            data, columns = dbm.get_content(table)
+        else:
+            # get data for chosen error type
+            if type == 'leerdoel':
+                column = 'leerdoel'
+                data, columns = dbm.get_no_leerdoel(min_max_filter, between_column, min, max)
+            elif type == 'html':
+                column = 'vraag'
+                data, columns = dbm.get_html_codes(min_max_filter, between_column, min, max)
+            elif type == 'empty':
+                data, columns = dbm.get_empty_column(table, column, min_max_filter, between_column, min, max)
+            else:
+                print("else")
+                # if type == 'alles' and else
+                data, columns = dbm.get_requested_rows(table, min_max_filter, between_column, min, max)
 
 
-    return render_template(
-        "db_data.html", 
-        data = data, 
-        columns = columns, 
-        tables = ['auteurs', 'leerdoelen', 'vragen'], 
-        current_table = table, 
-        current_column = column, 
-        current_type = type, 
-        leerdoelen = leerdoelen
-    )
+        return render_template(
+            "db_data.html", 
+            data = data, 
+            columns = columns, 
+            tables = ['auteurs', 'leerdoelen', 'vragen'], 
+            current_table = table, 
+            current_column = column, 
+            current_type = type, 
+            leerdoelen = leerdoelen,
+            minmax = minmax,
+            current_between_column = between_column,
+            chosen_min = min,
+            chosen_max = max,
+            allowed_between_columns = allowed_between_columns
+        )
 
-@app.route("/login")
+
+# Website used: https://codeshack.io/login-system-python-flask-mysql/
+@app.route("/login", methods=['POST', 'GET'])
 def login():
+    table_name = 'users'
+    error = None
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        username = request.form['username']
+        password = request.form['password']
+        account = dbm.validate_login(table_name, username, password)
+        if(account):
+            session['loggedin'] = True
+            session['id'] = account[0]
+            session['username'] = account[1]
+            flash('Logged in succefully!')
+            return redirect(url_for('index'))
+        else:
+            error = "Invalid username or password"
     return render_template(
-        "login.html"
+        "login.html", 
+        error = error
     )
 
+# Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/logout")
 def logout():
+    # Remove session data, this will log the user out
+    session.pop('loggedin', None)
+    session.pop('id', None)
+    session.pop('username', None)
     return render_template(
         "home.html"
     )
 
 @app.route("/edit")
+@login_required
 def edit():
     return render_template(
         "edit.html"
     )
 
+
 @app.route('/question/<id>')
 def test(id):
     return redirect("https://www.test-correct.nl/?vraag=" + id)
+    
+@app.route("/user")
+def incorrect_data():
+    return render_template(
+        "user.html"
+    )
+
 
 # The table route displays the content of a table
 @app.route("/table_details/<table_name>")
+@login_required
 def table_content(table_name=None):
     if not table_name:
         return "Missing table name", 400  # HTTP 400 = Bad Request

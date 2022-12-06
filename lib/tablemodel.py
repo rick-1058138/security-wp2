@@ -29,39 +29,94 @@ class DatabaseModel:
         # Note that this method returns 2 variables!
         return table_content, table_headers
 
+
+
+
+
+ ### filter types
+    # filter template function
+    def return_filter_content(self, query):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(query)
+        data = cursor.fetchall()
+        columns = [column_name[0] for column_name in cursor.description]
+        return data, columns
+
+    # -----------
+
     def get_content(self, table_name):
         cursor = sqlite3.connect(self.database_file).cursor()
         cursor.execute(f"SELECT * FROM {table_name}")
-        # An alternative for this 2 var approach is to set a sqlite row_factory on the connection
-        # table_headers = [column_name[0] for column_name in cursor.description]
-        # table_content = cursor.fetchall()
         data = cursor.fetchall()
         columns = [column_name[0] for column_name in cursor.description]
-        # Note that this method returns 2 variables!
         return data, columns
 
-    def get_no_leerdoel(self):
+
+
+
+
+    def get_no_leerdoel(self, min_max_filter, between_column, min, max):
+        if(min_max_filter):
+            query = f"SELECT * FROM vragen WHERE leerdoel NOT IN (SELECT id FROM leerdoelen) AND {between_column} >= {min} AND {between_column} <= {max}"
+        else:
+            query = "SELECT * FROM vragen WHERE leerdoel NOT IN (SELECT id FROM leerdoelen);"
+        print(query)
+        data, columns = self.return_filter_content(query)
+        return data, columns
+
+    def get_empty_column(self, table, column, min_max_filter, between_column, min, max):
+        if(min_max_filter):
+            query = f"SELECT * FROM {table} WHERE {column} IS NULL AND {between_column} >= {min} AND {between_column} <= {max}"
+        else:
+            query = f"SELECT * FROM {table} WHERE {column} IS NULL"
+        print(query)
+        data, columns = self.return_filter_content(query)
+        return data, columns
+
+    def get_html_codes(self, min_max_filter, between_column, min, max):
+        if(min_max_filter):
+            query = f"SELECT * FROM vragen WHERE (vraag LIKE '%<br>%' OR vraag LIKE '%&nbsp;%') AND ( {between_column} >= {min} AND {between_column} <= {max})"
+        else:
+            query = "SELECT * FROM vragen WHERE vraag LIKE '%<br>%' OR vraag LIKE '%&nbsp;%'"
+        print(query)
+        data, columns = self.return_filter_content(query)
+        return data, columns
+
+    def get_requested_rows(self, table_name, min_max_filter, between_column, min, max):
+        if(min_max_filter):
+            query = f"SELECT * FROM {table_name} WHERE {between_column} >= {min} AND {between_column} <= {max}"
+        else:
+            query = f"SELECT * FROM {table_name}"
+        print(query)
+        data, columns = self.return_filter_content(query)
+        return data, columns
+
+###
+
+
+
+    def get_tables_min_max(self):
         cursor = sqlite3.connect(self.database_file).cursor()
-        cursor.execute("SELECT * FROM vragen WHERE leerdoel NOT IN (SELECT id FROM leerdoelen);")
-        data = cursor.fetchall()
-        columns = [column_name[0] for column_name in cursor.description]
-        return data, columns
+        data = {}
+        data["vragen"] = {}
+        data["vragen"]["id"] = cursor.execute(f"SELECT MIN(id),MAX(id) FROM vragen").fetchone()
+        data["vragen"]["leerdoel"] = cursor.execute(f"SELECT MIN(leerdoel),MAX(leerdoel) FROM vragen").fetchone()
+        data["vragen"]["auteur"] = cursor.execute(f"SELECT MIN(auteur),MAX(auteur) FROM vragen").fetchone()
 
-    def get_empty_column(self, table, column):
+        data["auteurs"] = {}
+        data["auteurs"]["id"] = cursor.execute(f"SELECT MIN(id),MAX(id) FROM auteurs").fetchone()
+        data["auteurs"]["geboortejaar"] = cursor.execute(f"SELECT MIN(geboortejaar),MAX(geboortejaar) FROM auteurs").fetchone()
+
+        data["leerdoelen"] = {}
+        data["leerdoelen"]["id"] = cursor.execute(f"SELECT MIN(id),MAX(id) FROM leerdoelen").fetchone()
+        data["leerdoelen"]["leerdoel"] = cursor.execute(f"SELECT MIN(leerdoel),MAX(leerdoel) FROM leerdoelen").fetchone()
+        # print(data["auteurs"]["geboortejaar"])
+        return data
+
+       
+    def validate_login(self, table_name, username, password):
         cursor = sqlite3.connect(self.database_file).cursor()
-        cursor.execute(f"SELECT * FROM {table} WHERE {column} IS NULL")
-        data = cursor.fetchall()
-        columns = [column_name[0] for column_name in cursor.description]
-        return data, columns
-
-    def get_html_codes(self):
-        cursor = sqlite3.connect(self.database_file).cursor()
-        cursor.execute("SELECT * FROM vragen WHERE vraag LIKE '%<br>%' OR vraag LIKE '%&nbsp;%';")
-        data = cursor.fetchall()
-        columns = [column_name[0] for column_name in cursor.description]
-        return data, columns
-
-    
-
-
+        cursor.execute(f"SELECT * FROM {table_name} WHERE username = '{username}' AND password = '{password}'")
+        account = cursor.fetchone()
+        return account
 
