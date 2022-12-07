@@ -1,5 +1,6 @@
 import os.path
 import sys
+import datetime
 
 
 
@@ -55,6 +56,12 @@ def login_required(f):
             flash('You need to login first')
             return redirect(url_for('login'))
     return wrap
+
+@app.before_request
+def before_request():
+    session.permanent = True
+    app.permanent_session_lifetime = datetime.timedelta(days=1)
+    session.modified = True
 
 @app.route("/")
 def index():
@@ -157,12 +164,11 @@ def question_data(table = 'vragen'):
 # Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/login", methods=['POST', 'GET'])
 def login():
-    table_name = 'users'
     error = None
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
-        account = dbm.validate_login(table_name, username, password)
+        account = dbm.validate_login(username, password)
         if(account):
             session['loggedin'] = True
             session['id'] = account[0]
@@ -187,11 +193,20 @@ def logout():
         "home.html"
     )
 
-@app.route("/edit")
+@app.route("/admin", methods=['GET', 'POST'])
 @login_required
-def edit():
+def admin():
+    table_name = 'users'
+    if request.method == 'GET':
+        data, columns = dbm.get_content(table_name)
+    elif request.method == 'POST':
+        raise ValueError('Build an add users function first!')
+        #dbm.create_user('F', 'F@random.com', '0000')
+        data, columns = dbm.get_content(table_name)
     return render_template(
-        "edit.html"
+        "admin.html", 
+        data = data, 
+        columns = columns
     )
     
 @app.route("/getitem", methods=["GET", "POST"])
