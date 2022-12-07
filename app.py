@@ -79,6 +79,8 @@ def question_data(table = 'vragen'):
         type = request.args.get('error_type')
         column = request.args.get('column')
 
+        uitzondering = request.args.get('uitzondering')
+
         between_column = request.args.get('between_column')
         min = request.args.get('min')
         max = request.args.get('max')
@@ -105,20 +107,24 @@ def question_data(table = 'vragen'):
             DEFAULT_TABLE = 'vragen'
             DEFAULT_TYPE = 'alles'
             DEFAULT_COLUMN = 'id'
+            DEFAULT_UITZONDERING = 'alles'
             table = DEFAULT_TABLE
             type = DEFAULT_TYPE
             column = DEFAULT_COLUMN
+            uitzondering = DEFAULT_UITZONDERING
             data, columns = dbm.get_content(table)
         else:
             # get data for chosen error type
             if type == 'leerdoel':
                 column = 'leerdoel'
-                data, columns = dbm.get_no_leerdoel(min_max_filter, between_column, min, max)
+                data, columns = dbm.get_no_leerdoel(min_max_filter, between_column, min, max, uitzondering)
             elif type == 'html':
                 column = 'vraag'
                 data, columns = dbm.get_html_codes(min_max_filter, between_column, min, max)
             elif type == 'empty':
                 data, columns = dbm.get_empty_column(table, column, min_max_filter, between_column, min, max)
+            elif type == 'uitzondering':
+                data, columns = dbm.get_exception(table, column, min_max_filter, between_column, min, max)
             else:
                 print("else")
                 # if type == 'alles' and else
@@ -150,7 +156,8 @@ def question_data(table = 'vragen'):
             current_between_column = between_column,
             chosen_min = min,
             chosen_max = max,
-            allowed_between_columns = allowed_between_columns
+            allowed_between_columns = allowed_between_columns,
+            current_uitzondering = uitzondering
         )
 
 

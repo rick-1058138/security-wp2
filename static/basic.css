@@ -508,9 +508,17 @@ footer{
 }
 
 .exception-tag {
-    color: red !important;
+    color: red;
     font-size: 0.9rem;
     font-weight: bold;
+}
+
+.exception-button {
+    background: #f24444;
+    color: white;
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    letter-spacing: 0.5px;
 }
 
 @media (max-width: 481px) {
