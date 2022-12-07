@@ -507,6 +507,12 @@ footer{
     margin-top: 0.5rem;
 }
 
+.exception-tag {
+    color: red !important;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
 @media (max-width: 481px) {
     body {font-size: 18px}
     main,footer {width: 98%}

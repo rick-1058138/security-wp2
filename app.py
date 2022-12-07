@@ -206,6 +206,12 @@ def edit_question():
     if request.method == 'POST':
         return redirect("/data", code=302)
 
+@app.route("/editexception", methods=['POST', 'GET'])
+def edit_exception():
+    dbm.change_exception(request.form.get('id'))
+    if request.method == 'POST':
+        return redirect("/data", code=302)
+
 @app.route('/question/<id>')
 def test(id):
     return redirect("https://www.test-correct.nl/?vraag=" + id)

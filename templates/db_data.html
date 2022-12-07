@@ -36,6 +36,11 @@
                 <input type="text" id="question" name="question" value="">
                 <input type="submit" value="Edit">
             </form>
+
+            <form action="/editexception" method="POST">
+                <input type="hidden" name="id" id="exception-id"> 
+                <input type="submit" class="btn btn-danger" value="Uitzondering">
+            </form>
             </div>
         
         </div>
@@ -107,6 +112,17 @@
                                         </span> 
                                     </a>
                                 </p>
+                            {% elif loop.index == 5 and current_table == ("vragen") %}
+                                {%if part == 0 %}
+                                {%elif part == 1 %}
+                                <p>
+                                    <span
+                                        class="exception-tag">Uitzondering
+                                    </span>
+                                </p>
+                                {% endif %}
+                            
+                                
                             {% else %}
                                 <p class="item-attribute {% if current_column==columns[loop.index-1] %} error {% endif %}" >
 
@@ -163,6 +179,7 @@
                    //document.getElementById("popup-id").innerText = res[0]
                    document.getElementById("id").value = res[0];
                    document.getElementById("question").value = res[2];
+                   document.getElementById("exception-id").value = res[0];
                    document.getElementById("text-vraag").innerHTML = "Je bewerkt nu vraag " + res[0]
                 },
                 error: function (res, options, error) {
