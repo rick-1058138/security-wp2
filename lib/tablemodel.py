@@ -120,8 +120,8 @@ class DatabaseModel:
         cursor = sqlite3.connect(self.database_file).cursor()
         cursor.execute(f"SELECT * FROM users WHERE username = '{username}'")
         account = cursor.fetchone()
-        if not pbkdf2_sha256.verify(password, account[3]):
-            account = None
+        if account == None or not pbkdf2_sha256.verify(password, account[3]):
+            return False
         cursor.close()
         return account
 
