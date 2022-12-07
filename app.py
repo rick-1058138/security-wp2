@@ -99,18 +99,6 @@ def question_data(table = 'vragen'):
 
         
 
-        # check if table is allowed to be shown 
-        if table in allowed_tables:
-            # get leerdoelen data is table = vragen, else return none
-            if(table == 'vragen'):
-                leerdoelen = dbm.get_content('leerdoelen')
-            else:
-                leerdoelen = None
-        else:
-            # when not allowed return 404 page 
-            return render_template(
-                "404.html"
-            )
         if not table:
             # set default table 
             print("default")
@@ -136,6 +124,18 @@ def question_data(table = 'vragen'):
                 # if type == 'alles' and else
                 data, columns = dbm.get_requested_rows(table, min_max_filter, between_column, min, max)
 
+        # check if table is allowed to be shown 
+        if table in allowed_tables:
+            # get leerdoelen data is table = vragen, else return none
+            if(table == 'vragen'):
+                leerdoelen = dbm.get_content('leerdoelen')
+            else:
+                leerdoelen = None
+        else:
+            # when not allowed return 404 page 
+            return render_template(
+                "404.html"
+            )
 
         return render_template(
             "db_data.html", 
