@@ -63,23 +63,25 @@ class DatabaseModel:
         return data, columns
 
     # The password in the query should be replaced with hashed_password later!
-    def validate_login(self, table_name, username, password):
-        hashed_password = pbkdf2_sha256.hash(password)
+    def validate_login(self, username, password):
         cursor = sqlite3.connect(self.database_file).cursor()
-        cursor.execute(f"SELECT * FROM {table_name} WHERE username = {username} AND password = {password}")
+        cursor.execute(f"SELECT * FROM users WHERE username = '{username}'")
         account = cursor.fetchone()
+        pbkdf2_sha256.verify(password, account[3])
         return account
 
-    def create_user(self, table_name, username, email, password, isAdmin=0):
+    def create_user(self, username, email, password, isAdmin=0):
         hashed_password = pbkdf2_sha256.hash(password)
-        cursor = sqlite3.connect(self.database_file).cursor()
-        cursor.execute(f"INSERT INTO {table_name} (username, email, password, isAdmin) VALUES ({username}, {email}, {password}, {isAdmin})")
+        db = sqlite3.connect(self.database_file)
+        cursor = db.cursor()
+        cursor.execute(f"INSERT INTO users (username, email, password, isAdmin) VALUES ('{username}', '{email}', '{hashed_password}', '{isAdmin}')")
+        db.commit()
 
     def update_user(self, table_name, id, username, email, password):
         hashed_password = pbkdf2_sha256.hash(password)
         cursor = sqlite3.connect(self.database_file).cursor()
-        cursor.execute(f"UPDATE {table_name} SET username = {username}, email = {email}, password = {password} WHERE id = {id}")
+        cursor.execute(f"UPDATE '{table_name}' SET username = '{username}', email = '{email}', password = '{password}' WHERE id = '{id}'")
 
     def delete_user(self, table_name, id):
         cursor = sqlite3.connect(self.database_file).cursor()
-        cursor.execute(f"DELETE FROM {table_name} WHERE id = {id}")
+        cursor.execute(f"DELETE FROM '{table_name}' WHERE id = '{id}'")

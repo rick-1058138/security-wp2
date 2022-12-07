@@ -114,12 +114,11 @@ def question_data(table = 'vragen'):
 # Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/login", methods=['POST', 'GET'])
 def login():
-    table_name = 'users'
     error = None
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
-        account = dbm.validate_login(table_name, username, password)
+        account = dbm.validate_login(username, password)
         if(account):
             session['loggedin'] = True
             session['id'] = account[0]
@@ -144,11 +143,16 @@ def logout():
         "home.html"
     )
 
-@app.route("/edit", methods=['GET'])
+@app.route("/admin", methods=['GET', 'POST'])
 @login_required
 def admin():
+    table_name = 'users'
     if request.method == 'GET':
-        data, columns = dbm.get_content('users')
+        data, columns = dbm.get_content(table_name)
+    elif request.method == 'POST':
+        raise ValueError('Build an add users function first!')
+        #dbm.create_user('F', 'F@random.com', '0000')
+        data, columns = dbm.get_content(table_name)
     return render_template(
         "admin.html", 
         data = data, 
