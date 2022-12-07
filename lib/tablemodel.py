@@ -181,7 +181,7 @@ class DatabaseModel:
                 value = 0
                 print ("FALSE")
             cursor = connection.cursor()
-            cursor.execute(f"UPDATE vragen  SET uitzonderingen = '{value}' WHERE id = '{id}'")
+            cursor.execute(f"UPDATE vragen  SET uitzondering = '{value}' WHERE id = '{id}'")
             connection.commit()
             cursor.close()
   
