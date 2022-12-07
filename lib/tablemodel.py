@@ -133,10 +133,17 @@ class DatabaseModel:
         connection.commit()
         cursor.close()
 
-    def change_exception(self, exception, id):
+    def change_exception(self, id):
             connection = sqlite3.connect(self.database_file)
+            item = self.get_vraag_by_id(id)
+            if item[4] == 0:
+                value = 1
+                print ("TRUE")
+            else:
+                value = 0
+                print ("FALSE")
             cursor = connection.cursor()
-            cursor.execute(f"UPDATE uizonderingen SET vraag = '{exception}' WHERE id = '{id}'")
+            cursor.execute(f"UPDATE vragen  SET uitzonderingen = '{value}' WHERE id = '{id}'")
             connection.commit()
             cursor.close()
   

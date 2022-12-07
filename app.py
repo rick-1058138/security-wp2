@@ -208,7 +208,7 @@ def edit_question():
 
 @app.route("/editexception", methods=['POST', 'GET'])
 def edit_exception():
-    dbm.change_exception(request.form.get('exception'), request.form.get('id'))
+    dbm.change_exception(request.form.get('id'))
     if request.method == 'POST':
         return redirect("/data", code=302)
 

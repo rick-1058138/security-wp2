@@ -38,8 +38,8 @@
             </form>
 
             <form action="/editexception" method="POST">
-                <input type="hidden" id="exception-id"> 
-                <button type="submit" class="btn btn-danger">Uitzondering</button>
+                <input type="hidden" name="id" id="exception-id"> 
+                <input type="submit" class="btn btn-danger" value="Uitzondering">
             </form>
             </div>
         
@@ -168,7 +168,7 @@
                    //document.getElementById("popup-id").innerText = res[0]
                    document.getElementById("id").value = res[0];
                    document.getElementById("question").value = res[2];
-                   document.getElementById("exception").value = res[4];
+                   document.getElementById("exception-id").value = res[0];
                    document.getElementById("text-vraag").innerHTML = "Je bewerkt nu vraag " + res[0]
                 },
                 error: function (res, options, error) {
