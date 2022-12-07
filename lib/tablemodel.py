@@ -67,7 +67,9 @@ class DatabaseModel:
         cursor = sqlite3.connect(self.database_file).cursor()
         cursor.execute(f"SELECT * FROM users WHERE username = '{username}'")
         account = cursor.fetchone()
-        pbkdf2_sha256.verify(password, account[3])
+        if not pbkdf2_sha256.verify(password, account[3]):
+            account = None
+        cursor.close()
         return account
 
     def create_user(self, username, email, password, isAdmin=0):
@@ -76,12 +78,29 @@ class DatabaseModel:
         cursor = db.cursor()
         cursor.execute(f"INSERT INTO users (username, email, password, isAdmin) VALUES ('{username}', '{email}', '{hashed_password}', '{isAdmin}')")
         db.commit()
+        db.close()
 
     def update_user(self, table_name, id, username, email, password):
-        hashed_password = pbkdf2_sha256.hash(password)
-        cursor = sqlite3.connect(self.database_file).cursor()
-        cursor.execute(f"UPDATE '{table_name}' SET username = '{username}', email = '{email}', password = '{password}' WHERE id = '{id}'")
+        db = sqlite3.connect(self.database_file)
+        cursor = db.cursor()
+        pwd = self.get_password_by_id(id)
+        if pbkdf2_sha256.verify(password, pwd):
+            qry = f"UPDATE '{table_name}' SET username = '{username}', email = '{email}' WHERE id = '{id}'"
+        else:
+            hashed_password = pbkdf2_sha256.hash(password)
+            qry = f"UPDATE '{table_name}' SET username = '{username}', email = '{email}', password = '{hashed_password}' WHERE id = '{id}'"
+        cursor.execute(qry)
+        db.commit()
+        db.close()
 
     def delete_user(self, table_name, id):
         cursor = sqlite3.connect(self.database_file).cursor()
         cursor.execute(f"DELETE FROM '{table_name}' WHERE id = '{id}'")
+        cursor.close()
+
+    def get_password_by_id(self, id):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"SELECT password FROM users WHERE id = '{id}'")
+        pwd = cursor.fetchone()
+        cursor.close()
+        return pwd[0]
