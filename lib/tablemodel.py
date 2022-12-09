@@ -133,15 +133,15 @@ class DatabaseModel:
         db.commit()
         db.close()
 
-    def update_user(self, table_name, id, username, email, password):
+    def update_user(self, id, username, email, password):
         db = sqlite3.connect(self.database_file)
         cursor = db.cursor()
         pwd = self.get_password_by_id(id)
-        if pbkdf2_sha256.verify(password, pwd):
-            qry = f"UPDATE '{table_name}' SET username = '{username}', email = '{email}' WHERE id = '{id}'"
+        if pbkdf2_sha256.verify(password, pwd) or password == None:
+            qry = f"UPDATE users SET username = '{username}', email = '{email}' WHERE id = '{id}'"
         else:
             hashed_password = pbkdf2_sha256.hash(password)
-            qry = f"UPDATE '{table_name}' SET username = '{username}', email = '{email}', password = '{hashed_password}' WHERE id = '{id}'"
+            qry = f"UPDATE users SET username = '{username}', email = '{email}', password = '{hashed_password}' WHERE id = '{id}'"
         cursor.execute(qry)
         db.commit()
         db.close()
@@ -157,6 +157,12 @@ class DatabaseModel:
         pwd = cursor.fetchone()
         cursor.close()
         return pwd[0]
+
+    def get_user_by_id(self, id):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"SELECT * FROM users WHERE id = '{id}'")
+        user = cursor.fetchone()
+        return user
     
     def get_vraag_by_id(self, id):
         cursor = sqlite3.connect(self.database_file).cursor()

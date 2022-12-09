@@ -208,6 +208,18 @@ def admin():
         data = data, 
         columns = columns
     )
+
+@app.route("/getuser", methods=["GET", "POST"])
+def getuser():
+    data = dbm.get_user_by_id(request.args.get('id'))
+    print(request.args.get('id'))
+    return jsonify(data)
+    
+@app.route("/edituser", methods=['GET', 'POST'])
+def edit_user():
+    dbm.update_user(request.form.get('id'), request.form.get('username'), request.form.get('email'), request.form.get('password'))
+    if request.method == 'POST':
+        return redirect("/admin", code=302)
     
 @app.route("/getitem", methods=["GET", "POST"])
 def getitem():

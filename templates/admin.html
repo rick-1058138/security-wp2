@@ -6,33 +6,94 @@
     </section>
 
     <section class="content-section">
+		<!-- The Modal -->
+		<div id="popup" class="modal">
+
+			<!-- Modal content -->
+			<div class="modal-content">
+				<span id="close-popup" class="close">&times;</span>
+				<form action="/edituser" method="POST" autocomplete="off"> 
+					<label for="id" id="text-gebruiker"> Je bewerkt nu gebruiker</label><br><br>
+					<input type="hidden" id="id" name="id" value="">
+					<input type="text" id="username" name="username" value="">
+					<input type="text" id="email" name="email" value="">
+					<input type="text" id="password" name="password" value="">
+					<input type="submit" value="Edit">
+				</form>
+
+				<form action="/deleteuser" method="POST">
+					<input type="hidden" name="id" id="user-id"> 
+					<input type="submit" class="btn btn-danger" value="Verwijderen">
+				</form>
+			</div>
+		</div>
+
 		<h2 class="sub-header">Gebruikers</h2>
 		<form action="/admin" class="search-form" method="POST">
 			<input type="submit" value="Nieuwe gebruiker" class="green-submit">
 		</form>
         <div class="table-items">
             {% for item in data %}  
-                <div class="table-item">
-                        {% for part in item %}
-                            <!-- check for index 1 because this is the id -->
-                            {% if(loop.index == 1) %}
-                                <p>
-                                    <span class="item-id">ID:   
-                                        <span>{{ part }}</span> 
-                                    </span> 
-                                </p>
-                            {% else %}
-                                <p class="item-attribute {% if current_column==columns[loop.index-1] %} error {% endif %}" >
-                                    <strong>{{columns[loop.index-1]}}:</strong> 
-                                        {{ part }}
-                                </p>
-                            {% endif %}
+				<div class="table-item" id="{{item[0]}}" data-id="{{item[0]}}">
+					{% for part in item %}
+						<!-- check for index 1 because this is the id -->
+						{% if(loop.index == 1) %}
+							<p>
+								<span class="item-id">ID:   
+									<span>{{ part }}</span> 
+								</span> 
+							</p>
+						{% else %}
+							<p class="item-attribute {% if current_column==columns[loop.index-1] %} error {% endif %}" >
+								<strong>{{columns[loop.index-1]}}:</strong> 
+								{{ part }}
+							</p>
+						{% endif %}
 
-                        {% endfor %}
+					{% endfor %}
                 </div>
             {% endfor %}
 
         </div>
     </section>
+
+	<script>
+        var elements = document.getElementsByClassName("table-item");
+        var popup = document.getElementById("popup");
+	
+		var show_inspect = function() {
+            var attribute = this.getAttribute("data-id");
+            popup.style.display = "block";
+            console.log(attribute);
+            $.ajax({
+                type: "GET",
+                url: "/getuser",
+                data: {id : attribute},
+                success: function (res) {
+                   //document.getElementById("popup-id").innerText = res[0]
+                   document.getElementById("id").value = res[0];
+                   document.getElementById("username").value = res[1];
+				   document.getElementById("email").value = res[2];
+                   document.getElementById("user-id").value = res[0];
+                   document.getElementById("text-user").innerHTML = "Je bewerkt nu gebruiker " + res[0]
+                },
+                error: function (res, options, error) {
+                    console.log(res.status);
+                    console.log(error);
+                    console.log(options);
+                }
+            });
+        };
+
+		close = function() {
+            popup.style.display = "none"
+        };
+
+		for (var i = 0; i < elements.length; i++) {
+            elements[i].addEventListener('click', show_inspect, false);
+        }
+
+		document.getElementById("close-popup").addEventListener('click', close)
+	</script>
 
 {% endblock %}
