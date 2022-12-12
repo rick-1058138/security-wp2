@@ -193,7 +193,7 @@ def logout():
         "home.html"
     )
 
-@app.route("/admin", methods=['GET', 'POST'])
+@app.route("/admin", methods=['GET'])
 @login_required
 def admin():
     table_name = 'users'
@@ -214,12 +214,18 @@ def getuser():
     data = dbm.get_user_by_id(request.args.get('id'))
     print(request.args.get('id'))
     return jsonify(data)
-    
+
 @app.route("/edituser", methods=['GET', 'POST'])
 def edit_user():
     dbm.update_user(request.form.get('id'), request.form.get('username'), request.form.get('email'), request.form.get('password'))
     if request.method == 'POST':
         return redirect("/admin", code=302)
+
+@app.route("/createuser", methods=['GET', 'POST'])
+def create_user():
+    dbm.create_user(request.form.get('username'), request.form.get('email'), request.form.get('password'))
+    if request.method == 'POST':
+        return redirect("/admin", code=302)      
     
 @app.route("/getitem", methods=["GET", "POST"])
 def getitem():
