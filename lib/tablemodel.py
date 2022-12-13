@@ -117,6 +117,21 @@ class DatabaseModel:
         print(query)
         data, columns = self.return_filter_content(query)
         return data, columns
+
+    def get_wrong_value(self, table_name, column, min_max_filter, between_column, min, max, uitzondering):
+        if uitzondering == "ja":
+            subquery = "and uitzondering = 1"
+        elif uitzondering == "nee":
+            subquery = "and uitzondering = 0"
+        else:
+            subquery = ""
+        if(min_max_filter):
+            query = f"SELECT * FROM {table_name} WHERE ([{column}] NOT LIKE 1 AND [{column}] NOT LIKE 0) AND ({between_column} >= {min} AND {between_column} <= {max}) " + subquery
+        else:
+            query = f"SELECT * FROM {table_name} WHERE ([{column}] NOT LIKE 1 AND [{column}] NOT LIKE 0) " +subquery
+        print(query)
+        data, columns = self.return_filter_content(query)
+        return data, columns
     
     
 ###

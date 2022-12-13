@@ -130,7 +130,9 @@ def question_data(table = 'vragen'):
                 data, columns = dbm.get_html_codes(min_max_filter, between_column, min, max, uitzondering)
             elif type == 'empty':
                 data, columns = dbm.get_empty_column(table, column, min_max_filter, between_column, min, max, uitzondering)
-            # elif type == 'uitzondering':
+            elif type == 'wrong_value':
+                data, columns = dbm.get_wrong_value(table, column, min_max_filter, between_column, min, max, uitzondering)
+            # # elif type == 'uitzondering':
             #     data, columns = dbm.get_exception(table, column, min_max_filter, between_column, min, max)
             else:
                 print("else")

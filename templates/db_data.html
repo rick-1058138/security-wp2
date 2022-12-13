@@ -60,16 +60,33 @@
                         <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
                         <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
                         <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
+                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Verkeerde waarde</option>
                     </select>
-
-                    <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' %} style="display: none;" {% endif %}>
+            
+                    <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' and current_type!='wrong_value' %} style="display: none;" {% endif %}>
                         <!-- option for every column in table  -->
                         {% for column in columns%}
                             <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
                         {% endfor%}
                     </select>
             {%endif%}
+            <!-- Sorting for auteurs table  -->
+            {% if current_table == 'auteurs'%}
+                <div class="form-row">
+                    <span>Type fout: </span>
+                    <select class="custom-select" name="error_type" id="error_type_select" >
+                        <option value="alles" {% if current_type=='alles' %} selected {% endif %} >Alles</option>
+                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Verkeerde waarde</option>
+                    </select>
             
+                    <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' and current_type!='wrong_value' %} style="display: none;" {% endif %}>
+                        <!-- option for every column in table  -->
+                        {% for column in columns%}
+                            <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
+                        {% endfor%}
+                    </select>
+            {%endif%}
+                
       
                 </div>
                 <!-- column for select between 2 values -->
@@ -84,12 +101,15 @@
                             {%endif%}
                         {% endfor%}
                     </select> 
-                    <span> Uitzondering:</span>
-                    <select class=" custom-select" name="uitzondering">
-                        <option value="beide"{% if current_uitzondering=="beide" %} selected {% endif %}>Beide</option>
-                        <option value="ja"{% if current_uitzondering=="ja" %} selected {% endif %}>Ja</option>
-                        <option value="nee"{% if current_uitzondering=="nee" %} selected {% endif %}>Nee</option>
-                    </select>
+                    <!-- only show uitzondering filter if table == vragen  -->
+                    {% if current_table == 'vragen'%}
+                        <span> Uitzondering:</span>
+                        <select class=" custom-select" name="uitzondering">
+                            <option value="beide"{% if current_uitzondering=="beide" %} selected {% endif %}>Beide</option>
+                            <option value="ja"{% if current_uitzondering=="ja" %} selected {% endif %}>Ja</option>
+                            <option value="nee"{% if current_uitzondering=="nee" %} selected {% endif %}>Nee</option>
+                        </select>
+                    {%endif%}
                 </div>
 
                 <!-- kolommen met mogelijkheid min-max: leerdoel, id, auteur -->
@@ -249,7 +269,13 @@
 
         onChange = function() {
             // check for option where the select needs to be shown, so when this is true : it is shown
-            var shown = this.options[this.selectedIndex].value == 'empty';
+            var shown;
+            if(this.options[this.selectedIndex].value =='empty' || this.options[this.selectedIndex].value =='wrong_value'){
+                shown = true;
+            }else{
+                shown = false;
+            }
+            
             // hide or show select element
             document.getElementById('column_select').style.display = shown ? 'block' : 'none';
         };
@@ -265,7 +291,7 @@
 
 
         // execute onChange if select option changes
-        if(selectedTable == 'vragen'){
+        if(selectedTable == 'vragen' || selectedTable == 'auteurs'){
             // element only exists if table == vragen
             errorSelect.addEventListener('change', onChange);
         }
