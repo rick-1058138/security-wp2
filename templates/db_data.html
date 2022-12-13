@@ -70,7 +70,7 @@
                         {% endfor%}
                     </select>
             {%endif%}
-
+            <!-- Sorting for auteurs table  -->
             {% if current_table == 'auteurs'%}
                 <div class="form-row">
                     <span>Type fout: </span>
@@ -101,12 +101,15 @@
                             {%endif%}
                         {% endfor%}
                     </select> 
-                    <span> Uitzondering:</span>
-                    <select class=" custom-select" name="uitzondering">
-                        <option value="beide"{% if current_uitzondering=="beide" %} selected {% endif %}>Beide</option>
-                        <option value="ja"{% if current_uitzondering=="ja" %} selected {% endif %}>Ja</option>
-                        <option value="nee"{% if current_uitzondering=="nee" %} selected {% endif %}>Nee</option>
-                    </select>
+                    <!-- only show uitzondering filter if table == vragen  -->
+                    {% if current_table == 'vragen'%}
+                        <span> Uitzondering:</span>
+                        <select class=" custom-select" name="uitzondering">
+                            <option value="beide"{% if current_uitzondering=="beide" %} selected {% endif %}>Beide</option>
+                            <option value="ja"{% if current_uitzondering=="ja" %} selected {% endif %}>Ja</option>
+                            <option value="nee"{% if current_uitzondering=="nee" %} selected {% endif %}>Nee</option>
+                        </select>
+                    {%endif%}
                 </div>
 
                 <!-- kolommen met mogelijkheid min-max: leerdoel, id, auteur -->
@@ -288,7 +291,7 @@
 
 
         // execute onChange if select option changes
-        if(selectedTable == 'vragen'){
+        if(selectedTable == 'vragen' || selectedTable == 'auteurs'){
             // element only exists if table == vragen
             errorSelect.addEventListener('change', onChange);
         }
