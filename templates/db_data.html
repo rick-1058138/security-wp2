@@ -1,6 +1,7 @@
 
 {% extends "layout.html" %}
 {% block content %}
+    <div id="loader-bg"></div>
     <div id="loader"></div>
     <section class="top-section">
         <h1 class="page-header">Tabellen</h1>
@@ -29,7 +30,7 @@
          <div id="popup" class="modal">
 
             <!-- Modal content -->
-            <div class="modal-content">
+            <div id="modal-content" class="modal-content">
             <span id="close-popup" class="close">&times;</span>
             <form action="/editquestion" method="POST"> 
                 <label for="id" id="text-vraag"> Je bewerkt nu vraag </label><br><br>
@@ -190,10 +191,12 @@
             if (document.readyState !== "complete") {
                 // show loader
                 document.getElementById('loader').style.display = 'block';
+                document.getElementById('loader-bg').style.display = 'block';
 
             } else {
                 // remove loader
                 document.getElementById('loader').style.display = 'none';
+                document.getElementById('loader-bg').style.display = 'none';'modal-content'
 
             }
         };
@@ -209,6 +212,8 @@
         var myFunction = function() {
             var attribute = this.getAttribute("data-id");
             popup.style.display = "block";
+            // Add active class to modal for animation
+            document.getElementById('modal-content').classList.add("active");
             console.log(attribute);
             $.ajax({
                 type: "GET",
@@ -240,7 +245,10 @@
         // get correct select element
         var errorSelect = document.getElementById('error_type_select');
         var betweenSelect = document.getElementById('between_column');
+
+        // close modal (when clicked on bg and close btn)
         document.getElementById("close-popup").addEventListener('click', close)
+        document.getElementById("popup").addEventListener('click', close)
 
         // convert minmax to JSON so javascript can use it
         var minmax = JSON.parse('{{minmax | tojson}}');
