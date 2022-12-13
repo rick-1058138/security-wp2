@@ -1,5 +1,6 @@
 import os
 import sqlite3
+from passlib.hash import pbkdf2_sha256
 
 
 class DatabaseModel:
@@ -151,11 +152,48 @@ class DatabaseModel:
         return data
 
        
-    def validate_login(self, table_name, username, password):
+    # The password in the query should be replaced with hashed_password later!
+    def validate_login(self, username, password):
         cursor = sqlite3.connect(self.database_file).cursor()
-        cursor.execute(f"SELECT * FROM {table_name} WHERE username = '{username}' AND password = '{password}'")
+        cursor.execute(f"SELECT * FROM users WHERE username = '{username}'")
         account = cursor.fetchone()
+        if not pbkdf2_sha256.verify(password, account[3]):
+            account = None
+        cursor.close()
         return account
+
+    def create_user(self, username, email, password, isAdmin=0):
+        hashed_password = pbkdf2_sha256.hash(password)
+        db = sqlite3.connect(self.database_file)
+        cursor = db.cursor()
+        cursor.execute(f"INSERT INTO users (username, email, password, isAdmin) VALUES ('{username}', '{email}', '{hashed_password}', '{isAdmin}')")
+        db.commit()
+        db.close()
+
+    def update_user(self, table_name, id, username, email, password):
+        db = sqlite3.connect(self.database_file)
+        cursor = db.cursor()
+        pwd = self.get_password_by_id(id)
+        if pbkdf2_sha256.verify(password, pwd):
+            qry = f"UPDATE '{table_name}' SET username = '{username}', email = '{email}' WHERE id = '{id}'"
+        else:
+            hashed_password = pbkdf2_sha256.hash(password)
+            qry = f"UPDATE '{table_name}' SET username = '{username}', email = '{email}', password = '{hashed_password}' WHERE id = '{id}'"
+        cursor.execute(qry)
+        db.commit()
+        db.close()
+
+    def delete_user(self, table_name, id):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"DELETE FROM '{table_name}' WHERE id = '{id}'")
+        cursor.close()
+
+    def get_password_by_id(self, id):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"SELECT password FROM users WHERE id = '{id}'")
+        pwd = cursor.fetchone()
+        cursor.close()
+        return pwd[0]
     
     def get_vraag_by_id(self, id):
         cursor = sqlite3.connect(self.database_file).cursor()

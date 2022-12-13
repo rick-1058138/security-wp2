@@ -1,6 +1,7 @@
 
 {% extends "layout.html" %}
 {% block content %}
+    <div id="loader"></div>
     <section class="top-section">
         <h1 class="page-header">Tabellen</h1>
         <form action="/data" class="top-search-form" method="GET">
@@ -164,6 +165,18 @@
     </section>
     <!-- Script used to hide unnecessary select by choice of error type  -->
     <script>
+
+        document.onreadystatechange = function() {
+            if (document.readyState !== "complete") {
+                // show loader
+                document.getElementById('loader').style.display = 'block';
+
+            } else {
+                // remove loader
+                document.getElementById('loader').style.display = 'none';
+
+            }
+        };
         
 
         var elements = document.getElementsByClassName("table-item");
