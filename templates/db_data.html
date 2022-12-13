@@ -33,7 +33,12 @@
             <form action="/editquestion" method="POST"> 
                 <label for="id" id="text-vraag"> Je bewerkt nu vraag </label><br><br>
                 <input type="hidden" id="id" name="id" value="">
-                <input type="text" id="question" name="question" value="">
+                <label for="question"> Vraag </label> 
+                <input type="text" id="question" name="question" value=""> <br><br>
+                <label for="leerdoel"> Leerdoel </label> 
+                <input type="text" id="leerdoel" name="leerdoel" value=""> <br><br>
+                <label for="auteur"> Auteur </label> 
+                <input type="text" id="auteur" name="auteur" value=""> <br><br>
                 <input type="submit" value="Edit">
             </form>
             </div>
@@ -149,8 +154,11 @@
                 success: function (res) {
                    //document.getElementById("popup-id").innerText = res[0]
                    document.getElementById("id").value = res[0];
+                   document.getElementById("leerdoel").value = res[1];
                    document.getElementById("question").value = res[2];
+                   document.getElementById("auteur").value = res[3];
                    document.getElementById("text-vraag").innerHTML = "Je bewerkt nu vraag " + res[0]
+
                 },
                 error: function (res, options, error) {
                     console.log(res.status);

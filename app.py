@@ -147,7 +147,7 @@ def getitem():
 
 @app.route("/editquestion", methods=['POST', 'GET'])
 def edit_question():
-    dbm.change_question_by_id(request.form.get('question'), request.form.get('id'))
+    dbm.change_question_by_id(request.form.get('question'), request.form.get('leerdoel'), request.form.get('auteur'), request.form.get('id'))
     if request.method == 'POST':
         return redirect("/data", code=302)
 
