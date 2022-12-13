@@ -57,14 +57,14 @@ class DatabaseModel:
 
     def get_no_leerdoel(self, min_max_filter, between_column, min, max, uitzondering):
         if uitzondering == "ja":
-            subquery = "and uitzonderingen = 1"
+            subquery = "and uitzondering = 1"
         elif uitzondering == "nee":
-            subquery = "and uitzonderingen = 0"
+            subquery = "and uitzondering = 0"
         else:
             subquery = ""
 
         if(min_max_filter):
-            query = f"SELECT * FROM vragen WHERE leerdoel NOT IN (SELECT id FROM leerdoelen) AND {between_column} >= {min} AND {between_column} <= {max} "+subquery
+            query = f"SELECT * FROM vragen WHERE leerdoel NOT IN (SELECT id FROM leerdoelen) AND ({between_column} >= {min} AND {between_column} <= {max}) "+subquery
         else:
             query = "SELECT * FROM vragen WHERE leerdoel NOT IN (SELECT id FROM leerdoelen) "+subquery
         print(query)
@@ -72,29 +72,47 @@ class DatabaseModel:
         return data, columns
 
 
-    def get_empty_column(self, table, column, min_max_filter, between_column, min, max):
-        if(min_max_filter):
-            query = f"SELECT * FROM {table} WHERE {column} IS NULL AND {between_column} >= {min} AND {between_column} <= {max}"
+    def get_empty_column(self, table, column, min_max_filter, between_column, min, max, uitzondering):
+        if uitzondering == "ja":
+            subquery = "and uitzondering = 1"
+        elif uitzondering == "nee":
+            subquery = "and uitzondering = 0"
         else:
-            query = f"SELECT * FROM {table} WHERE {column} IS NULL"
+            subquery = ""
+        if(min_max_filter):
+            query = f"SELECT * FROM {table} WHERE {column} IS NULL AND ({between_column} >= {min} AND {between_column} <= {max}) " +subquery
+        else:
+            query = f"SELECT * FROM {table} WHERE {column} IS NULL " +subquery
         print(query)
         data, columns = self.return_filter_content(query)
         return data, columns
 
-    def get_html_codes(self, min_max_filter, between_column, min, max):
-        if(min_max_filter):
-            query = f"SELECT * FROM vragen WHERE (vraag LIKE '%<br>%' OR vraag LIKE '%&nbsp;%') AND ( {between_column} >= {min} AND {between_column} <= {max})"
+    def get_html_codes(self, min_max_filter, between_column, min, max, uitzondering):
+        if uitzondering == "ja":
+            subquery = "and uitzondering = 1"
+        elif uitzondering == "nee":
+            subquery = "and uitzondering = 0"
         else:
-            query = "SELECT * FROM vragen WHERE vraag LIKE '%<br>%' OR vraag LIKE '%&nbsp;%'"
+            subquery = ""
+        if(min_max_filter):
+            query = f"SELECT * FROM vragen WHERE (vraag LIKE '%<br>%' OR vraag LIKE '%&nbsp;%') AND ( {between_column} >= {min} AND {between_column} <= {max}) " +subquery
+        else:
+            query = "SELECT * FROM vragen WHERE vraag LIKE '%<br>%' OR vraag LIKE '%&nbsp;%' " +subquery
         print(query)
         data, columns = self.return_filter_content(query)
         return data, columns
 
-    def get_requested_rows(self, table_name, min_max_filter, between_column, min, max):
-        if(min_max_filter):
-            query = f"SELECT * FROM {table_name} WHERE {between_column} >= {min} AND {between_column} <= {max}"
+    def get_requested_rows(self, table_name, min_max_filter, between_column, min, max, uitzondering):
+        if uitzondering == "ja":
+            subquery = "and uitzondering = 1"
+        elif uitzondering == "nee":
+            subquery = "and uitzondering = 0"
         else:
-            query = f"SELECT * FROM {table_name}"
+            subquery = ""
+        if(min_max_filter):
+            query = f"SELECT * FROM {table_name} WHERE ({between_column} >= {min} AND {between_column} <= {max}) " + subquery
+        else:
+            query = f"SELECT * FROM {table_name} " +subquery
         print(query)
         data, columns = self.return_filter_content(query)
         return data, columns
@@ -162,7 +180,7 @@ class DatabaseModel:
                 value = 0
                 print ("FALSE")
             cursor = connection.cursor()
-            cursor.execute(f"UPDATE vragen  SET uitzonderingen = '{value}' WHERE id = '{id}'")
+            cursor.execute(f"UPDATE vragen  SET uitzondering = '{value}' WHERE id = '{id}'")
             connection.commit()
             cursor.close()
   
