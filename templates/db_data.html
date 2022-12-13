@@ -40,7 +40,7 @@
 
             <form action="/editexception" method="POST">
                 <input type="hidden" name="id" id="exception-id"> 
-                <input type="submit" class="btn btn-danger" value="Uitzondering">
+                <input type="submit" class="exception-button" value="Uitzondering">
             </form>
             </div>
         
@@ -83,6 +83,12 @@
                                 <option value="{{column}}" {% if current_between_column==column %} selected {% endif %}>{{column}}</option>
                             {%endif%}
                         {% endfor%}
+                    </select> 
+                    <span> Uitzondering:</span>
+                    <select class=" custom-select" name="uitzondering">
+                        <option value="beide"{% if current_uitzondering=="beide" %} selected {% endif %}>Beide</option>
+                        <option value="ja"{% if current_uitzondering=="ja" %} selected {% endif %}>Ja</option>
+                        <option value="nee"{% if current_uitzondering=="nee" %} selected {% endif %}>Nee</option>
                     </select>
                 </div>
 
@@ -115,11 +121,11 @@
                                 </p>
                             {% elif loop.index == 5 and current_table == ("vragen") %}
                                 {%if part == 0 %}
-                                {%elif part == 1 %}
-                                <p>
-                                    <span
-                                        class="exception-tag">Uitzondering
-                                    </span>
+                                    {%elif part == 1 %}
+                                    <p>
+                                        <span
+                                            class="exception-tag">Uitzondering
+                                        </span>
                                 </p>
                                 {% endif %}
                             
