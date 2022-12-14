@@ -20,7 +20,7 @@
     --white: #fff;
     --creamwhite: #eee;
     --blueaccent: #0038c6;
-
+    --red: red;
 }
 * {
     margin: 0;
@@ -114,7 +114,7 @@ pre,code,input,select,textarea,button,img {border-radius: var(--rc)}
 
 /* Forms */
 
-input, select, textarea {
+input, select, textarea, button{
     font-size: 1em; 
     color:var(--c4); 
     background: var(--c2); 
@@ -207,6 +207,20 @@ section>section {
 }
 
 .error-btn:hover{
+    color: white;
+    opacity: 0.8;
+}
+
+.danger-btn{
+    background: var(--red) !important;
+    border-radius: var(--rc);
+    padding: 0.5rem 1rem;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.danger-btn:hover{
     color: white;
     opacity: 0.8;
 }
@@ -326,6 +340,7 @@ section>section {
 .green-submit{
     background: var(--green) !important;
     border-radius: var(--rc);
+    border: 1px solid var(--green);
     padding: 0.5rem 1rem;
     color: white;
     font-weight: bold;

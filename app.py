@@ -182,6 +182,7 @@ def login():
             session['loggedin'] = True
             session['id'] = account[0]
             session['username'] = account[1]
+            session['isAdmin'] = account[4]
             flash('Logged in succefully!')
             return redirect(url_for('index'))
         else:
@@ -198,11 +199,12 @@ def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('username', None)
+    session.pop('isAdmin', None)
     return render_template(
         "home.html"
     )
 
-@app.route("/admin", methods=['GET', 'POST'])
+@app.route("/admin", methods=['GET'])
 @login_required
 def admin():
     table_name = 'users'
@@ -217,6 +219,24 @@ def admin():
         data = data, 
         columns = columns
     )
+
+@app.route("/getuser", methods=["GET", "POST"])
+def getuser():
+    data = dbm.get_user_by_id(request.args.get('id'))
+    print(request.args.get('id'))
+    return jsonify(data)
+
+@app.route("/edituser", methods=['GET', 'POST'])
+def edit_user():
+    dbm.update_user(request.form.get('id'), request.form.get('username'), request.form.get('email'), request.form.get('password'))
+    if request.method == 'POST':
+        return redirect("/admin", code=302)
+
+@app.route("/createuser", methods=['GET', 'POST'])
+def create_user():
+    dbm.create_user(request.form.get('username'), request.form.get('email'), request.form.get('password'))
+    if request.method == 'POST':
+        return redirect("/admin", code=302)      
     
 @app.route("/getitem", methods=["GET", "POST"])
 def getitem():
