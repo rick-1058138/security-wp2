@@ -173,6 +173,7 @@ def login():
             session['loggedin'] = True
             session['id'] = account[0]
             session['username'] = account[1]
+            session['isAdmin'] = account[4]
             flash('Logged in succefully!')
             return redirect(url_for('index'))
         else:
@@ -189,6 +190,7 @@ def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('username', None)
+    session.pop('isAdmin', None)
     return render_template(
         "home.html"
     )

@@ -15,9 +15,9 @@
 				<form action="/edituser" method="POST" autocomplete="off"> 
 					<label for="id" id="text-gebruiker"> Je bewerkt nu gebruiker</label><br><br>
 					<input type="hidden" id="id" name="id" value="">
-					<input type="text" id="username" name="username" value="">
-					<input type="text" id="email" name="email" value="">
-					<input type="text" id="password" name="password" value="">
+					<input type="text" id="username" name="username" value="" maxlength="50">
+					<input type="text" id="email" name="email" value="" maxlength="100">
+					<input type="text" id="password" name="password" value="" maxlength="50">
 					<input type="submit" value="Edit">
 				</form>
 
@@ -34,9 +34,9 @@
 				<form action="/createuser" method="POST" autocomplete="off"> 
 					<label for="id" id="text-gebruiker">Maak een nieuwe gebruiker aan</label><br><br>
 					<input type="hidden" id="id" name="id" value="">
-					<input type="text" id="username" name="username" placeholder="Gebruikersnaam">
-					<input type="text" id="email" name="email" placeholder="Email">
-					<input type="text" id="password" name="password" placeholder="Wachtwoord">
+					<input type="text" id="username" name="username" placeholder="Gebruikersnaam" maxlength="50">
+					<input type="text" id="email" name="email" placeholder="Email" maxlength="100">
+					<input type="text" id="password" name="password" placeholder="Wachtwoord" maxlength="50">
 					<input type="submit" value="Aanmaken" class="green-submit">
 				</form>
 			</div>
