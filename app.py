@@ -196,9 +196,11 @@ def edit():
     
 @app.route("/getitem", methods=["GET", "POST"])
 def getitem():
-    data = dbm.get_vraag_by_id(request.args.get('id'))
     print(request.args.get('id'));
-    return jsonify(data);
+    data_vraag = dbm.get_vraag_by_id(request.args.get('id'))
+    data_leerdoelen = dbm.get_content('leerdoelen')
+    print(request.args.get('id'));
+    return jsonify(data_vraag), jsonify(data_leerdoelen);
 
 @app.route("/editquestion", methods=['POST', 'GET'])
 def edit_question():
