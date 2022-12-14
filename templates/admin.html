@@ -23,7 +23,7 @@
 
 				<form action="/deleteuser" method="POST">
 					<input type="hidden" name="id" id="user-id"> 
-					<input type="submit" class="btn btn-danger" value="Verwijderen">
+					<input type="submit" class="danger-btn" value="Verwijderen">
 				</form>
 			</div>
 		</div>
@@ -34,16 +34,23 @@
 				<form action="/createuser" method="POST" autocomplete="off"> 
 					<label for="id" id="text-gebruiker">Maak een nieuwe gebruiker aan</label><br><br>
 					<input type="hidden" id="id" name="id" value="">
-					<input type="text" id="username" name="username" value="Gebruikersnaam">
-					<input type="text" id="email" name="email" value="Email">
-					<input type="text" id="password" name="password" value="Wachtwoord">
+					<input type="text" id="username" name="username" placeholder="Gebruikersnaam">
+					<input type="text" id="email" name="email" placeholder="Email">
+					<input type="text" id="password" name="password" placeholder="Wachtwoord">
 					<input type="submit" value="Aanmaken" class="green-submit">
 				</form>
 			</div>
 		</div>
 
 		<h2 class="sub-header">Gebruikers</h2>
-		<button type="button" class="green-submit" id="open-create">Nieuwe Gebruiker</button>
+		<!-- <div class="search-form">
+			<button type="button" class="green-submit" id="open-create">Nieuwe Gebruiker</button>
+		</div> -->
+		<form class="search-form">
+			<!-- <input type="submit" class="green-submit" id="open-create" value="Nieuwe Gebruiker"><br> -->
+			<button type="button" class="green-submit" id="open-create">Nieuwe Gebruiker</button>
+		</form>
+		
         <div class="table-items">
             {% for item in data %}  
 				<div class="table-item" id="{{item[0]}}" data-id="{{item[0]}}">

@@ -20,7 +20,7 @@
     --white: #fff;
     --creamwhite: #eee;
     --blueaccent: #0038c6;
-
+    --red: red;
 }
 * {
     margin: 0;
@@ -215,6 +215,20 @@ section>section {
     opacity: 0.8;
 }
 
+.danger-btn{
+    background: var(--red) !important;
+    border-radius: var(--rc);
+    padding: 0.5rem 1rem;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.danger-btn:hover{
+    color: white;
+    opacity: 0.8;
+}
+
 .content-section{
     background: var(--creamwhite);
     width: 90%;
@@ -321,6 +335,7 @@ section>section {
 .green-submit{
     background: var(--green) !important;
     border-radius: var(--rc);
+    border-color: var(--green);
     padding: 0.5rem 1rem;
     color: white;
     font-weight: bold;
