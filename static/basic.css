@@ -480,11 +480,15 @@ section>section {
 /* Modal Content/Box */
 .modal-content {
     display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
     background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
+    z-index: 1;
 }
 
 /* When modal is visable animation */
@@ -496,11 +500,11 @@ section>section {
 @keyframes fadeIn {
     from { 
         opacity: 0; 
-        translate: 0 50px;
+        translate: -50% 0;
     }
     to { 
         opacity: 1; 
-        translate: 0 0;
+        translate: -50% -50%;
 
     }
 }
