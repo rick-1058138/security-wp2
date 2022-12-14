@@ -163,7 +163,9 @@
                 type: "GET",
                 url: "/getitem",
                 data: {id : attribute},
-                success: function (vraag, leerdoelen) {
+                success: function (res) {
+                    var vraag = res[0]
+                    var leerdoelen = res[1]
                    //document.getElementById("popup-id").innerText = res[0]
                    document.getElementById("id").value = vraag[0];
                    document.getElementById("leerdoel").value = vraag[1];
