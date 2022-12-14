@@ -26,26 +26,25 @@
 
     <section class="content-section">
 
-         <!-- The Modal -->
-         <div id="popup" class="modal">
+        <!-- The Modal -->
+        <div id="popup" class="modal"></div>
+        <!-- Modal content -->
+        <div id="modal-content" class="modal-content">
+        <span id="close-popup" class="close">&times;</span>
+        <form action="/editquestion" method="POST"> 
+            <label for="id" id="text-vraag"> Je bewerkt nu vraag </label><br><br>
+            <input type="hidden" id="id" name="id" value="">
+            <input type="text" id="question" name="question" value="">
+            <input type="submit" value="Edit">
+        </form>
 
-            <!-- Modal content -->
-            <div id="modal-content" class="modal-content">
-            <span id="close-popup" class="close">&times;</span>
-            <form action="/editquestion" method="POST"> 
-                <label for="id" id="text-vraag"> Je bewerkt nu vraag </label><br><br>
-                <input type="hidden" id="id" name="id" value="">
-                <input type="text" id="question" name="question" value="">
-                <input type="submit" value="Edit">
-            </form>
-
-            <form action="/editexception" method="POST">
-                <input type="hidden" name="id" id="exception-id"> 
-                <input type="submit" class="exception-button" value="Uitzondering">
-            </form>
-            </div>
-        
+        <form action="/editexception" method="POST">
+            <input type="hidden" name="id" id="exception-id"> 
+            <input type="submit" class="exception-button" value="Uitzondering">
+        </form>
         </div>
+        
+        
 
         <h2 class="sub-header">{{current_table}}</h2>
         <form action="/data" class="search-form" method="get">
@@ -196,7 +195,7 @@
             } else {
                 // remove loader
                 document.getElementById('loader').style.display = 'none';
-                document.getElementById('loader-bg').style.display = 'none';'modal-content'
+                document.getElementById('loader-bg').style.display = 'none';
 
             }
         };
@@ -212,6 +211,7 @@
         var myFunction = function() {
             var attribute = this.getAttribute("data-id");
             popup.style.display = "block";
+            document.getElementById('modal-content').style.display = "block";
             // Add active class to modal for animation
             document.getElementById('modal-content').classList.add("active");
             console.log(attribute);
@@ -236,6 +236,7 @@
 
         close = function() {
             popup.style.display = "none"
+            document.getElementById('modal-content').style.display = "none"
         };
 
         for (var i = 0; i < elements.length; i++) {
