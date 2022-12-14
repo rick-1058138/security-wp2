@@ -28,24 +28,14 @@ if not os.path.isfile(DATABASE_FILE):
     create_demo_database(DATABASE_FILE)
 dbm = DatabaseModel(DATABASE_FILE)
 
+# A secret key is needed to allow for sessions.
 app.secret_key = 'Software inc.'
 
-# Main route that shows a list of tables in the database
-# Note the "@app.route" decorator. This might be a new concept for you.
-# It is a way to "decorate" a function with additional functionality. You
-# can safely ignore this for now - or look into it as it is a really powerful
-# concept in Python.
-# @app.route("/")
-# def index():
-#     tables = dbm.get_table_list()
-#     return render_template(
-#         "tables.html", table_list=tables, database_file=DATABASE_FILE
-#     )
-
-
+# A decorator to check if you are logged in. If you are, it redirects you to the requested page.
+#   If you are not logged in, it instead redirects you to the login page.
+#
 # Used sources:
 # https://stackoverflow.com/questions/35307676/check-login-status-flask
-#
 # https://flask.palletsprojects.com/en/2.0.x/patterns/viewdecorators/?highlight=wrap
 def login_required(f):
     @wraps(f)
@@ -210,10 +200,6 @@ def admin():
     table_name = 'users'
     if request.method == 'GET':
         data, columns = dbm.get_content(table_name)
-    elif request.method == 'POST':
-        raise ValueError('Build an add users function first!')
-        #dbm.create_user('F', 'F@random.com', '0000')
-        data, columns = dbm.get_content(table_name)
     return render_template(
         "admin.html", 
         data = data, 
@@ -241,8 +227,8 @@ def create_user():
 @app.route("/getitem", methods=["GET", "POST"])
 def getitem():
     data = dbm.get_vraag_by_id(request.args.get('id'))
-    print(request.args.get('id'));
-    return jsonify(data);
+    print(request.args.get('id'))
+    return jsonify(data)
 
 @app.route("/editquestion", methods=['POST', 'GET'])
 def edit_question():
