@@ -10,7 +10,7 @@
 		<div id="popup-update" class="modal">
 
 			<!-- Modal content -->
-			<div class="modal-content">
+			<div id="modal-content" class="modal-content">
 				<span id="close-update" class="close">&times;</span>
 				<form action="/edituser" method="POST" autocomplete="off"> 
 					<label for="id" id="text-gebruiker"> Je bewerkt nu gebruiker</label><br><br>
@@ -29,7 +29,7 @@
 		</div>
 
 		<div id="popup-create" class="modal">
-			<div class="modal-content">
+			<div id="modal-create" class="modal-content">
 				<span id="close-create" class="close">&times;</span>
 				<form action="/createuser" method="POST" autocomplete="off"> 
 					<label for="id" id="text-gebruiker">Maak een nieuwe gebruiker aan</label><br><br>
@@ -85,6 +85,7 @@
 		var show_inspect = function() {
             var attribute = this.getAttribute("data-id");
             popup_update.style.display = "block";
+			document.getElementById('modal-content').classList.add("active");
             console.log(attribute);
             $.ajax({
                 type: "GET",
@@ -107,6 +108,7 @@
 
 		var show_create = function(){
 			popup_create.style.display = "block";
+			document.getElementById('modal-create').classList.add("active");
 		};
 
 		close = function() {
@@ -121,6 +123,8 @@
 
 		document.getElementById("close-update").addEventListener('click', close);
 		document.getElementById("close-create").addEventListener('click', close);
+		document.getElementById("popup-update").addEventListener('click', close)
+		document.getElementById("popup-create").addEventListener('click', close)
 	</script>
 
 {% endblock %}
