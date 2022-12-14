@@ -161,7 +161,6 @@
         var myFunction = function() {
             var attribute = this.getAttribute("data-id");
             popup.style.display = "block";
-            console.log(attribute);
             $.ajax({
                 type: "GET",
                 url: "/getitem",
@@ -169,13 +168,18 @@
                 success: function (res) {
                     var vraag = res[0]
                     var leerdoelen = res[1]
+                    // remove all option childs
+                    while (document.getElementById("leerdoelSelect").firstChild) {
+                        document.getElementById("leerdoelSelect").removeChild(document.getElementById("leerdoelSelect").lastChild);
+                      }
+
                    //document.getElementById("popup-id").innerText = res[0]
                    document.getElementById("id").value = vraag[0];
                    document.getElementById("leerdoel").value = vraag[1];
                    document.getElementById("question").value = vraag[0];
                    document.getElementById("auteur").value = vraag[3];
                    document.getElementById("text-vraag").innerHTML = "Je bewerkt nu vraag " + vraag[0]
-                   console.log(leerdoelen[0])
+                   console.log("leerdoel",leerdoelen[0])
                    for(let i = 0; i < leerdoelen[0].length; i++){
                     const option = document.createElement("option");
                     document.getElementById("leerdoelSelect").appendChild(option);
