@@ -10,7 +10,7 @@
 		<div id="popup-update" class="modal"></div>
 
 		<!-- Modal content -->
-		<div id="modal-content" class="modal-content">
+		<div id="modal-update" class="modal-content">
 			<span id="close-update" class="close">&times;</span>
 			<form action="/edituser" method="POST" autocomplete="off"> 
 				<label for="id" id="text-gebruiker"> Je bewerkt nu gebruiker</label><br><br>
@@ -80,8 +80,8 @@
 		var show_inspect = function() {
             var attribute = this.getAttribute("data-id");
             popup_update.style.display = "block";
-			document.getElementById('modal-content').style.display = "block";
-			document.getElementById('modal-content').classList.add("active");
+			document.getElementById('modal-update').style.display = "block";
+			document.getElementById('modal-update').classList.add("active");
             console.log(attribute);
             $.ajax({
                 type: "GET",
@@ -104,14 +104,15 @@
 
 		var show_create = function(){
 			popup_create.style.display = "block";
+			document.getElementById('modal-create').style.display = "block";
 			document.getElementById('modal-create').classList.add("active");
 		};
 
 		close = function() {
             popup_update.style.display = "none";
 			popup_create.style.display = "none";
-			document.getElementById('modal-content').style.display = "none";
-			document.getElementById('modal-create').style.display = "block";
+			document.getElementById('modal-update').style.display = "none";
+			document.getElementById('modal-create').style.display = "none";
         };
 
 		for (var i = 0; i < elements.length; i++) {
