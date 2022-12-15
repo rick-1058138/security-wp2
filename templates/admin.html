@@ -7,39 +7,38 @@
 
     <section class="content-section">
 		<!-- The Modal -->
-		<div id="popup-update" class="modal">
+		<div id="popup-update" class="modal"></div>
 
-			<!-- Modal content -->
-			<div id="modal-content" class="modal-content">
-				<span id="close-update" class="close">&times;</span>
-				<form action="/edituser" method="POST" autocomplete="off"> 
-					<label for="id" id="text-gebruiker"> Je bewerkt nu gebruiker</label><br><br>
-					<input type="hidden" id="id" name="id" value="">
-					<input type="text" id="username" name="username" value="" maxlength="50">
-					<input type="text" id="email" name="email" value="" maxlength="100">
-					<input type="text" id="password" name="password" value="" maxlength="50">
-					<input type="submit" value="Edit">
-				</form>
+		<!-- Modal content -->
+		<div id="modal-content" class="modal-content">
+			<span id="close-update" class="close">&times;</span>
+			<form action="/edituser" method="POST" autocomplete="off"> 
+				<label for="id" id="text-gebruiker"> Je bewerkt nu gebruiker</label><br><br>
+				<input type="hidden" id="id" name="id" value="">
+				<input type="text" id="username" name="username" value="" maxlength="50">
+				<input type="text" id="email" name="email" value="" maxlength="100">
+				<input type="text" id="password" name="password" value="" maxlength="50">
+				<input type="submit" value="Edit">
+			</form>
 
-				<form action="/deleteuser" method="POST">
-					<input type="hidden" name="id" id="user-id"> 
-					<input type="submit" class="danger-btn" value="Verwijderen">
-				</form>
-			</div>
+			<form action="/deleteuser" method="POST">
+				<input type="hidden" name="id" id="delete-id"> 
+				<input type="submit" class="danger-btn" value="Verwijderen">
+			</form>
 		</div>
+		
 
-		<div id="popup-create" class="modal">
-			<div id="modal-create" class="modal-content">
-				<span id="close-create" class="close">&times;</span>
-				<form action="/createuser" method="POST" autocomplete="off"> 
-					<label for="id" id="text-gebruiker">Maak een nieuwe gebruiker aan</label><br><br>
-					<input type="hidden" id="id" name="id" value="">
-					<input type="text" id="username" name="username" placeholder="Gebruikersnaam" maxlength="50">
-					<input type="text" id="email" name="email" placeholder="Email" maxlength="100">
-					<input type="text" id="password" name="password" placeholder="Wachtwoord" maxlength="50">
-					<input type="submit" value="Aanmaken" class="green-submit">
-				</form>
-			</div>
+		<div id="popup-create" class="modal"></div>
+		<div id="modal-create" class="modal-content">
+			<span id="close-create" class="close">&times;</span>
+			<form action="/createuser" method="POST" autocomplete="off"> 
+				<label for="id" id="text-gebruiker">Maak een nieuwe gebruiker aan</label><br><br>
+				<input type="hidden" id="id" name="id" value="">
+				<input type="text" id="username" name="username" placeholder="Gebruikersnaam" maxlength="50">
+				<input type="text" id="email" name="email" placeholder="Email" maxlength="100">
+				<input type="text" id="password" name="password" placeholder="Wachtwoord" maxlength="50">
+				<input type="submit" value="Aanmaken" class="green-submit">
+			</form>
 		</div>
 
 		<h2 class="sub-header">Gebruikers</h2>
@@ -81,6 +80,7 @@
 		var show_inspect = function() {
             var attribute = this.getAttribute("data-id");
             popup_update.style.display = "block";
+			document.getElementById('modal-content').style.display = "block";
 			document.getElementById('modal-content').classList.add("active");
             console.log(attribute);
             $.ajax({
@@ -91,7 +91,7 @@
                    document.getElementById("id").value = res[0];
                    document.getElementById("username").value = res[1];
 				   document.getElementById("email").value = res[2];
-                   document.getElementById("user-id").value = res[0];
+                   document.getElementById("delete-id").value = res[0];
                    document.getElementById("text-gebruiker").innerHTML = "Je bewerkt nu gebruiker " + res[0]
                 },
                 error: function (res, options, error) {
@@ -110,6 +110,8 @@
 		close = function() {
             popup_update.style.display = "none";
 			popup_create.style.display = "none";
+			document.getElementById('modal-content').style.display = "none";
+			document.getElementById('modal-create').style.display = "block";
         };
 
 		for (var i = 0; i < elements.length; i++) {

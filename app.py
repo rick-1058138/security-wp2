@@ -197,9 +197,8 @@ def logout():
 @app.route("/admin", methods=['GET'])
 @login_required
 def admin():
-    table_name = 'users'
     if request.method == 'GET':
-        data, columns = dbm.get_content(table_name)
+        data, columns = dbm.get_content('users')
     return render_template(
         "admin.html", 
         data = data, 
@@ -222,7 +221,13 @@ def edit_user():
 def create_user():
     dbm.create_user(request.form.get('username'), request.form.get('email'), request.form.get('password'))
     if request.method == 'POST':
-        return redirect("/admin", code=302)      
+        return redirect("/admin", code=302)   
+
+@app.route("/deleteuser", methods=['GET', 'POST'])
+def delete_user():
+    dbm.delete_user(request.form.get('id'))
+    if request.method == 'POST':
+        return redirect("/admin", code=302)     
     
 @app.route("/getitem", methods=["GET", "POST"])
 def getitem():

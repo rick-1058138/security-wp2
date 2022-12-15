@@ -198,10 +198,12 @@ class DatabaseModel:
         db.commit()
         db.close()
 
-    def delete_user(self, table_name, id):
-        cursor = sqlite3.connect(self.database_file).cursor()
-        cursor.execute(f"DELETE FROM '{table_name}' WHERE id = '{id}'")
-        cursor.close()
+    def delete_user(self, id):
+        db = sqlite3.connect(self.database_file)
+        cursor = db.cursor()
+        cursor.execute(f"DELETE FROM users WHERE id = '{id}'")
+        db.commit()
+        db.close()
 
     def get_password_by_id(self, id):
         cursor = sqlite3.connect(self.database_file).cursor()
