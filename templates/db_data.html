@@ -58,6 +58,7 @@
                     <select class="custom-select" name="error_type" id="error_type_select" >
                         <option value="alles" {% if current_type=='alles' %} selected {% endif %} >Alles</option>
                         <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
+                        <option value="auteur" {% if current_type=='auteur' %} selected {% endif %} >Ongeldige auteur</option>
                         <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
                         <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
                         <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Verkeerde waarde</option>

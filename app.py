@@ -115,6 +115,9 @@ def question_data(table = 'vragen'):
             if type == 'leerdoel':
                 column = 'leerdoel'
                 data, columns = dbm.get_no_leerdoel(min_max_filter, between_column, min, max, uitzondering)
+            elif type == 'auteur':
+                column = 'auteur'
+                data, columns = dbm.get_no_auteur(min_max_filter, between_column, min, max, uitzondering)
             elif type == 'html':
                 column = 'vraag'
                 data, columns = dbm.get_html_codes(min_max_filter, between_column, min, max, uitzondering)

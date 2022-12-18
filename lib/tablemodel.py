@@ -72,6 +72,22 @@ class DatabaseModel:
         data, columns = self.return_filter_content(query)
         return data, columns
 
+    def get_no_auteur(self, min_max_filter, between_column, min, max, uitzondering):
+        if uitzondering == "ja":
+            subquery = "and uitzondering = 1"
+        elif uitzondering == "nee":
+            subquery = "and uitzondering = 0"
+        else:
+            subquery = ""
+
+        if(min_max_filter):
+            query = f"SELECT * FROM vragen WHERE auteur NOT IN (SELECT id FROM auteurs) AND ({between_column} >= {min} AND {between_column} <= {max}) "+subquery
+        else:
+            query = "SELECT * FROM vragen WHERE auteur NOT IN (SELECT id FROM auteurs) "+subquery
+        print(query)
+        data, columns = self.return_filter_content(query)
+        return data, columns
+
 
     def get_empty_column(self, table, column, min_max_filter, between_column, min, max, uitzondering):
         if uitzondering == "ja":
