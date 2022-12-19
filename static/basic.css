@@ -566,9 +566,14 @@ footer{
 }
 
 .exception-tag {
-    color: red;
+    background: var(--blueaccent);
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--rc);
+    color: white;
     font-size: 0.9rem;
     font-weight: bold;
+    margin-top: 0.2rem;
+    display: inline-block;
 }
 
 

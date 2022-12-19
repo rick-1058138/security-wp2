@@ -15,8 +15,6 @@
 
                     {% endif %}
                 {% endfor%}
-                <!-- <option value="users" >users</option> -->
-
             </select>
 
             <input type="submit" value="Zoeken" class="green-submit">
@@ -42,7 +40,6 @@
                     <p> Vraag </p> 
                     <textarea class="custom-text-area" name="question" id="question" rows="3"></textarea><br><br>
                     <p> Auteur </p> 
-                    <!-- <input type="text" id="auteur" name="auteur" value=""> <br><br> -->
                     <select id="auteurSelect" name="auteur"> 
                         <option value="">--- Selecteer ---</option>
                     </select><br><br>
@@ -275,7 +272,6 @@
                             option.innerText = leerdoelen[0][i][1]+" ("+leerdoelen[0][i][0]+")"
                             option.value = leerdoelen[0][i][0]
                             if(vraag[1] == leerdoelen[0][i][0]){
-                                console.log(vraag[1])
                                 document.getElementById("leerdoelSelect").value = vraag[1];
                             }
                         }
@@ -286,7 +282,6 @@
                             option.innerText = auteurs[0][i][1]+" "+auteurs[0][i][2]+" ("+auteurs[0][i][0]+")"
                             option.value = auteurs[0][i][0]
                             if(vraag[3] == auteurs[0][i][0]){
-                                console.log(vraag[3])
                                 document.getElementById("auteurSelect").value = vraag[3];
                             }
                         }
