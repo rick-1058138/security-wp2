@@ -242,7 +242,8 @@ def getitem():
 
     elif table == 'auteurs':
         print('auteurs')
-        return ""
+        data_auteur = dbm.get_item_by_id(table, request.args.get('id'))
+        return jsonify(data_auteur)
     elif table == 'leerdoelen':
         print('leerdoelen')
         return ""

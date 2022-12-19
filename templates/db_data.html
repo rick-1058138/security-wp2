@@ -29,22 +29,43 @@
         <div id="modal-content" class="modal-content">
             <span id="close-popup" class="close">&times;</span>
             <form action="/editquestion" method="POST"> 
+                <input type="hidden" name="table" value="{{current_table}}">
                 {% if current_table == 'vragen' %}
-                    <input type="hidden" name="table" value="{{current_table}}">
-                    <h2>ID: <span id="text-vraag"></span> </h2>
+                    <h2>ID: <span id="text-id"></span> </h2>
                     <input type="hidden" id="id" name="id" value="">
                     <p> Leerdoel </p> 
                     <select id="leerdoelSelect" name="leerdoel"> 
-                        <option value="">--- Selecteer ---</option>
                     </select><br><br>
                     <p> Vraag </p> 
                     <textarea class="custom-text-area" name="question" id="question" rows="3"></textarea><br><br>
                     <p> Auteur </p> 
                     <select id="auteurSelect" name="auteur"> 
-                        <option value="">--- Selecteer ---</option>
                     </select><br><br>
                 {% elif current_table == 'auteurs' %}
-                    <p>auteurs</p>
+                    <h2>ID: <span id="text-id"></span> </h2>
+                    <input type="hidden" id="id" name="id" value="">
+                    <section class="form-name-container">
+                        <div>
+                            <p>Voornaam</p>
+                            <input type="text" name="voornaam" id="voornaam">
+                        </div>
+                        <div>
+                            <p>Achternaam</p>
+                            <input type="text" name="achternaam" id="achternaam">
+                        </div>
+                    </section>
+                    <p>Geboortejaar</p>
+                    <input type="number" name="geboortejaar" id="geboortejaar" step="1" value="" />
+                    <p>Medewerker</p>
+                    <select name="medewerker" id="medewerker">
+                        <option value="1">Ja (1)</option>
+                        <option value="0">Nee (0)</option>
+                    </select>
+                    <p>Met pensioen</p>
+                    <select name="pensioen" id="pensioen">
+                        <option value="1">Ja (1)</option>
+                        <option value="0">Nee (0)</option>
+                    </select><br><br>
                 {% elif current_table == 'leerdoelen' %}
                     <p>leerdoelen</p>
                 {%endif%}
@@ -249,6 +270,9 @@
                         while (document.getElementById("leerdoelSelect").firstChild) {
                             document.getElementById("leerdoelSelect").removeChild(document.getElementById("leerdoelSelect").lastChild);
                         }
+                        while (document.getElementById("auteurSelect").firstChild) {
+                            document.getElementById("auteurSelect").removeChild(document.getElementById("auteurSelect").lastChild);
+                        }
 
                         // show/hide correct btn for uitzondering
                         console.log("uitzondering",vraag[4])
@@ -261,9 +285,9 @@
                         }
                         // set current values in modal 
                         document.getElementById("id").value = vraag[0];
+                        document.getElementById("text-id").innerHTML = vraag[0]
                         document.getElementById("exception-id").value = vraag[0];
                         document.getElementById("question").value = vraag[2];
-                        document.getElementById("text-vraag").innerHTML = vraag[0]
 
                         // add all leerdoelen to select as option 
                         for(let i = 0; i < leerdoelen[0].length; i++){
@@ -287,7 +311,21 @@
                         }
                     }
                     else if(current_table == 'auteurs'){
+                        year = new Date().getFullYear()
+                        geboortejaar = document.getElementById('geboortejaar');
+                        geboortejaar.min = year-100;
+                        geboortejaar.max = year;
+
+                        var auteur = res;
+                        console.log(auteur)
+                        document.getElementById("text-id").innerText = auteur[0]
+                        document.getElementById("voornaam").value = auteur[1]
+                        document.getElementById("achternaam").value = auteur[2]
+                        document.getElementById("geboortejaar").value = auteur[3]
+                        document.getElementById("medewerker").value = auteur[4]
+                        document.getElementById("pensioen").value = auteur[5]
                         console.log("auteurs")
+
                     }else if(current_table == 'leerdoelen'){
                         console.log("leerdoelen")
                     }
@@ -372,6 +410,7 @@
         }
         
         betweenSelect.addEventListener('change', onChangeBetween);
+
     </script>
     
 {% endblock %}

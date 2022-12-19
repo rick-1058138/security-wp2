@@ -615,6 +615,11 @@ footer{
     margin: 1rem 0;
 }
 
+.form-name-container{
+    display: flex;
+    gap: 1rem;
+}
+
 
 
 #loader{

@@ -166,7 +166,13 @@ class DatabaseModel:
         # print(data["auteurs"]["geboortejaar"])
         return data
 
-       
+    
+    def get_item_by_id(self, table, id):
+        cursor = sqlite3.connect(self.database_file).cursor()
+        cursor.execute(f"SELECT * FROM {table} WHERE id = '{id}'")
+        item = cursor.fetchone()
+        return item
+
     # The password in the query should be replaced with hashed_password later!
     def validate_login(self, username, password):
         cursor = sqlite3.connect(self.database_file).cursor()
