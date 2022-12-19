@@ -241,12 +241,11 @@ def getitem():
         return jsonify(data_vraag, data_leerdoelen, data_auteurs)
 
     elif table == 'auteurs':
-        print('auteurs')
         data_auteur = dbm.get_item_by_id(table, request.args.get('id'))
         return jsonify(data_auteur)
     elif table == 'leerdoelen':
-        print('leerdoelen')
-        return ""
+        data_leerdoelen = dbm.get_item_by_id(table, request.args.get('id'))
+        return jsonify(data_leerdoelen)
 
 
 

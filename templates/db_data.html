@@ -31,7 +31,10 @@
             <form action="/editquestion" method="POST"> 
                 <input type="hidden" name="table" value="{{current_table}}">
                 {% if current_table == 'vragen' %}
+                    <a id="link-id" class="id-link" href="" target="_blank">
                     <h2>ID: <span id="text-id"></span> </h2>
+                    </a>
+
                     <input type="hidden" id="id" name="id" value="">
                     <p> Leerdoel </p> 
                     <select id="leerdoelSelect" name="leerdoel"> 
@@ -67,7 +70,10 @@
                         <option value="0">Nee (0)</option>
                     </select><br><br>
                 {% elif current_table == 'leerdoelen' %}
-                    <p>leerdoelen</p>
+                    <h2>ID: <span id="text-id"></span> </h2>
+                    <input type="hidden" id="id" name="id" value="">
+                    <input type="text" id="leerdoel" name="leerdoel" value="">
+
                 {%endif%}
 
 
@@ -173,11 +179,18 @@
                             <!-- check for index 1 because this is the id -->
                             {% if(loop.index == 1) %}
                                 <p>
+                                    <!-- add link to id if current table == vragen  -->
+                                    {%if current_table == 'vragen'%}
                                     <a class="id-link" href="question/{{ part }}" target="_blank">
                                         <span class="item-id">ID:   
                                             <span>{{ part }}</span> 
                                         </span> 
                                     </a>
+                                    {%else%}
+                                    <span class="item-id">ID:   
+                                        <span>{{ part }}</span> 
+                                    </span> 
+                                    {%endif%}
                                 </p>
                             {% elif loop.index == 5 and current_table == ("vragen") %}
                                 {%if part == 0 %}
@@ -285,6 +298,7 @@
                         }
                         // set current values in modal 
                         document.getElementById("id").value = vraag[0];
+                        document.getElementById("link-id").href = "question/"+vraag[0]
                         document.getElementById("text-id").innerHTML = vraag[0]
                         document.getElementById("exception-id").value = vraag[0];
                         document.getElementById("question").value = vraag[2];
@@ -324,10 +338,12 @@
                         document.getElementById("geboortejaar").value = auteur[3]
                         document.getElementById("medewerker").value = auteur[4]
                         document.getElementById("pensioen").value = auteur[5]
-                        console.log("auteurs")
 
                     }else if(current_table == 'leerdoelen'){
-                        console.log("leerdoelen")
+                        var leerdoel = res;
+                        document.getElementById("text-id").innerText = leerdoel[0]
+                        document.getElementById("leerdoel").value = leerdoel[1]
+
                     }
                 },
                 error: function (res, options, error) {
