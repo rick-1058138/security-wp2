@@ -31,25 +31,28 @@
         <div id="modal-content" class="modal-content">
             <span id="close-popup" class="close">&times;</span>
             <form action="/editquestion" method="POST"> 
-                <label for="id" id="text-vraag"> Je bewerkt nu vraag </label><br><br>
+                <h3 id="text-vraag"> Je bewerkt nu vraag </h3>
                 <input type="hidden" id="id" name="id" value="">
 
-                <label for="question"> Vraag </label> 
+                <p> Vraag </p> 
                 <textarea class="custom-text-area" name="question" id="question" rows="3"></textarea><br><br>
-                <label for="leerdoel"> Leerdoel </label> 
+                <p> Leerdoel </p> 
                 <select id="leerdoelSelect"> 
                     
                 </select>
                 <input type="text" id="leerdoel" name="leerdoel" value=""> <br><br>
-                <label for="auteur"> Auteur </label> 
+                <p> Auteur </p> 
                 <input type="text" id="auteur" name="auteur" value=""> <br><br>
 
-                <input type="submit" value="Edit">
+                <input type="submit" class="edit-btn" value="Edit">
             </form>
 
             <form action="/editexception" method="POST">
                 <input type="hidden" name="id" id="exception-id" value=""> 
-                <input type="submit" class="exception-button" value="Uitzondering">
+                <!-- if uitzondering is false in db show this btn  -->
+                <input type="submit" id="exception-button" class="exception-button" value="Uitzondering">
+                <!-- if uitzondering is true in db show this btn  -->
+                <input type="submit" id="exception-button-remove" class="exception-button-remove" value="Verwijder Uitzondering">
             </form>
         </div>
         
@@ -240,6 +243,14 @@
                         document.getElementById("leerdoelSelect").removeChild(document.getElementById("leerdoelSelect").lastChild);
                     }
 
+                    // show correct btn for uitzondering
+                    console.log("uitzondering",vraag[4])
+                    if(vraag[4] == 0){
+                        document.getElementById("exception-button").style.display = "block";
+                    }else{
+                        document.getElementById("exception-button-remove").style.display = "block";
+
+                    }
                     document.getElementById("id").value = vraag[0];
                     document.getElementById("exception-id").value = vraag[0];
                     document.getElementById("leerdoel").value = vraag[1];
