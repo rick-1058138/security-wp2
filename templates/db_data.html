@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
+    <div id="loader-bg"></div>
+    <div id="loader"></div>
     <section class="top-section">
         <h1 class="page-header">Tabellen</h1>
         <form action="/data" class="top-search-form" method="GET">
@@ -23,16 +25,15 @@
 
     <section class="content-section">
 
-         <!-- The Modal -->
-         <div id="popup" class="modal">
-
-            <!-- Modal content -->
-            <div class="modal-content">
-            <span id="close-popup" class="close">&times;</span>
-            <form action="/editquestion" method="POST"> 
-                <label for="id" id="text-vraag"> Je bewerkt nu vraag </label><br><br>
-                <input type="hidden" id="id" name="id" value="">
-                <label for="question"> Vraag </label> 
+        <!-- The Modal -->
+        <div id="popup" class="modal"></div>
+        <!-- Modal content -->
+        <div id="modal-content" class="modal-content">
+        <span id="close-popup" class="close">&times;</span>
+        <form action="/editquestion" method="POST"> 
+            <label for="id" id="text-vraag"> Je bewerkt nu vraag </label><br><br>
+            <input type="hidden" id="id" name="id" value="">
+            <label for="question"> Vraag </label> 
                 <input type="text" id="question" name="question" value=""> <br><br>
                 <label for="leerdoel"> Leerdoel </label> 
                 <select id="leerdoelSelect"> 
@@ -41,11 +42,16 @@
                 <input type="text" id="leerdoel" name="leerdoel" value=""> <br><br>
                 <label for="auteur"> Auteur </label> 
                 <input type="text" id="auteur" name="auteur" value=""> <br><br>
-                <input type="submit" value="Edit">
-            </form>
-            </div>
-        
+            <input type="submit" value="Edit">
+        </form>
+
+        <form action="/editexception" method="POST">
+            <input type="hidden" name="id" id="exception-id"> 
+            <input type="submit" class="exception-button" value="Uitzondering">
+        </form>
         </div>
+        
+        
 
         <h2 class="sub-header">{{current_table}}</h2>
         <form action="/data" class="search-form" method="get">
@@ -61,16 +67,33 @@
                         <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
                         <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
                         <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
+                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Verkeerde waarde</option>
                     </select>
-
-                    <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' %} style="display: none;" {% endif %}>
+            
+                    <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' and current_type!='wrong_value' %} style="display: none;" {% endif %}>
                         <!-- option for every column in table  -->
                         {% for column in columns%}
                             <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
                         {% endfor%}
                     </select>
             {%endif%}
+            <!-- Sorting for auteurs table  -->
+            {% if current_table == 'auteurs'%}
+                <div class="form-row">
+                    <span>Type fout: </span>
+                    <select class="custom-select" name="error_type" id="error_type_select" >
+                        <option value="alles" {% if current_type=='alles' %} selected {% endif %} >Alles</option>
+                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Verkeerde waarde</option>
+                    </select>
             
+                    <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' and current_type!='wrong_value' %} style="display: none;" {% endif %}>
+                        <!-- option for every column in table  -->
+                        {% for column in columns%}
+                            <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
+                        {% endfor%}
+                    </select>
+            {%endif%}
+                
       
                 </div>
                 <!-- column for select between 2 values -->
@@ -84,7 +107,16 @@
                                 <option value="{{column}}" {% if current_between_column==column %} selected {% endif %}>{{column}}</option>
                             {%endif%}
                         {% endfor%}
-                    </select>
+                    </select> 
+                    <!-- only show uitzondering filter if table == vragen  -->
+                    {% if current_table == 'vragen'%}
+                        <span> Uitzondering:</span>
+                        <select class=" custom-select" name="uitzondering">
+                            <option value="beide"{% if current_uitzondering=="beide" %} selected {% endif %}>Beide</option>
+                            <option value="ja"{% if current_uitzondering=="ja" %} selected {% endif %}>Ja</option>
+                            <option value="nee"{% if current_uitzondering=="nee" %} selected {% endif %}>Nee</option>
+                        </select>
+                    {%endif%}
                 </div>
 
                 <!-- kolommen met mogelijkheid min-max: leerdoel, id, auteur -->
@@ -114,6 +146,17 @@
                                         </span> 
                                     </a>
                                 </p>
+                            {% elif loop.index == 5 and current_table == ("vragen") %}
+                                {%if part == 0 %}
+                                    {%elif part == 1 %}
+                                    <p>
+                                        <span
+                                            class="exception-tag">Uitzondering
+                                        </span>
+                                </p>
+                                {% endif %}
+                            
+                                
                             {% else %}
                                 <p class="item-attribute {% if current_column==columns[loop.index-1] %} error {% endif %}" >
 
@@ -149,6 +192,20 @@
     </section>
     <!-- Script used to hide unnecessary select by choice of error type  -->
     <script>
+
+        document.onreadystatechange = function() {
+            if (document.readyState !== "complete") {
+                // show loader
+                document.getElementById('loader').style.display = 'block';
+                document.getElementById('loader-bg').style.display = 'block';
+
+            } else {
+                // remove loader
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('loader-bg').style.display = 'none';
+
+            }
+        };
         
 
         var elements = document.getElementsByClassName("table-item");
@@ -161,6 +218,7 @@
         var myFunction = function() {
             var attribute = this.getAttribute("data-id");
             popup.style.display = "block";
+            console.log(attribute);
             $.ajax({
                 type: "GET",
                 url: "/getitem",
@@ -174,23 +232,9 @@
                       }
 
                    //document.getElementById("popup-id").innerText = res[0]
-                   document.getElementById("id").value = vraag[0];
-                   document.getElementById("leerdoel").value = vraag[1];
-                   document.getElementById("question").value = vraag[0];
-                   document.getElementById("auteur").value = vraag[3];
-                   document.getElementById("text-vraag").innerHTML = "Je bewerkt nu vraag " + vraag[0]
-                   console.log("leerdoel",leerdoelen[0])
-                   for(let i = 0; i < leerdoelen[0].length; i++){
-                    const option = document.createElement("option");
-                    document.getElementById("leerdoelSelect").appendChild(option);
-                    option.innerText = leerdoelen[0][i][1]
-                    option.value = leerdoelen[0][i][0]
-                    if(vraag[1] == leerdoelen[0][i][0]){
-                        console.log(vraag[1])
-                        document.getElementById("leerdoelSelect").value = vraag[1];
-                    }
-                   }
-
+                   document.getElementById("id").value = res[0];
+                   document.getElementById("question").value = res[2];
+                   document.getElementById("text-vraag").innerHTML = "Je bewerkt nu vraag " + res[0]
                 },
                 error: function (res, options, error) {
                     console.log(res.status);
@@ -202,6 +246,7 @@
 
         close = function() {
             popup.style.display = "none"
+            document.getElementById('modal-content').style.display = "none"
         };
 
         for (var i = 0; i < elements.length; i++) {
@@ -211,7 +256,10 @@
         // get correct select element
         var errorSelect = document.getElementById('error_type_select');
         var betweenSelect = document.getElementById('between_column');
+
+        // close modal (when clicked on bg and close btn)
         document.getElementById("close-popup").addEventListener('click', close)
+        document.getElementById("popup").addEventListener('click', close)
 
         // convert minmax to JSON so javascript can use it
         var minmax = JSON.parse('{{minmax | tojson}}');
@@ -240,7 +288,13 @@
 
         onChange = function() {
             // check for option where the select needs to be shown, so when this is true : it is shown
-            var shown = this.options[this.selectedIndex].value == 'empty';
+            var shown;
+            if(this.options[this.selectedIndex].value =='empty' || this.options[this.selectedIndex].value =='wrong_value'){
+                shown = true;
+            }else{
+                shown = false;
+            }
+            
             // hide or show select element
             document.getElementById('column_select').style.display = shown ? 'block' : 'none';
         };
@@ -256,7 +310,7 @@
 
 
         // execute onChange if select option changes
-        if(selectedTable == 'vragen'){
+        if(selectedTable == 'vragen' || selectedTable == 'auteurs'){
             // element only exists if table == vragen
             errorSelect.addEventListener('change', onChange);
         }

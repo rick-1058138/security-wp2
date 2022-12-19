@@ -20,7 +20,7 @@
     --white: #fff;
     --creamwhite: #eee;
     --blueaccent: #0038c6;
-
+    --red: red;
 }
 * {
     margin: 0;
@@ -62,10 +62,6 @@ img, iframe {
 
 a {
     color: var(--c1);  text-decoration:none
-}
-
-a:hover {
-    color: var(--c1);
 }
 
 pre {
@@ -118,7 +114,7 @@ pre,code,input,select,textarea,button,img {border-radius: var(--rc)}
 
 /* Forms */
 
-input, select, textarea {
+input, select, textarea, button{
     font-size: 1em; 
     color:var(--c4); 
     background: var(--c2); 
@@ -215,6 +211,20 @@ section>section {
     opacity: 0.8;
 }
 
+.danger-btn{
+    background: var(--red) !important;
+    border-radius: var(--rc);
+    padding: 0.5rem 1rem;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.danger-btn:hover{
+    color: white;
+    opacity: 0.8;
+}
+
 .content-section{
     background: var(--creamwhite);
     width: 90%;
@@ -299,13 +309,22 @@ section>section {
     width: min-content;
     padding: 0.5rem 1rem;
     border: 2px solid transparent;
-    transition: 0.3s;
+    transition: 0.2s;
     margin-right: 0.5rem;
 }
 
+.custom-select:hover, .text-input:hover{
+    scale: 1.05;
+    opacity: 1;
+}
+
 .custom-select:focus-visible{
-    border-color: var(--darkblue);
     outline: none;
+}
+
+.text-input{
+    outline: none;
+    transition: 0.2s;
 }
 
 .user-form{
@@ -321,10 +340,12 @@ section>section {
 .green-submit{
     background: var(--green) !important;
     border-radius: var(--rc);
+    border: 1px solid var(--green);
     padding: 0.5rem 1rem;
     color: white;
     font-weight: bold;
     letter-spacing: 0.5px;
+    transition: 0.2s;
 }
 
 .hti {
@@ -431,6 +452,12 @@ section>section {
     height: min-content;
     font-weight: bold;
     letter-spacing: 0.5px;
+    transition: 0.2s;
+}
+
+.logout-btn:hover{
+    filter: brightness(1.2);
+    translate: 0 -3px;
 }
 
 
@@ -447,30 +474,56 @@ section>section {
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   }
+
+
   
-  /* Modal Content/Box */
-  .modal-content {
+/* Modal Content/Box */
+.modal-content {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
     background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
-  }
+    z-index: 1;
+}
+
+/* When modal is visable animation */
+.modal-content.active{
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        translate: -50% 0;
+    }
+    to { 
+        opacity: 1; 
+        translate: -50% -50%;
+
+    }
+}
   
-  /* The Close Button */
-  .close {
+/* The Close Button */
+.close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
-    color: black;
+    transform: 0.2s;
+}
+
+.close:hover,
+.close:focus {
+    color: red;
     text-decoration: none;
     cursor: pointer;
-  }
+}
 
 
 .form-row{
@@ -506,6 +559,63 @@ footer{
     font-size: 0.8rem;
     margin-top: 0.5rem;
 }
+
+.exception-tag {
+    color: red;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+
+.exception-button {
+    background: #f24444;
+    color: white;
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    letter-spacing: 0.5px;
+}
+
+
+
+
+#loader{
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+    border: 8px solid rgb(255, 255, 255);
+    border-radius: 50%;
+    border-top: 8px solid var(--green);
+    animation: spin 2s ease-in-out infinite;
+}
+
+#loader-bg{
+    background: rgba(0, 0, 0, 0.363);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    
+}
+
+@keyframes spin {
+    0% { 
+        transform: rotate(0deg); 
+        opacity: 1;
+    }
+    50%{
+        opacity: 0.4;
+    }
+    100% { 
+        transform: rotate(360deg); 
+    }
+}
+
+  
 
 @media (max-width: 481px) {
     body {font-size: 18px}

@@ -1,5 +1,6 @@
 import os.path
 import sys
+import datetime
 
 
 
@@ -27,24 +28,14 @@ if not os.path.isfile(DATABASE_FILE):
     create_demo_database(DATABASE_FILE)
 dbm = DatabaseModel(DATABASE_FILE)
 
+# A secret key is needed to allow for sessions.
 app.secret_key = 'Software inc.'
 
-# Main route that shows a list of tables in the database
-# Note the "@app.route" decorator. This might be a new concept for you.
-# It is a way to "decorate" a function with additional functionality. You
-# can safely ignore this for now - or look into it as it is a really powerful
-# concept in Python.
-# @app.route("/")
-# def index():
-#     tables = dbm.get_table_list()
-#     return render_template(
-#         "tables.html", table_list=tables, database_file=DATABASE_FILE
-#     )
-
-
+# A decorator to check if you are logged in. If you are, it redirects you to the requested page.
+#   If you are not logged in, it instead redirects you to the login page.
+#
 # Used sources:
 # https://stackoverflow.com/questions/35307676/check-login-status-flask
-#
 # https://flask.palletsprojects.com/en/2.0.x/patterns/viewdecorators/?highlight=wrap
 def login_required(f):
     @wraps(f)
@@ -55,6 +46,12 @@ def login_required(f):
             flash('You need to login first')
             return redirect(url_for('login'))
     return wrap
+
+@app.before_request
+def before_request():
+    session.permanent = True
+    app.permanent_session_lifetime = datetime.timedelta(days=1)
+    session.modified = True
 
 @app.route("/")
 def index():
@@ -79,6 +76,8 @@ def question_data(table = 'vragen'):
         type = request.args.get('error_type')
         column = request.args.get('column')
 
+        uitzondering = request.args.get('uitzondering')
+
         between_column = request.args.get('between_column')
         min = request.args.get('min')
         max = request.args.get('max')
@@ -99,6 +98,37 @@ def question_data(table = 'vragen'):
 
         
 
+        if not table:
+            # set default table 
+            print("default")
+            DEFAULT_TABLE = 'vragen'
+            DEFAULT_TYPE = 'alles'
+            DEFAULT_COLUMN = 'id'
+            DEFAULT_UITZONDERING = 'alles'
+            table = DEFAULT_TABLE
+            type = DEFAULT_TYPE
+            column = DEFAULT_COLUMN
+            uitzondering = DEFAULT_UITZONDERING
+            data, columns = dbm.get_content(table)
+        else:
+            # get data for chosen error type
+            if type == 'leerdoel':
+                column = 'leerdoel'
+                data, columns = dbm.get_no_leerdoel(min_max_filter, between_column, min, max, uitzondering)
+            elif type == 'html':
+                column = 'vraag'
+                data, columns = dbm.get_html_codes(min_max_filter, between_column, min, max, uitzondering)
+            elif type == 'empty':
+                data, columns = dbm.get_empty_column(table, column, min_max_filter, between_column, min, max, uitzondering)
+            elif type == 'wrong_value':
+                data, columns = dbm.get_wrong_value(table, column, min_max_filter, between_column, min, max, uitzondering)
+            # # elif type == 'uitzondering':
+            #     data, columns = dbm.get_exception(table, column, min_max_filter, between_column, min, max)
+            else:
+                print("else")
+                # if type == 'alles' and else
+                data, columns = dbm.get_requested_rows(table, min_max_filter, between_column, min, max, uitzondering)
+
         # check if table is allowed to be shown 
         if table in allowed_tables:
             # get leerdoelen data is table = vragen, else return none
@@ -111,31 +141,6 @@ def question_data(table = 'vragen'):
             return render_template(
                 "404.html"
             )
-        if not table:
-            # set default table 
-            print("default")
-            DEFAULT_TABLE = 'vragen'
-            DEFAULT_TYPE = 'alles'
-            DEFAULT_COLUMN = 'id'
-            table = DEFAULT_TABLE
-            type = DEFAULT_TYPE
-            column = DEFAULT_COLUMN
-            data, columns = dbm.get_content(table)
-        else:
-            # get data for chosen error type
-            if type == 'leerdoel':
-                column = 'leerdoel'
-                data, columns = dbm.get_no_leerdoel(min_max_filter, between_column, min, max)
-            elif type == 'html':
-                column = 'vraag'
-                data, columns = dbm.get_html_codes(min_max_filter, between_column, min, max)
-            elif type == 'empty':
-                data, columns = dbm.get_empty_column(table, column, min_max_filter, between_column, min, max)
-            else:
-                print("else")
-                # if type == 'alles' and else
-                data, columns = dbm.get_requested_rows(table, min_max_filter, between_column, min, max)
-
 
         return render_template(
             "db_data.html", 
@@ -150,23 +155,24 @@ def question_data(table = 'vragen'):
             current_between_column = between_column,
             chosen_min = min,
             chosen_max = max,
-            allowed_between_columns = allowed_between_columns
+            allowed_between_columns = allowed_between_columns,
+            current_uitzondering = uitzondering
         )
 
 
 # Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/login", methods=['POST', 'GET'])
 def login():
-    table_name = 'users'
     error = None
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
-        account = dbm.validate_login(table_name, username, password)
+        account = dbm.validate_login(username, password)
         if(account):
             session['loggedin'] = True
             session['id'] = account[0]
             session['username'] = account[1]
+            session['isAdmin'] = account[4]
             flash('Logged in succefully!')
             return redirect(url_for('index'))
         else:
@@ -183,16 +189,45 @@ def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('username', None)
+    session.pop('isAdmin', None)
     return render_template(
         "home.html"
     )
 
-@app.route("/edit")
+@app.route("/admin", methods=['GET'])
 @login_required
-def edit():
+def admin():
+    if request.method == 'GET':
+        data, columns = dbm.get_content('users')
     return render_template(
-        "edit.html"
+        "admin.html", 
+        data = data, 
+        columns = columns
     )
+
+@app.route("/getuser", methods=["GET", "POST"])
+def getuser():
+    data = dbm.get_user_by_id(request.args.get('id'))
+    print(request.args.get('id'))
+    return jsonify(data)
+
+@app.route("/edituser", methods=['GET', 'POST'])
+def edit_user():
+    dbm.update_user(request.form.get('id'), request.form.get('username'), request.form.get('email'), request.form.get('password'))
+    if request.method == 'POST':
+        return redirect("/admin", code=302)
+
+@app.route("/createuser", methods=['GET', 'POST'])
+def create_user():
+    dbm.create_user(request.form.get('username'), request.form.get('email'), request.form.get('password'))
+    if request.method == 'POST':
+        return redirect("/admin", code=302)   
+
+@app.route("/deleteuser", methods=['GET', 'POST'])
+def delete_user():
+    dbm.delete_user(request.form.get('id'))
+    if request.method == 'POST':
+        return redirect("/admin", code=302)     
     
 @app.route("/getitem", methods=["GET", "POST"])
 def getitem():
@@ -204,6 +239,12 @@ def getitem():
 @app.route("/editquestion", methods=['POST', 'GET'])
 def edit_question():
     dbm.change_question_by_id(request.form.get('question'), request.form.get('leerdoel'), request.form.get('auteur'), request.form.get('id'))
+    if request.method == 'POST':
+        return redirect("/data", code=302)
+
+@app.route("/editexception", methods=['POST', 'GET'])
+def edit_exception():
+    dbm.change_exception(request.form.get('id'))
     if request.method == 'POST':
         return redirect("/data", code=302)
 
