@@ -231,11 +231,23 @@ def delete_user():
     
 @app.route("/getitem", methods=["GET", "POST"])
 def getitem():
-    print(request.args.get('id'))
-    data_vraag = dbm.get_vraag_by_id(request.args.get('id'))
-    data_leerdoelen = dbm.get_content('leerdoelen')
-    data_auteurs = dbm.get_content('auteurs')
-    return jsonify(data_vraag, data_leerdoelen, data_auteurs)
+    # print(request.args.get('id'))
+    print(request.args.get('table'))
+    table = request.args.get('table')
+    if table == 'vragen':
+        data_vraag = dbm.get_vraag_by_id(request.args.get('id'))
+        data_leerdoelen = dbm.get_content('leerdoelen')
+        data_auteurs = dbm.get_content('auteurs')
+        return jsonify(data_vraag, data_leerdoelen, data_auteurs)
+
+    elif table == 'auteurs':
+        print('auteurs')
+        return ""
+    elif table == 'leerdoelen':
+        print('leerdoelen')
+        return ""
+
+
 
 @app.route("/editquestion", methods=['POST', 'GET'])
 def edit_question():
