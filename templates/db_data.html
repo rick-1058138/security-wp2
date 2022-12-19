@@ -31,19 +31,19 @@
         <div id="modal-content" class="modal-content">
             <span id="close-popup" class="close">&times;</span>
             <form action="/editquestion" method="POST"> 
-                <h3 id="text-vraag"> Je bewerkt nu vraag </h3>
+                <h2>ID: <span id="text-vraag"></span> </h2>
                 <input type="hidden" id="id" name="id" value="">
-
+                <p> Leerdoel </p> 
+                <select id="leerdoelSelect" name="leerdoel"> 
+                    <option>--- Selecteer ---</option>
+                </select><br><br>
                 <p> Vraag </p> 
                 <textarea class="custom-text-area" name="question" id="question" rows="3"></textarea><br><br>
-                <p> Leerdoel </p> 
-                <select id="leerdoelSelect"> 
-                    
-                </select>
-                <input type="text" id="leerdoel" name="leerdoel" value=""> <br><br>
                 <p> Auteur </p> 
-                <input type="text" id="auteur" name="auteur" value=""> <br><br>
-
+                <!-- <input type="text" id="auteur" name="auteur" value=""> <br><br> -->
+                <select id="auteurSelect" name="auteur"> 
+                    <option>--- Selecteer ---</option>
+                </select><br><br>
                 <input type="submit" class="edit-btn" value="Edit">
             </form>
 
@@ -238,6 +238,7 @@
                 success: function (res) {
                     var vraag = res[0]
                     var leerdoelen = res[1]
+                    var auteurs = res[2]
                     // remove all option childs
                     while (document.getElementById("leerdoelSelect").firstChild) {
                         document.getElementById("leerdoelSelect").removeChild(document.getElementById("leerdoelSelect").lastChild);
@@ -247,24 +248,36 @@
                     console.log("uitzondering",vraag[4])
                     if(vraag[4] == 0){
                         document.getElementById("exception-button").style.display = "block";
+                        document.getElementById("exception-button-remove").style.display = "none";
                     }else{
+                        document.getElementById("exception-button").style.display = "none";
                         document.getElementById("exception-button-remove").style.display = "block";
-
                     }
+
                     document.getElementById("id").value = vraag[0];
                     document.getElementById("exception-id").value = vraag[0];
-                    document.getElementById("leerdoel").value = vraag[1];
                     document.getElementById("question").value = vraag[2];
-                    document.getElementById("auteur").value = vraag[3];
-                    document.getElementById("text-vraag").innerHTML = "Je bewerkt nu vraag " + vraag[0]
+                    document.getElementById("text-vraag").innerHTML = vraag[0]
+                    // add all leerdoelen to select as option 
                     for(let i = 0; i < leerdoelen[0].length; i++){
                         const option = document.createElement("option");
                         document.getElementById("leerdoelSelect").appendChild(option);
-                        option.innerText = leerdoelen[0][i][1]
+                        option.innerText = leerdoelen[0][i][1]+" ("+leerdoelen[0][i][0]+")"
                         option.value = leerdoelen[0][i][0]
                         if(vraag[1] == leerdoelen[0][i][0]){
                             console.log(vraag[1])
                             document.getElementById("leerdoelSelect").value = vraag[1];
+                        }
+                    }
+                    // add all auteurs to select as option 
+                    for(let i = 0; i < auteurs[0].length; i++){
+                        const option = document.createElement("option");
+                        document.getElementById("auteurSelect").appendChild(option);
+                        option.innerText = auteurs[0][i][1]+" "+auteurs[0][i][2]+" ("+auteurs[0][i][0]+")"
+                        option.value = auteurs[0][i][0]
+                        if(vraag[3] == auteurs[0][i][0]){
+                            console.log(vraag[3])
+                            document.getElementById("auteurSelect").value = vraag[3];
                         }
                     }
                 },
