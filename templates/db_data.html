@@ -29,12 +29,13 @@
         <div id="popup" class="modal"></div>
         <!-- Modal content -->
         <div id="modal-content" class="modal-content">
-        <span id="close-popup" class="close">&times;</span>
-        <form action="/editquestion" method="POST"> 
-            <label for="id" id="text-vraag"> Je bewerkt nu vraag </label><br><br>
-            <input type="hidden" id="id" name="id" value="">
-            <label for="question"> Vraag </label> 
-                <input type="text" id="question" name="question" value=""> <br><br>
+            <span id="close-popup" class="close">&times;</span>
+            <form action="/editquestion" method="POST"> 
+                <label for="id" id="text-vraag"> Je bewerkt nu vraag </label><br><br>
+                <input type="hidden" id="id" name="id" value="">
+
+                <label for="question"> Vraag </label> 
+                <textarea class="custom-text-area" name="question" id="question" rows="3"></textarea><br><br>
                 <label for="leerdoel"> Leerdoel </label> 
                 <select id="leerdoelSelect"> 
                     
@@ -42,13 +43,14 @@
                 <input type="text" id="leerdoel" name="leerdoel" value=""> <br><br>
                 <label for="auteur"> Auteur </label> 
                 <input type="text" id="auteur" name="auteur" value=""> <br><br>
-            <input type="submit" value="Edit">
-        </form>
 
-        <form action="/editexception" method="POST">
-            <input type="hidden" name="id" id="exception-id"> 
-            <input type="submit" class="exception-button" value="Uitzondering">
-        </form>
+                <input type="submit" value="Edit">
+            </form>
+
+            <form action="/editexception" method="POST">
+                <input type="hidden" name="id" id="exception-id" value=""> 
+                <input type="submit" class="exception-button" value="Uitzondering">
+            </form>
         </div>
         
         
@@ -164,12 +166,18 @@
                                     <!-- if index == 2 for leerdoel field -->   
                                     {% if current_table == 'vragen' and loop.index == 2 and leerdoelen != None %}
                                         <!-- check if leerdoel id exists -->
-                                        {% if not leerdoelen[0][part]%}
+
+                                        <!-- convert part to string in leerdoel_index  -->
+                                        {% set leerdoel_index = part | int %}
+                                        <!-- do -1 to leerdoel_index to get correct leerdoel index  -->
+                                        {% set leerdoel_index = leerdoel_index-1 | int %}
+                                        
+                                        {% if not leerdoelen[0][leerdoel_index]%}
                                             <!-- does not exist  -->
                                             <span class="error">{{part}}, Bestaat niet</span>
                                         {% else %}
                                             <!-- does exist, show text form  -->
-                                            {{leerdoelen[0][part][1]}} ({{part}})
+                                            {{leerdoelen[0][leerdoel_index][1]}} ({{part}})
                                         {%endif%}
                                     {% else %}
                                         {{ part }}
@@ -217,6 +225,7 @@
 
         var myFunction = function() {
             var attribute = this.getAttribute("data-id");
+            document.getElementById('modal-content').style.display = 'block'
             popup.style.display = "block";
             console.log(attribute);
             $.ajax({
@@ -229,12 +238,24 @@
                     // remove all option childs
                     while (document.getElementById("leerdoelSelect").firstChild) {
                         document.getElementById("leerdoelSelect").removeChild(document.getElementById("leerdoelSelect").lastChild);
-                      }
+                    }
 
-                   //document.getElementById("popup-id").innerText = res[0]
-                   document.getElementById("id").value = res[0];
-                   document.getElementById("question").value = res[2];
-                   document.getElementById("text-vraag").innerHTML = "Je bewerkt nu vraag " + res[0]
+                    document.getElementById("id").value = vraag[0];
+                    document.getElementById("exception-id").value = vraag[0];
+                    document.getElementById("leerdoel").value = vraag[1];
+                    document.getElementById("question").value = vraag[2];
+                    document.getElementById("auteur").value = vraag[3];
+                    document.getElementById("text-vraag").innerHTML = "Je bewerkt nu vraag " + vraag[0]
+                    for(let i = 0; i < leerdoelen[0].length; i++){
+                        const option = document.createElement("option");
+                        document.getElementById("leerdoelSelect").appendChild(option);
+                        option.innerText = leerdoelen[0][i][1]
+                        option.value = leerdoelen[0][i][0]
+                        if(vraag[1] == leerdoelen[0][i][0]){
+                            console.log(vraag[1])
+                            document.getElementById("leerdoelSelect").value = vraag[1];
+                        }
+                    }
                 },
                 error: function (res, options, error) {
                     console.log(res.status);

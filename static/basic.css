@@ -497,6 +497,11 @@ section>section {
     animation: fadeIn 0.3s ease-out;
 }
 
+.custom-text-area{
+    min-width: 50%;
+    font-family: Nunito ,sans-serif;
+}
+
 @keyframes fadeIn {
     from { 
         opacity: 0; 
