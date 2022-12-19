@@ -1,3 +1,4 @@
+
 {% extends "layout.html" %}
 {% block content %}
     <div id="loader-bg"></div>
@@ -33,15 +34,7 @@
         <form action="/editquestion" method="POST"> 
             <label for="id" id="text-vraag"> Je bewerkt nu vraag </label><br><br>
             <input type="hidden" id="id" name="id" value="">
-            <label for="question"> Vraag </label> 
-                <input type="text" id="question" name="question" value=""> <br><br>
-                <label for="leerdoel"> Leerdoel </label> 
-                <select id="leerdoelSelect"> 
-                    
-                </select>
-                <input type="text" id="leerdoel" name="leerdoel" value=""> <br><br>
-                <label for="auteur"> Auteur </label> 
-                <input type="text" id="auteur" name="auteur" value=""> <br><br>
+            <input type="text" id="question" name="question" value="">
             <input type="submit" value="Edit">
         </form>
 
@@ -218,22 +211,19 @@
         var myFunction = function() {
             var attribute = this.getAttribute("data-id");
             popup.style.display = "block";
+            document.getElementById('modal-content').style.display = "block";
+            // Add active class to modal for animation
+            document.getElementById('modal-content').classList.add("active");
             console.log(attribute);
             $.ajax({
                 type: "GET",
                 url: "/getitem",
                 data: {id : attribute},
                 success: function (res) {
-                    var vraag = res[0]
-                    var leerdoelen = res[1]
-                    // remove all option childs
-                    while (document.getElementById("leerdoelSelect").firstChild) {
-                        document.getElementById("leerdoelSelect").removeChild(document.getElementById("leerdoelSelect").lastChild);
-                      }
-
                    //document.getElementById("popup-id").innerText = res[0]
                    document.getElementById("id").value = res[0];
                    document.getElementById("question").value = res[2];
+                   document.getElementById("exception-id").value = res[0];
                    document.getElementById("text-vraag").innerHTML = "Je bewerkt nu vraag " + res[0]
                 },
                 error: function (res, options, error) {
