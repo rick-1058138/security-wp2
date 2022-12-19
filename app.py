@@ -231,14 +231,13 @@ def delete_user():
     
 @app.route("/getitem", methods=["GET", "POST"])
 def getitem():
+    data = dbm.get_vraag_by_id(request.args.get('id'))
     print(request.args.get('id'))
-    data_vraag = dbm.get_vraag_by_id(request.args.get('id'))
-    data_leerdoelen = dbm.get_content('leerdoelen')
-    return jsonify(data_vraag, data_leerdoelen)
+    return jsonify(data)
 
 @app.route("/editquestion", methods=['POST', 'GET'])
 def edit_question():
-    dbm.change_question_by_id(request.form.get('question'), request.form.get('leerdoel'), request.form.get('auteur'), request.form.get('id'))
+    dbm.change_question_by_id(request.form.get('question'), request.form.get('id'))
     if request.method == 'POST':
         return redirect("/data", code=302)
 
