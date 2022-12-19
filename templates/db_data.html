@@ -31,19 +31,28 @@
         <div id="modal-content" class="modal-content">
             <span id="close-popup" class="close">&times;</span>
             <form action="/editquestion" method="POST"> 
-                <h2>ID: <span id="text-vraag"></span> </h2>
-                <input type="hidden" id="id" name="id" value="">
-                <p> Leerdoel </p> 
-                <select id="leerdoelSelect" name="leerdoel"> 
-                    <option>--- Selecteer ---</option>
-                </select><br><br>
-                <p> Vraag </p> 
-                <textarea class="custom-text-area" name="question" id="question" rows="3"></textarea><br><br>
-                <p> Auteur </p> 
-                <!-- <input type="text" id="auteur" name="auteur" value=""> <br><br> -->
-                <select id="auteurSelect" name="auteur"> 
-                    <option>--- Selecteer ---</option>
-                </select><br><br>
+                {% if current_table == 'vragen' %}
+                    <input type="hidden" name="table" value="{{current_table}}">
+                    <h2>ID: <span id="text-vraag"></span> </h2>
+                    <input type="hidden" id="id" name="id" value="">
+                    <p> Leerdoel </p> 
+                    <select id="leerdoelSelect" name="leerdoel"> 
+                        <option value="">--- Selecteer ---</option>
+                    </select><br><br>
+                    <p> Vraag </p> 
+                    <textarea class="custom-text-area" name="question" id="question" rows="3"></textarea><br><br>
+                    <p> Auteur </p> 
+                    <!-- <input type="text" id="auteur" name="auteur" value=""> <br><br> -->
+                    <select id="auteurSelect" name="auteur"> 
+                        <option value="">--- Selecteer ---</option>
+                    </select><br><br>
+                {% elif current_table == 'auteurs' %}
+                    <p>auteurs</p>
+                {% elif current_table == 'leerdoelen' %}
+                    <p>leerdoelen</p>
+                {%endif%}
+
+
                 <input type="submit" class="edit-btn" value="Edit">
             </form>
 
