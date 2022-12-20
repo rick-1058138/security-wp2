@@ -246,12 +246,27 @@ class DatabaseModel:
         item = cursor.fetchone()
         return item
 
-    def change_question_by_id(self, question, id):
+    def change_question_by_id(self, question, leerdoel, auteur,id):
         connection = sqlite3.connect(self.database_file)
         cursor = connection.cursor()
-        cursor.execute(f"UPDATE vragen SET vraag = '{question}' WHERE id = '{id}'")
+        cursor.execute(f"UPDATE vragen SET vraag = '{question}', leerdoel = '{leerdoel}' ,  auteur = '{auteur}' WHERE id = '{id}'")
         connection.commit()
         cursor.close()
+
+    def change_leerdoel_by_id(self, leerdoel, id):
+        connection = sqlite3.connect(self.database_file)
+        cursor = connection.cursor()
+        cursor.execute(f"UPDATE leerdoelen SET leerdoel = '{leerdoel}' WHERE id = '{id}'")
+        connection.commit()
+        cursor.close()
+
+    def change_auteur_by_id(self, voornaam, achternaam, geboortejaar, mederwerker, pensioen, id):
+        connection = sqlite3.connect(self.database_file)
+        cursor = connection.cursor()
+        cursor.execute(f"UPDATE auteurs SET voornaam = '{voornaam}', achternaam = '{achternaam}', geboortejaar = '{geboortejaar}', medewerker = '{mederwerker}', [met pensioen] = '{pensioen}' WHERE id = '{id}'")
+        connection.commit()
+        cursor.close()
+
 
     def change_exception(self, id):
             connection = sqlite3.connect(self.database_file)
