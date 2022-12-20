@@ -173,10 +173,9 @@ def login():
             session['id'] = account[0]
             session['username'] = account[1]
             session['isAdmin'] = account[4]
-            flash('Logged in succefully!')
-            return redirect(url_for('index'))
+            return redirect(url_for('question_data'))
         else:
-            error = "Invalid username or password"
+            error = "Ongeldige gebruikersnaam en/of ongeldig wachtwoord. Probeer het opnieuw."
     return render_template(
         "login.html", 
         error = error
@@ -185,7 +184,7 @@ def login():
 # Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/logout")
 def logout():
-    # Remove session data, this will log the user out
+    # Remove session data, this will log the user out.
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('username', None)
