@@ -259,12 +259,13 @@ def getitem():
 @app.route("/editquestion", methods=['POST', 'GET'])
 def edit_question():
     table = request.form.get('table')
+    print("Table:", table)
     if table == 'vragen':
         dbm.change_question_by_id(request.form.get('question'), request.form.get('leerdoel'), request.form.get('auteur'), request.form.get('id'))
     elif table == 'auteurs':
         print("auteurs")
     elif table == 'leerdoelen':
-        print("leerdoelen")
+        dbm.change_leerdoel_by_id(request.form.get('leerdoel'), request.form.get('id'))
 
     if request.method == 'POST':
         return redirect("/data", code=302)

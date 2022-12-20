@@ -253,6 +253,13 @@ class DatabaseModel:
         connection.commit()
         cursor.close()
 
+    def change_leerdoel_by_id(self, leerdoel, id):
+        connection = sqlite3.connect(self.database_file)
+        cursor = connection.cursor()
+        cursor.execute(f"UPDATE leerdoelen SET leerdoel = '{leerdoel}' WHERE id = '{id}'")
+        connection.commit()
+        cursor.close()
+
     def change_exception(self, id):
             connection = sqlite3.connect(self.database_file)
             item = self.get_vraag_by_id(id)
