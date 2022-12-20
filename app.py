@@ -137,13 +137,17 @@ def question_data(table = 'vragen'):
             # get leerdoelen data is table = vragen, else return none
             if(table == 'vragen'):
                 leerdoelen = dbm.get_content('leerdoelen')
+                auteurs = dbm.get_content('auteurs')
             else:
                 leerdoelen = None
+                auteurs = None
         else:
             # when not allowed return 404 page 
             return render_template(
                 "404.html"
             )
+
+
 
         return render_template(
             "db_data.html", 
@@ -154,6 +158,7 @@ def question_data(table = 'vragen'):
             current_column = column, 
             current_type = type, 
             leerdoelen = leerdoelen,
+            auteurs = auteurs,
             minmax = minmax,
             current_between_column = between_column,
             chosen_min = min,
