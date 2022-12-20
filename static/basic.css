@@ -437,6 +437,7 @@ section>section {
 }
 .id-link{
     transition: 0.2s;
+    display: inline-block;
 }
 
 .id-link:hover>span{
