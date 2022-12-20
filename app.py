@@ -267,7 +267,7 @@ def edit_question():
         dbm.change_leerdoel_by_id(request.form.get('leerdoel'), request.form.get('id'))
 
     if request.method == 'POST':
-        return redirect("/data", code=302)
+        return redirect("/data?table_choice="+table, code=302)
 
 @app.route("/editexception", methods=['POST', 'GET'])
 def edit_exception():
