@@ -260,6 +260,14 @@ class DatabaseModel:
         connection.commit()
         cursor.close()
 
+    def change_auteur_by_id(self, voornaam, achternaam, geboortejaar, mederwerker, pensioen, id):
+        connection = sqlite3.connect(self.database_file)
+        cursor = connection.cursor()
+        cursor.execute(f"UPDATE auteurs SET voornaam = '{voornaam}', achternaam = '{achternaam}', geboortejaar = '{geboortejaar}', medewerker = '{mederwerker}', [met pensioen] = '{pensioen}' WHERE id = '{id}'")
+        connection.commit()
+        cursor.close()
+
+
     def change_exception(self, id):
             connection = sqlite3.connect(self.database_file)
             item = self.get_vraag_by_id(id)
