@@ -368,7 +368,7 @@ section>section {
 }
 
 .hti__video {
-    height: 80vh;
+    height: 85vh;
     left: 0;
     object-fit: cover;
     object-position: center;
@@ -383,7 +383,7 @@ section>section {
 
 .hti__overlay {
     background: #041f74;
-    height: 80vh;
+    height: 85vh;
     left: 0;
     opacity: .7;
     position: absolute;
