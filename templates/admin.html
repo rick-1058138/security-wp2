@@ -13,12 +13,16 @@
 		<div id="modal-update" class="modal-content">
 			<span id="close-update" class="close">&times;</span>
 			<form action="/edituser" method="POST" autocomplete="off"> 
-				<label for="id" id="text-gebruiker"> Je bewerkt nu gebruiker</label><br><br>
+				<h2>ID: <span id="text-gebruiker"></span> </h2>
+				<!-- <label for="id" id="text-gebruiker"> Je bewerkt nu gebruiker</label><br><br> -->
 				<input type="hidden" id="id" name="id" value="">
-				<input type="text" id="username" name="username" value="" maxlength="50">
-				<input type="text" id="email" name="email" value="" maxlength="100">
-				<input type="text" id="password" name="password" value="" maxlength="50">
-				<input type="submit" value="Edit">
+				<p>Gebruikersnaam</p>
+				<input type="text" id="username" name="username" value="" maxlength="50"><br><br>
+				<p>E-mail</p>
+				<input type="text" id="email" name="email" value="" maxlength="100"><br><br>
+				<p>Wachtwoord</p>
+				<input type="text" id="password" name="password" value="" maxlength="50"><br>
+				<input type="submit" class="edit-btn" value="Edit">
 			</form>
 
 			<form action="/deleteuser" method="POST">
@@ -32,12 +36,15 @@
 		<div id="modal-create" class="modal-content">
 			<span id="close-create" class="close">&times;</span>
 			<form action="/createuser" method="POST" autocomplete="off"> 
-				<label for="id" id="text-gebruiker">Maak een nieuwe gebruiker aan</label><br><br>
+				<h2>Nieuwe gebruiker</h2>
 				<input type="hidden" id="id" name="id" value="">
-				<input type="text" id="username" name="username" placeholder="Gebruikersnaam" maxlength="50">
-				<input type="text" id="email" name="email" placeholder="Email" maxlength="100">
-				<input type="text" id="password" name="password" placeholder="Wachtwoord" maxlength="50">
-				<input type="submit" value="Aanmaken" class="green-submit">
+				<p>Gebruikersnaam</p>
+				<input type="text" id="username" name="username" placeholder="Gebruikersnaam" maxlength="50"><br><br>
+				<p>E-mail</p>
+				<input type="text" id="email" name="email" placeholder="Email" maxlength="100"><br><br>
+				<p>Wachtwoord</p>
+				<input type="text" id="password" name="password" placeholder="Wachtwoord" maxlength="50"><br>
+				<input type="submit" class="edit-btn" value="Aanmaken" class="green-submit">
 			</form>
 		</div>
 
@@ -92,7 +99,7 @@
                    document.getElementById("username").value = res[1];
 				   document.getElementById("email").value = res[2];
                    document.getElementById("delete-id").value = res[0];
-                   document.getElementById("text-gebruiker").innerHTML = "Je bewerkt nu gebruiker " + res[0]
+                   document.getElementById("text-gebruiker").innerHTML = res[0]
                 },
                 error: function (res, options, error) {
                     console.log(res.status);
