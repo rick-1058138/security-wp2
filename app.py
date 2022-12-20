@@ -238,13 +238,34 @@ def delete_user():
     
 @app.route("/getitem", methods=["GET", "POST"])
 def getitem():
-    data = dbm.get_vraag_by_id(request.args.get('id'))
-    print(request.args.get('id'))
-    return jsonify(data)
+    # print(request.args.get('id'))
+    print(request.args.get('table'))
+    table = request.args.get('table')
+    if table == 'vragen':
+        data_vraag = dbm.get_vraag_by_id(request.args.get('id'))
+        data_leerdoelen = dbm.get_content('leerdoelen')
+        data_auteurs = dbm.get_content('auteurs')
+        return jsonify(data_vraag, data_leerdoelen, data_auteurs)
+
+    elif table == 'auteurs':
+        data_auteur = dbm.get_item_by_id(table, request.args.get('id'))
+        return jsonify(data_auteur)
+    elif table == 'leerdoelen':
+        data_leerdoelen = dbm.get_item_by_id(table, request.args.get('id'))
+        return jsonify(data_leerdoelen)
+
+
 
 @app.route("/editquestion", methods=['POST', 'GET'])
 def edit_question():
-    dbm.change_question_by_id(request.form.get('question'), request.form.get('id'))
+    table = request.form.get('table')
+    if table == 'vragen':
+        dbm.change_question_by_id(request.form.get('question'), request.form.get('leerdoel'), request.form.get('auteur'), request.form.get('id'))
+    elif table == 'auteurs':
+        print("auteurs")
+    elif table == 'leerdoelen':
+        print("leerdoelen")
+
     if request.method == 'POST':
         return redirect("/data", code=302)
 

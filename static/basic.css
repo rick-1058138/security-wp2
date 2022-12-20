@@ -498,6 +498,11 @@ section>section {
     animation: fadeIn 0.3s ease-out;
 }
 
+.custom-text-area{
+    min-width: 50%;
+    font-family: Nunito ,sans-serif;
+}
+
 @keyframes fadeIn {
     from { 
         opacity: 0; 
@@ -562,20 +567,59 @@ footer{
 }
 
 .exception-tag {
-    color: red;
+    background: var(--blueaccent);
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--rc);
+    color: white;
     font-size: 0.9rem;
     font-weight: bold;
+    margin-top: 0.2rem;
+    display: inline-block;
 }
 
 
 .exception-button {
-    background: #f24444;
-    color: white;
+    color: var(--blueaccent);
     margin-top: 0.5rem;
-    padding: 0.5rem 1rem;
+    padding: 0.8rem 1.2rem;
     letter-spacing: 0.5px;
+    font-weight: bold;
+    transition: 0.2s;
+    display: none;
 }
 
+.exception-button:hover{
+    color: white;
+    background: var(--blueaccent);
+}
+
+.exception-button-remove {
+    color: #f24444;
+    margin-top: 0.5rem;
+    padding: 0.8rem 1.2rem;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+    transition: 0.2s;
+    display: none;
+}
+
+.exception-button-remove:hover{
+    color: white;
+    background: #f24444;
+}
+
+.edit-btn{
+    padding: 0.7rem 1.6rem;
+    background: var(--green);
+    color: white;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+
+.form-name-container{
+    display: flex;
+    gap: 1rem;
+}
 
 
 
