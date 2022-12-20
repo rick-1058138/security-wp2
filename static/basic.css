@@ -178,6 +178,7 @@ section>section {
 
 .page-header{
     text-align: center;
+    
 }
 
 
@@ -644,6 +645,29 @@ footer{
     top: 0;
     left: 0;
     
+}
+
+.uitleg-section {
+    overflow: hidden;
+    width: 80%;
+    margin: 1rem auto;
+    border-radius: var(--rc);
+    background: #2ae082b2;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.uitleg-section>div{
+    padding:1.5rem;
+}
+
+.uitleg-section>div>ul {
+    margin-left: 1rem;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.bold{
+    font-weight: bold;
 }
 
 @keyframes spin {

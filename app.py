@@ -115,6 +115,9 @@ def question_data(table = 'vragen'):
             if type == 'leerdoel':
                 column = 'leerdoel'
                 data, columns = dbm.get_no_leerdoel(min_max_filter, between_column, min, max, uitzondering)
+            elif type == 'auteur':
+                column = 'auteur'
+                data, columns = dbm.get_no_auteur(min_max_filter, between_column, min, max, uitzondering)
             elif type == 'html':
                 column = 'vraag'
                 data, columns = dbm.get_html_codes(min_max_filter, between_column, min, max, uitzondering)
@@ -134,13 +137,17 @@ def question_data(table = 'vragen'):
             # get leerdoelen data is table = vragen, else return none
             if(table == 'vragen'):
                 leerdoelen = dbm.get_content('leerdoelen')
+                auteurs = dbm.get_content('auteurs')
             else:
                 leerdoelen = None
+                auteurs = None
         else:
             # when not allowed return 404 page 
             return render_template(
                 "404.html"
             )
+
+
 
         return render_template(
             "db_data.html", 
@@ -151,6 +158,7 @@ def question_data(table = 'vragen'):
             current_column = column, 
             current_type = type, 
             leerdoelen = leerdoelen,
+            auteurs = auteurs,
             minmax = minmax,
             current_between_column = between_column,
             chosen_min = min,
@@ -173,10 +181,9 @@ def login():
             session['id'] = account[0]
             session['username'] = account[1]
             session['isAdmin'] = account[4]
-            flash('Logged in succefully!')
-            return redirect(url_for('index'))
+            return redirect(url_for('question_data'))
         else:
-            error = "Invalid username or password"
+            error = "Ongeldige gebruikersnaam en/of ongeldig wachtwoord. Probeer het opnieuw."
     return render_template(
         "login.html", 
         error = error
@@ -185,7 +192,7 @@ def login():
 # Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/logout")
 def logout():
-    # Remove session data, this will log the user out
+    # Remove session data, this will log the user out.
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('username', None)

@@ -72,6 +72,22 @@ class DatabaseModel:
         data, columns = self.return_filter_content(query)
         return data, columns
 
+    def get_no_auteur(self, min_max_filter, between_column, min, max, uitzondering):
+        if uitzondering == "ja":
+            subquery = "and uitzondering = 1"
+        elif uitzondering == "nee":
+            subquery = "and uitzondering = 0"
+        else:
+            subquery = ""
+
+        if(min_max_filter):
+            query = f"SELECT * FROM vragen WHERE auteur NOT IN (SELECT id FROM auteurs) AND ({between_column} >= {min} AND {between_column} <= {max}) "+subquery
+        else:
+            query = "SELECT * FROM vragen WHERE auteur NOT IN (SELECT id FROM auteurs) "+subquery
+        print(query)
+        data, columns = self.return_filter_content(query)
+        return data, columns
+
 
     def get_empty_column(self, table, column, min_max_filter, between_column, min, max, uitzondering):
         if uitzondering == "ja":
@@ -230,10 +246,10 @@ class DatabaseModel:
         item = cursor.fetchone()
         return item
 
-    def change_question_by_id(self, question, leerdoel, auteur, id):
+    def change_question_by_id(self, question, id):
         connection = sqlite3.connect(self.database_file)
         cursor = connection.cursor()
-        cursor.execute(f"UPDATE vragen SET vraag = '{question}', leerdoel = '{leerdoel}', auteur = '{auteur}' WHERE id = '{id}'")
+        cursor.execute(f"UPDATE vragen SET vraag = '{question}' WHERE id = '{id}'")
         connection.commit()
         cursor.close()
 

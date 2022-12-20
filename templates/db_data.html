@@ -1,9 +1,10 @@
+
 {% extends "layout.html" %}
 {% block content %}
     <div id="loader-bg"></div>
     <div id="loader"></div>
     <section class="top-section">
-        <h1 class="page-header">Tabellen</h1>
+        <h1 class="page-header">Tabel kiezen:</h1>
         <form action="/data" class="top-search-form" method="GET">
             <select class="custom-select" name="table_choice" id="">
                 <!-- for every table an option in select, with selected attribute if that is the current table  -->
@@ -92,7 +93,7 @@
         
         
 
-        <h2 class="sub-header">{{current_table}}</h2>
+        <h2 class="sub-header">{{current_table | capitalize}}</h2>
         <form action="/data" class="search-form" method="get">
             <!-- hidden field for current table for next query's  -->
             <input type="hidden" name="table_choice" value="{{current_table}}">
@@ -104,6 +105,7 @@
                     <select class="custom-select" name="error_type" id="error_type_select" >
                         <option value="alles" {% if current_type=='alles' %} selected {% endif %} >Alles</option>
                         <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
+                        <option value="auteur" {% if current_type=='auteur' %} selected {% endif %} >Ongeldige auteur</option>
                         <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
                         <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
                         <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Verkeerde waarde</option>
@@ -223,6 +225,21 @@
                                             <!-- does exist, show text form  -->
                                             {{leerdoelen[0][leerdoel_index][1]}} ({{part}})
                                         {%endif%}
+                                    {% elif current_table == 'vragen' and loop.index == 4 and auteurs != None %}
+                                        <!-- check if leerdoel id exists -->
+
+                                        <!-- convert part to string in leerdoel_index  -->
+                                        {% set auteurs_index = part | int %}
+                                        <!-- do -1 to leerdoel_index to get correct leerdoel index  -->
+                                        {% set auteurs_index = auteurs_index-1 | int %}
+                                        
+                                        {% if not auteurs[0][auteurs_index]%}
+                                            <!-- does not exist  -->
+                                            <span class="error">{{part}}, Bestaat niet</span>
+                                        {% else %}
+                                            <!-- does exist, show text form  -->
+                                            {{auteurs[0][auteurs_index][1]}} {{auteurs[0][auteurs_index][2]}} ({{part}})
+                                        {%endif%}
                                     {% else %}
                                         {{ part }}
 
@@ -269,6 +286,9 @@
             var attribute = this.getAttribute("data-id");
             modal.style.display = 'block';
             popup.style.display = "block";
+            document.getElementById('modal-content').style.display = "block";
+            // Add active class to modal for animation
+            document.getElementById('modal-content').classList.add("active");
             console.log(attribute);
             $.ajax({
                 type: "GET",
