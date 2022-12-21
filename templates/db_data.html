@@ -206,7 +206,7 @@
                             
                                 
                             {% else %}
-                                <p class="item-attribute {% if current_column==columns[loop.index-1] %} error {% endif %}" >
+                                <p class="item-attribute " >
 
                                     <strong>{{columns[loop.index-1]}}:</strong> 
                                     <!-- if index == 2 for leerdoel field -->   
@@ -236,6 +236,9 @@
                                         {% if not auteurs[0][auteurs_index]%}
                                             <!-- does not exist  -->
                                             <span class="error">{{part}}, Bestaat niet</span>
+
+                                        {%elif part == None%}
+                                            None
                                         {% else %}
                                             <!-- does exist, show text form  -->
                                             {{auteurs[0][auteurs_index][1]}} {{auteurs[0][auteurs_index][2]}} ({{part}})
