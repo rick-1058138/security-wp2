@@ -294,18 +294,5 @@ def incorrect_data():
         "user.html"
     )
 
-
-# The table route displays the content of a table
-@app.route("/table_details/<table_name>")
-@login_required
-def table_content(table_name=None):
-    if not table_name:
-        return "Missing table name", 400  # HTTP 400 = Bad Request
-    else:
-        rows, column_names = dbm.get_table_content(table_name)
-        return render_template(
-            "table_details.html", rows=rows, columns=column_names, table_name=table_name
-        )
-
 if __name__ == "__main__":
     app.run(host=FLASK_IP, port=FLASK_PORT, debug=FLASK_DEBUG)
