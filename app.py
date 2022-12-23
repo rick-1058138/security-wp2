@@ -191,6 +191,7 @@ def login():
 
 # Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/logout")
+@login_required
 def logout():
     # Remove session data, this will log the user out.
     session.pop('loggedin', None)
@@ -213,30 +214,34 @@ def admin():
     )
 
 @app.route("/getuser", methods=["GET", "POST"])
+@login_required
 def getuser():
     data = dbm.get_user_by_id(request.args.get('id'))
-    print(request.args.get('id'))
     return jsonify(data)
 
 @app.route("/edituser", methods=['GET', 'POST'])
+@login_required
 def edit_user():
     dbm.update_user(request.form.get('id'), request.form.get('username'), request.form.get('email'), request.form.get('password'))
     if request.method == 'POST':
         return redirect("/admin", code=302)
 
 @app.route("/createuser", methods=['GET', 'POST'])
+@login_required
 def create_user():
     dbm.create_user(request.form.get('username'), request.form.get('email'), request.form.get('password'))
     if request.method == 'POST':
         return redirect("/admin", code=302)   
 
 @app.route("/deleteuser", methods=['GET', 'POST'])
+@login_required
 def delete_user():
     dbm.delete_user(request.form.get('id'))
     if request.method == 'POST':
         return redirect("/admin", code=302)     
     
 @app.route("/getitem", methods=["GET", "POST"])
+@login_required
 def getitem():
     # print(request.args.get('id'))
     print(request.args.get('table'))
@@ -257,6 +262,7 @@ def getitem():
 
 
 @app.route("/editquestion", methods=['POST', 'GET'])
+@login_required
 def edit_question():
     table = request.form.get('table')
     if table == 'vragen':
@@ -270,16 +276,19 @@ def edit_question():
         return redirect("/data?table_choice="+table, code=302)
 
 @app.route("/editexception", methods=['POST', 'GET'])
+@login_required
 def edit_exception():
     dbm.change_exception(request.form.get('id'))
     if request.method == 'POST':
         return redirect("/data", code=302)
 
 @app.route('/question/<id>')
+@login_required
 def test(id):
     return redirect("https://www.test-correct.nl/?vraag=" + id)
     
 @app.route("/user")
+@login_required
 def incorrect_data():
     return render_template(
         "user.html"
