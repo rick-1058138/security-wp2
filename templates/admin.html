@@ -6,15 +6,12 @@
     </section>
 
     <section class="content-section">
-		<!-- The Modal -->
+		<!-- Popup for editing a user account. Handled in the script at the bottom of this page. -->
 		<div id="popup-update" class="modal"></div>
-
-		<!-- Modal content -->
 		<div id="modal-update" class="modal-content">
 			<span id="close-update" class="close">&times;</span>
 			<form action="/edituser" method="POST" autocomplete="off"> 
 				<h2>ID: <span id="text-gebruiker"></span> </h2>
-				<!-- <label for="id" id="text-gebruiker"> Je bewerkt nu gebruiker</label><br><br> -->
 				<input type="hidden" id="id" name="id" value="">
 				<p>Gebruikersnaam</p>
 				<input type="text" id="username" name="username" value="" maxlength="50"><br><br>
@@ -25,13 +22,14 @@
 				<input type="submit" class="edit-btn" value="Edit">
 			</form>
 
+			<!-- Button for deleting the selected user. -->
 			<form action="/deleteuser" method="POST">
 				<input type="hidden" name="id" id="delete-id"> 
 				<input type="submit" class="danger-btn" value="Verwijderen">
 			</form>
 		</div>
 		
-
+		<!-- Popup for creating a new user account. Handled in the script at the bottom of this page. -->
 		<div id="popup-create" class="modal"></div>
 		<div id="modal-create" class="modal-content">
 			<span id="close-create" class="close">&times;</span>
@@ -48,11 +46,13 @@
 			</form>
 		</div>
 
+		<!-- Button to open the create user popup. Handled in the script at the bottom of this page. -->
 		<h2 class="sub-header">Gebruikers</h2>
 		<form class="search-form">
 			<button type="button" class="green-submit" id="open-create">Nieuwe Gebruiker</button>
 		</form>
 		
+		<!-- Display all items in the table. -->
         <div class="table-items">
             {% for item in data %}  
 				<div class="table-item" id="{{item[0]}}" data-id="{{item[0]}}">
@@ -79,11 +79,14 @@
     </section>
 
 	<script>
+		// Defines various elements on this page as easy to user variables.
         var elements = document.getElementsByClassName("table-item");
 		var create_btn = document.getElementById("open-create");
         var popup_update = document.getElementById("popup-update");
 		var popup_create = document.getElementById("popup-create");
 	
+		// Called when clicking on a specific user. Shows the respective popup and displays information in the form, 
+		// 	   which can then be edited.
 		var show_inspect = function() {
             var attribute = this.getAttribute("data-id");
             popup_update.style.display = "block";
@@ -109,16 +112,19 @@
             });
         };
 
+		// Called when clicking on the button to create a new user. Shows the respective popup.
 		var show_create = function(){
 			popup_create.style.display = "block";
 			document.getElementById('modal-create').style.display = "block";
 			document.getElementById('modal-create').classList.add("active");
 		};
 
+		// Called when trying to edit the main admin account. Displays an alert, as this account may not be edited.
 		var show_protected = function() {
             alert("This user cannot be modified due to security reasons. If you still wish to modify this user, please contact your database administrator.");
 		};
 
+		// Called when trying to close a popup, or clicking off of a popup. Closes all popups.
 		close = function() {
             popup_update.style.display = "none";
 			popup_create.style.display = "none";
@@ -126,12 +132,14 @@
 			document.getElementById('modal-create').style.display = "none";
         };
 
+		// Add listeners to check if a button or item has been pressed. Shows the respective popup or alert if that happens.
 		elements[0].addEventListener('click', show_protected, false);
 		for (var i = 1; i < elements.length; i++) {
             elements[i].addEventListener('click', show_inspect, false);
         }
 		create_btn.addEventListener('click', show_create, false);
 
+		// Adds listeners to check if the user is trying to close a popup and calls the close function if they are.
 		document.getElementById("close-update").addEventListener('click', close);
 		document.getElementById("close-create").addEventListener('click', close);
 		document.getElementById("popup-update").addEventListener('click', close);
