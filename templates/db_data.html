@@ -175,6 +175,10 @@
         </form>
 
         <div class="table-items">
+            <form action="/csv" method="post">
+                <input type="hidden" name="data" value="{{data}}">
+                <input type="submit" value="+ Exporteren als csv">
+            </form>
             {% for item in data %}  
                 <div class="table-item" id="{{item[0]}}" data-id="{{item[0]}}">
                         {% for part in item %}

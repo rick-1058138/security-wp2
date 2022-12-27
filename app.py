@@ -4,7 +4,7 @@ import datetime
 
 
 
-from flask import Flask, jsonify, render_template, request, redirect, url_for, session, flash
+from flask import Flask, jsonify, render_template, request, redirect, url_for, session, flash, make_response, Response
 from functools import wraps
 
 
@@ -31,6 +31,24 @@ dbm = DatabaseModel(DATABASE_FILE)
 # A secret key is needed to allow for sessions.
 app.secret_key = 'Software inc.'
 
+
+data_rows = None
+data_columns = None
+
+def set_data_rows(data):
+    global data_rows
+    data_rows = data
+
+def set_data_columns(columns):
+    global data_columns
+    data_columns = columns
+
+
+def get_data_rows():
+    return data_rows
+
+def get_data_columns():
+    return data_columns
 # A decorator to check if you are logged in. If you are, it redirects you to the requested page.
 #   If you are not logged in, it instead redirects you to the login page.
 #
@@ -156,6 +174,10 @@ def question_data(table = 'vragen'):
             return render_template(
                 "404.html"
             )
+
+        # set data for csv export 
+        set_data_rows(data)
+        set_data_columns(columns)
 
         return render_template(
             "db_data.html", 
@@ -301,6 +323,25 @@ def edit_exception():
 @login_required
 def test(id):
     return redirect("https://www.test-correct.nl/?vraag=" + id)
+
+@app.route("/csv", methods=['POST'])
+@login_required
+def returncsv():
+    csv = get_data_rows()
+    columns = get_data_columns()
+
+    def generate():
+        for row in csv:
+            if not None:
+                yield '## '
+                for column in columns:
+                    yield str(column) + ','
+                yield ' ## \n'
+
+                for item in row:
+                    yield str(item) + '\n'
+                yield '\n'
+    return Response(generate(), mimetype='text/csv')
 
 if __name__ == "__main__":
     app.run(host=FLASK_IP, port=FLASK_PORT, debug=FLASK_DEBUG)
