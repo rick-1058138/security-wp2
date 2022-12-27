@@ -324,7 +324,7 @@ def edit_exception():
 def test(id):
     return redirect("https://www.test-correct.nl/?vraag=" + id)
 
-@app.route("/csv", methods=['POST'])
+@app.route("/csv")
 @login_required
 def returncsv():
     csv = get_data_rows()

@@ -250,7 +250,9 @@ section>section {
 
 .table-items{
     padding: 2rem;
+    padding-top: 3.5rem;
     width: 100%;
+    position: relative;
 }
 
 .table-item{
@@ -669,6 +671,22 @@ footer{
 
 .bold{
     font-weight: bold;
+}
+
+.export-btn{
+    padding: 0.6rem;
+    background: var(--blue);
+    color: white;
+    border-radius: var(--rc);
+    display: inline-block;
+    transition: 0.3s;
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+}
+
+.export-btn:hover{
+    translate: 0 -5px;
 }
 
 @keyframes spin {
