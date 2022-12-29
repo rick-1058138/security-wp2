@@ -108,7 +108,7 @@
                         <option value="auteur" {% if current_type=='auteur' %} selected {% endif %} >Ongeldige auteur</option>
                         <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
                         <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
-                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Verkeerde waarde</option>
+                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Niet 0 of 1</option>
                     </select>
             
                     <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' and current_type!='wrong_value' %} style="display: none;" {% endif %}>
