@@ -47,31 +47,50 @@ def login_required(f):
             return redirect(url_for('login'))
     return wrap
 
+# A decorator to check if you are using an administrator account. If you are, it redirects you to the requested page.
+#   If you are not using an administrator account, it instead redirects you to the home page.
+#
+# Used sources:
+# https://stackoverflow.com/questions/35307676/check-login-status-flask
+# https://flask.palletsprojects.com/en/2.0.x/patterns/viewdecorators/?highlight=wrap
+def admin_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'isAdmin' in session and session['isAdmin'] == 1:
+            return f(*args, **kwargs)
+        else:
+            return redirect(url_for('index'))
+    return wrap
+
+# When requesting a new page, checks to see if the session lifetime has expired.
+#   If so, it will clear the session data and you will be required to login again.
 @app.before_request
 def before_request():
     session.permanent = True
     app.permanent_session_lifetime = datetime.timedelta(days=1)
     session.modified = True
 
+# The home page. You are directed here upon establishing a connection to the website.
 @app.route("/")
 def index():
     return render_template(
         "home.html"
     )
 
+# The question page. This handles all of the requests related to showing questions.
 @app.route("/data", methods=['GET'])
 @login_required
 def question_data(table = 'vragen'):
-    # min and max value for each column of vragen (can later contain other tables as well)
+    # Min and max value for each column of vragen (can later contain other tables as well).
     minmax = dbm.get_tables_min_max()
-    # allowed tables and none because none is the first value when visiting without filters
+    # Allowed tables and none, because none is the first value when visiting without filters.
     allowed_tables = ['auteurs', 'leerdoelen', 'vragen', None]
 
-    # columns with integers that can be filtered by min and max values 
+    # Columns with integers that can be filtered by min and max values.
     allowed_between_columns = ['id', 'leerdoel', 'auteur', 'geboortejaar']
 
     if request.method == 'GET':
-        # needs validation ( only allowed tables: auteurs, leerdoelen, vragen)
+        # Needs validation (only allowed tables: auteurs, leerdoelen, vragen).
         table = request.args.get('table_choice')
         type = request.args.get('error_type')
         column = request.args.get('column')
@@ -81,26 +100,21 @@ def question_data(table = 'vragen'):
         between_column = request.args.get('between_column')
         min = request.args.get('min')
         max = request.args.get('max')
-        # check if min or max input is filled else set to none
+        # Check if min or max input is filled, otherwise it is set to none.
         if min == '' or max == '':
             min = None
             max = None
 
         min_max_filter = False
         
-        # check if min and max are set
+        # Check if min and max are set.
         if(min != None and max != None):
             min_max_filter = True
-            print("min & max value zijn gezet")
-
         else:
             min_max_filter = False
 
-        
-
         if not table:
-            # set default table 
-            print("default")
+            # Set the default table. 
             DEFAULT_TABLE = 'vragen'
             DEFAULT_TYPE = 'alles'
             DEFAULT_COLUMN = 'id'
@@ -111,7 +125,7 @@ def question_data(table = 'vragen'):
             uitzondering = DEFAULT_UITZONDERING
             data, columns = dbm.get_content(table)
         else:
-            # get data for chosen error type
+            # Get data for the chosen error type.
             if type == 'leerdoel':
                 column = 'leerdoel'
                 data, columns = dbm.get_no_leerdoel(min_max_filter, between_column, min, max, uitzondering)
@@ -125,16 +139,12 @@ def question_data(table = 'vragen'):
                 data, columns = dbm.get_empty_column(table, column, min_max_filter, between_column, min, max, uitzondering)
             elif type == 'wrong_value':
                 data, columns = dbm.get_wrong_value(table, column, min_max_filter, between_column, min, max, uitzondering)
-            # # elif type == 'uitzondering':
-            #     data, columns = dbm.get_exception(table, column, min_max_filter, between_column, min, max)
             else:
-                print("else")
-                # if type == 'alles' and else
                 data, columns = dbm.get_requested_rows(table, min_max_filter, between_column, min, max, uitzondering)
 
-        # check if table is allowed to be shown 
+        # Check if the table is allowed to be shown. 
         if table in allowed_tables:
-            # get leerdoelen data is table = vragen, else return none
+            # Get leerdoelen and auteurs data if table = vragen, else return none.
             if(table == 'vragen'):
                 leerdoelen = dbm.get_content('leerdoelen')
                 auteurs = dbm.get_content('auteurs')
@@ -142,12 +152,10 @@ def question_data(table = 'vragen'):
                 leerdoelen = None
                 auteurs = None
         else:
-            # when not allowed return 404 page 
+            # When not allowed, return 404 page.
             return render_template(
                 "404.html"
             )
-
-
 
         return render_template(
             "db_data.html", 
@@ -167,7 +175,9 @@ def question_data(table = 'vragen'):
             current_uitzondering = uitzondering
         )
 
-
+# The login page. When given a username and password pair, checks to see if the credentials are valid. 
+#   If so, logs the user in, creates session data for the user and redirects to the question page. 
+#   If not, displays an error on the screen.
 # Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/login", methods=['POST', 'GET'])
 def login():
@@ -189,10 +199,11 @@ def login():
         error = error
     )
 
+# Logs the user out by removing the session data. The redirects the user to the home page.
 # Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/logout")
+@login_required
 def logout():
-    # Remove session data, this will log the user out.
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('username', None)
@@ -201,8 +212,9 @@ def logout():
         "home.html"
     )
 
+
 @app.route("/admin", methods=['GET'])
-@login_required
+@admin_required
 def admin():
     if request.method == 'GET':
         data, columns = dbm.get_content('users')
@@ -212,41 +224,47 @@ def admin():
         columns = columns
     )
 
+# Obtains information about a specific user using their id and returns data in json format to the page that requested the data.
 @app.route("/getuser", methods=["GET", "POST"])
+@login_required
 def getuser():
     data = dbm.get_user_by_id(request.args.get('id'))
-    print(request.args.get('id'))
     return jsonify(data)
 
+# Modifies information about a specific user using their id.
 @app.route("/edituser", methods=['GET', 'POST'])
+@login_required
 def edit_user():
     dbm.update_user(request.form.get('id'), request.form.get('username'), request.form.get('email'), request.form.get('password'))
     if request.method == 'POST':
         return redirect("/admin", code=302)
 
+# Creates a new user using the credentials provided in the completed form.
 @app.route("/createuser", methods=['GET', 'POST'])
+@login_required
 def create_user():
     dbm.create_user(request.form.get('username'), request.form.get('email'), request.form.get('password'))
     if request.method == 'POST':
         return redirect("/admin", code=302)   
 
+# Deletes a specific user using their id.
 @app.route("/deleteuser", methods=['GET', 'POST'])
+@login_required
 def delete_user():
     dbm.delete_user(request.form.get('id'))
     if request.method == 'POST':
         return redirect("/admin", code=302)     
-    
+
+# Obtains information about a specific question using its id and returns data in json format to the page that requested the data.   
 @app.route("/getitem", methods=["GET", "POST"])
+@login_required
 def getitem():
-    # print(request.args.get('id'))
-    print(request.args.get('table'))
     table = request.args.get('table')
     if table == 'vragen':
         data_vraag = dbm.get_vraag_by_id(request.args.get('id'))
         data_leerdoelen = dbm.get_content('leerdoelen')
         data_auteurs = dbm.get_content('auteurs')
         return jsonify(data_vraag, data_leerdoelen, data_auteurs)
-
     elif table == 'auteurs':
         data_auteur = dbm.get_item_by_id(table, request.args.get('id'))
         return jsonify(data_auteur)
@@ -254,9 +272,9 @@ def getitem():
         data_leerdoelen = dbm.get_item_by_id(table, request.args.get('id'))
         return jsonify(data_leerdoelen)
 
-
-
+# Modifies information about a specific question using its id.
 @app.route("/editquestion", methods=['POST', 'GET'])
+@login_required
 def edit_question():
     table = request.form.get('table')
     if table == 'vragen':
@@ -269,34 +287,20 @@ def edit_question():
     if request.method == 'POST':
         return redirect("/data?table_choice="+table, code=302)
 
+# Modifies the excesption tag of a specific question using its id.
 @app.route("/editexception", methods=['POST', 'GET'])
+@login_required
 def edit_exception():
     dbm.change_exception(request.form.get('id'))
     if request.method == 'POST':
         return redirect("/data", code=302)
 
+# Redirects to the selected question within the test-correct platform. Access is currently not possible, as this is blocked on the 
+#   Product Owner's side.
 @app.route('/question/<id>')
+@login_required
 def test(id):
     return redirect("https://www.test-correct.nl/?vraag=" + id)
-    
-@app.route("/user")
-def incorrect_data():
-    return render_template(
-        "user.html"
-    )
-
-
-# The table route displays the content of a table
-@app.route("/table_details/<table_name>")
-@login_required
-def table_content(table_name=None):
-    if not table_name:
-        return "Missing table name", 400  # HTTP 400 = Bad Request
-    else:
-        rows, column_names = dbm.get_table_content(table_name)
-        return render_template(
-            "table_details.html", rows=rows, columns=column_names, table_name=table_name
-        )
 
 if __name__ == "__main__":
     app.run(host=FLASK_IP, port=FLASK_PORT, debug=FLASK_DEBUG)
