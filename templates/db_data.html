@@ -108,7 +108,7 @@
                         <option value="auteur" {% if current_type=='auteur' %} selected {% endif %} >Ongeldige auteur</option>
                         <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
                         <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
-                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Verkeerde waarde</option>
+                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Niet 0 of 1</option>
                     </select>
             
                     <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' and current_type!='wrong_value' %} style="display: none;" {% endif %}>
@@ -124,7 +124,7 @@
                     <span>Type fout: </span>
                     <select class="custom-select" name="error_type" id="error_type_select" >
                         <option value="alles" {% if current_type=='alles' %} selected {% endif %} >Alles</option>
-                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Verkeerde waarde</option>
+                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Niet 0 of 1</option>
                     </select>
             
                     <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' and current_type!='wrong_value' %} style="display: none;" {% endif %}>
@@ -175,6 +175,7 @@
         </form>
 
         <div class="table-items">
+            <a class="export-btn" href="/csv">+ Exporteren als csv</a>
             {% for item in data %}  
                 <div class="table-item" id="{{item[0]}}" data-id="{{item[0]}}">
                         {% for part in item %}
@@ -221,6 +222,8 @@
                                         {% if not leerdoelen[0][leerdoel_index]%}
                                             <!-- does not exist  -->
                                             <span class="error">{{part}}, Bestaat niet</span>
+                                        {% elif part == None %}
+                                            None
                                         {% else %}
                                             <!-- does exist, show text form  -->
                                             {{leerdoelen[0][leerdoel_index][1]}} ({{part}})
@@ -237,7 +240,7 @@
                                             <!-- does not exist  -->
                                             <span class="error">{{part}}, Bestaat niet</span>
 
-                                        {%elif part == None%}
+                                        {% elif part == None %}
                                             None
                                         {% else %}
                                             <!-- does exist, show text form  -->
