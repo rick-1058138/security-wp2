@@ -124,7 +124,7 @@
                     <span>Type fout: </span>
                     <select class="custom-select" name="error_type" id="error_type_select" >
                         <option value="alles" {% if current_type=='alles' %} selected {% endif %} >Alles</option>
-                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Verkeerde waarde</option>
+                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Niet 0 of 1</option>
                     </select>
             
                     <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' and current_type!='wrong_value' %} style="display: none;" {% endif %}>
