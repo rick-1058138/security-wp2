@@ -16,9 +16,9 @@
 				<p>Gebruikersnaam</p>
 				<input type="text" id="username" name="username" value="" maxlength="50"><br><br>
 				<p>E-mail</p>
-				<input type="text" id="email" name="email" value="" maxlength="100"><br><br>
+				<input type="email" id="email" name="email" value="" maxlength="100"><br><br>
 				<p>Wachtwoord</p>
-				<input type="text" id="password" name="password" value="" maxlength="50"><br>
+				<input type="password" id="password" name="password" value="" maxlength="50"><br>
 				<input type="submit" class="edit-btn" value="Edit">
 			</form>
 
@@ -39,9 +39,9 @@
 				<p>Gebruikersnaam</p>
 				<input type="text" id="username" name="username" placeholder="Gebruikersnaam" maxlength="50"><br><br>
 				<p>E-mail</p>
-				<input type="text" id="email" name="email" placeholder="Email" maxlength="100"><br><br>
+				<input type="email" id="email" name="email" placeholder="Email" maxlength="100"><br><br>
 				<p>Wachtwoord</p>
-				<input type="text" id="password" name="password" placeholder="Wachtwoord" maxlength="50"><br>
+				<input type="password" id="password" name="password" placeholder="Wachtwoord" maxlength="50"><br>
 				<input type="submit" class="edit-btn" value="Aanmaken" class="green-submit">
 			</form>
 		</div>
@@ -51,6 +51,13 @@
 		<form class="search-form">
 			<button type="button" class="green-submit" id="open-create">Nieuwe Gebruiker</button>
 		</form>
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				{% for message in messages %}
+					<p class="error">{{ message }}</p>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
 		
 		<!-- Display all items in the table. -->
         <div class="table-items">

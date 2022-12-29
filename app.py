@@ -243,9 +243,13 @@ def edit_user():
 @app.route("/createuser", methods=['GET', 'POST'])
 @login_required
 def create_user():
-    dbm.create_user(request.form.get('username'), request.form.get('email'), request.form.get('password'))
+    user_exists = dbm.check_user_exists(request.form.get('username'), request.form.get('email'))
+    if user_exists:
+        flash( "Gebruikersnaam of email al in gebruik.")
+    else:
+        dbm.create_user(request.form.get('username'), request.form.get('email'), request.form.get('password'))
     if request.method == 'POST':
-        return redirect("/admin", code=302)   
+        return redirect("/admin", code=302) 
 
 # Deletes a specific user using their id.
 @app.route("/deleteuser", methods=['GET', 'POST'])
