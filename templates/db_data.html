@@ -222,6 +222,8 @@
                                         {% if not leerdoelen[0][leerdoel_index]%}
                                             <!-- does not exist  -->
                                             <span class="error">{{part}}, Bestaat niet</span>
+                                        {% elif part == None %}
+                                            None
                                         {% else %}
                                             <!-- does exist, show text form  -->
                                             {{leerdoelen[0][leerdoel_index][1]}} ({{part}})
@@ -238,7 +240,7 @@
                                             <!-- does not exist  -->
                                             <span class="error">{{part}}, Bestaat niet</span>
 
-                                        {%elif part == None%}
+                                        {% elif part == None %}
                                             None
                                         {% else %}
                                             <!-- does exist, show text form  -->
