@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Gebruiker pagina </title>
+    <link rel="stylesheet" href="/static/basic.css" type="text/css">
+  </head>
+  <body>
+    <header>
+        <ul class="nav-bar">  
+			<div class="logo-box"><img class="nav-logo" src="{{ url_for('static', filename='images/testcorrect-logo.svg') }}" alt=""></div>
+            <li><a href="#">Home</a> </li>
+            <li><a href="#">Vragen Platform</a></li>
+            <li><a href="#">Admin panel</a></li>
+            <a class="logout-btn" href="#">Logout</a>
+        </ul>
+    </header>
+    <main>
+        <h1 id="userHeader"> Nieuwe gebruiker </h1>
+        <form class="register-form">
+          <label for="name">Naam</label>
+          <input type="text" id="name" name="name">
+          <label for="email">Email</label>
+          <input type="text" id="email" name="email">
+          <label for="password">Wachtwoord</label>
+          <input type="password" id="password" name="password">
+          <input type="submit" id="submit" name="submit">
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2022 Software Inc.</p>
+    </footer>
+  </body>
+</html>

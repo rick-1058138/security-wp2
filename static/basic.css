@@ -20,7 +20,11 @@
     --white: #fff;
     --creamwhite: #eee;
     --blueaccent: #0038c6;
-
+    --red: red;
+}
+* {
+    margin: 0;
+    padding: 0;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -49,7 +53,8 @@ body {
     background-color: var(--c3);
     color: var(--c4);
     position: relative;
-    min-height: 100vh
+    min-height: 100vh;
+    padding-bottom: 15vh;
 }
 img, iframe {
     border: none; max-width: 100%
@@ -57,10 +62,6 @@ img, iframe {
 
 a {
     color: var(--c1);  text-decoration:none
-}
-
-a:hover {
-    color: var(--c1);
 }
 
 pre {
@@ -113,7 +114,7 @@ pre,code,input,select,textarea,button,img {border-radius: var(--rc)}
 
 /* Forms */
 
-input, select, textarea {
+input, select, textarea, button{
     font-size: 1em; 
     color:var(--c4); 
     background: var(--c2); 
@@ -177,7 +178,9 @@ section>section {
 
 .page-header{
     text-align: center;
+    
 }
+
 
 .sub-header{
     color: white;
@@ -189,6 +192,39 @@ section>section {
     font-weight: bold;
 }
 
+.error-header{
+    text-align: center;
+    font-size: 3rem;
+}
+
+.error-btn{
+    padding: 1rem;
+    border-radius: var(--rc);
+    margin: 1rem auto;
+    background: var(--green);
+    color: white;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.error-btn:hover{
+    color: white;
+    opacity: 0.8;
+}
+
+.danger-btn{
+    background: var(--red) !important;
+    border-radius: var(--rc);
+    padding: 0.5rem 1rem;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.danger-btn:hover{
+    color: white;
+    opacity: 0.8;
+}
 
 .content-section{
     background: var(--creamwhite);
@@ -199,19 +235,44 @@ section>section {
     overflow: hidden;
 }
 
+.content-section>.search-form{
+    padding: 0.5rem;
+    background:#2ae082b2;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.error{
+    margin: 0 auto;
+    text-align: center;
+    padding: 0.4rem;
+    font-weight: bold;
+    color: red;
+}
+
 .table-items{
     padding: 2rem;
+    padding-top: 3.5rem;
     width: 100%;
+    position: relative;
 }
 
 .table-item{
     border-left: 5px solid grey;
-    padding: 0.2rem 2rem;
+    padding: 0.6rem 2rem;
     box-shadow: 0 0 8px 3px rgba(0, 0, 0, 0.048);
     border-radius: var(--rc);
     margin-bottom: 0.4rem;
     background-color: rgba(255, 255, 255, 0.24);
     transition: 0.3s;
+}
+
+.table-item>.item-attribute{
+    margin: 0.2rem 0;
+    font-size: 0.9rem;
+    padding: 0.2rem 0;
+    border-bottom: 1px solid lightgrey;
 }
 
 .table-item:hover{
@@ -239,19 +300,37 @@ section>section {
     margin: 0 auto;
     display: flex;
     padding-bottom: 1rem;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.top-search-form{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    margin-bottom: 0.5rem;
 }
 
 .custom-select{
     width: min-content;
     padding: 0.5rem 1rem;
     border: 2px solid transparent;
-    transition: 0.3s;
+    transition: 0.2s;
     margin-right: 0.5rem;
 }
 
+.custom-select:hover, .text-input:hover{
+    scale: 1.05;
+    opacity: 1;
+}
+
 .custom-select:focus-visible{
-    border-color: var(--darkblue);
     outline: none;
+}
+
+.text-input{
+    outline: none;
+    transition: 0.2s;
 }
 
 .user-form{
@@ -267,10 +346,12 @@ section>section {
 .green-submit{
     background: var(--green) !important;
     border-radius: var(--rc);
+    border: 1px solid var(--green);
     padding: 0.5rem 1rem;
     color: white;
     font-weight: bold;
     letter-spacing: 0.5px;
+    transition: 0.2s;
 }
 
 .hti {
@@ -292,7 +373,7 @@ section>section {
 }
 
 .hti__video {
-    height: 80vh;
+    height: 85vh;
     left: 0;
     object-fit: cover;
     object-position: center;
@@ -307,7 +388,7 @@ section>section {
 
 .hti__overlay {
     background: #041f74;
-    height: 80vh;
+    height: 85vh;
     left: 0;
     opacity: .7;
     position: absolute;
@@ -359,6 +440,15 @@ section>section {
     display: flex;
     align-items: center;
 }
+.id-link{
+    transition: 0.2s;
+    display: inline-block;
+}
+
+.id-link:hover>span{
+    color:rgb(51, 102, 204);
+
+}
 
 .logout-btn{
     padding: 0.6rem 0.8rem;
@@ -369,8 +459,101 @@ section>section {
     height: min-content;
     font-weight: bold;
     letter-spacing: 0.5px;
+    transition: 0.2s;
 }
 
+.logout-btn:hover{
+    filter: brightness(1.2);
+    translate: 0 -3px;
+}
+
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+
+
+  
+/* Modal Content/Box */
+.modal-content {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    z-index: 1;
+}
+
+/* When modal is visable animation */
+.modal-content.active{
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.custom-text-area{
+    min-width: 50%;
+    font-family: Nunito ,sans-serif;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        translate: -50% 0;
+    }
+    to { 
+        opacity: 1; 
+        translate: -50% -50%;
+
+    }
+}
+  
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    transform: 0.2s;
+}
+
+.close:hover,
+.close:focus {
+    color: red;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+.form-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.min-max-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0.3rem 0;
+    gap: 0.2rem;
+}
 
 footer{
     background: var(--darkblue);
@@ -383,6 +566,147 @@ footer{
     bottom: 0;
     width: 100%;
 }
+
+.explain-text{
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.exception-tag {
+    background: var(--blueaccent);
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--rc);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-top: 0.2rem;
+    display: inline-block;
+}
+
+
+.exception-button {
+    color: var(--blueaccent);
+    margin-top: 0.5rem;
+    padding: 0.8rem 1.2rem;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+    transition: 0.2s;
+    display: none;
+}
+
+.exception-button:hover{
+    color: white;
+    background: var(--blueaccent);
+}
+
+.exception-button-remove {
+    color: #f24444;
+    margin-top: 0.5rem;
+    padding: 0.8rem 1.2rem;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+    transition: 0.2s;
+    display: none;
+}
+
+.exception-button-remove:hover{
+    color: white;
+    background: #f24444;
+}
+
+.edit-btn{
+    padding: 0.7rem 1.6rem;
+    background: var(--green);
+    color: white;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+
+.form-name-container{
+    display: flex;
+    gap: 1rem;
+}
+
+
+
+#loader{
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+    border: 8px solid rgb(255, 255, 255);
+    border-radius: 50%;
+    border-top: 8px solid var(--green);
+    animation: spin 2s ease-in-out infinite;
+    z-index: 1;
+}
+
+#loader-bg{
+    background: rgba(0, 0, 0, 0.363);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.uitleg-section {
+    overflow: hidden;
+    width: 80%;
+    margin: 1rem auto;
+    border-radius: var(--rc);
+    background: #2ae082b2;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.uitleg-section>div{
+    padding:1.5rem;
+}
+
+.uitleg-section>div>ul {
+    margin-left: 1rem;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.bold{
+    font-weight: bold;
+}
+
+.export-btn{
+    padding: 0.6rem;
+    background: var(--blue);
+    color: white;
+    border-radius: var(--rc);
+    display: inline-block;
+    transition: 0.3s;
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+}
+
+.export-btn:hover{
+    translate: 0 -5px;
+}
+
+@keyframes spin {
+    0% { 
+        transform: rotate(0deg); 
+        opacity: 1;
+    }
+    50%{
+        opacity: 0.4;
+    }
+    100% { 
+        transform: rotate(360deg); 
+    }
+}
+
+  
 
 @media (max-width: 481px) {
     body {font-size: 18px}

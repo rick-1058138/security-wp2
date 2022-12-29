@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test-correct</title>
     <link rel="stylesheet" href="/static/basic.css" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins:wght@200&family=Roboto+Condensed&family=Roboto+Mono:wght@100;400&family=Space+Mono&display=swap" rel="stylesheet">
   </head>
   <body>
     <header>
@@ -13,9 +17,14 @@
 			<div class="logo-box"><img class="nav-logo" src="{{ url_for('static', filename='images/testcorrect-logo.svg') }}" alt=""></div>
             <li><a href="/">Home</a> </li>
             <li><a href="/data">Vragen Platform</a></li>
-            <li><a href="/edit">Admin panel</a></li>
-            <a class="logout-btn" href="/login" style="margin-right: 5px; background: green;">Login</a>
-            <a class="logout-btn" href="/logout">Logout</a>
+            {% if session['isAdmin'] == 1 %}
+              <li><a href="/admin">Admin panel</a></li>
+            {% endif %}
+            {% if session['loggedin'] == True %}
+              <a class="logout-btn" href="/logout">Uitloggen</a>
+            {% else %}
+              <a class="logout-btn" href="/login" style="margin-right: 5px; background: green;">Inloggen</a>
+            {% endif %}
         </ul>
     </header>
     <main>

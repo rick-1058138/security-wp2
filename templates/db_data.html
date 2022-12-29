@@ -1,0 +1,460 @@
+
+{% extends "layout.html" %}
+{% block content %}
+    <div id="loader-bg"></div>
+    <div id="loader"></div>
+    <section class="top-section">
+        <h1 class="page-header">Tabel kiezen:</h1>
+        <form action="/data" class="top-search-form" method="GET">
+            <select class="custom-select" name="table_choice" id="">
+                <!-- for every table an option in select, with selected attribute if that is the current table  -->
+                {% for table in tables %}  
+                    {% if current_table==table %} 
+                        <option value="{{table}}" selected>{{table}}</option>
+                    {% else%}
+                        <option value="{{table}}" >{{table}}</option>
+
+                    {% endif %}
+                {% endfor%}
+            </select>
+
+            <input type="submit" value="Zoeken" class="green-submit">
+        </form>
+    </section>
+
+    <section class="content-section">
+
+        <!-- The Modal -->
+        <div id="popup" class="modal"></div>
+        <!-- Modal content -->
+        <div id="modal-content" class="modal-content">
+            <span id="close-popup" class="close">&times;</span>
+            <form action="/editquestion" method="POST"> 
+                <input type="hidden" name="table" value="{{current_table}}">
+                {% if current_table == 'vragen' %}
+                    <a id="link-id" class="id-link" href="" target="_blank">
+                    <h2>ID: <span id="text-id"></span> </h2>
+                    </a>
+
+                    <input type="hidden" id="id" name="id" value="">
+                    <p> Leerdoel </p> 
+                    <select id="leerdoelSelect" name="leerdoel"> 
+                    </select><br><br>
+                    <p> Vraag </p> 
+                    <textarea class="custom-text-area" name="question" id="question" rows="3"></textarea><br><br>
+                    <p> Auteur </p> 
+                    <select id="auteurSelect" name="auteur"> 
+                    </select><br><br>
+                {% elif current_table == 'auteurs' %}
+                    <h2>ID: <span id="text-id"></span> </h2>
+                    <input type="hidden" id="id" name="id" value="">
+                    <section class="form-name-container">
+                        <div>
+                            <p>Voornaam</p>
+                            <input type="text" name="voornaam" id="voornaam">
+                        </div>
+                        <div>
+                            <p>Achternaam</p>
+                            <input type="text" name="achternaam" id="achternaam">
+                        </div>
+                    </section>
+                    <p>Geboortejaar</p>
+                    <input type="number" name="geboortejaar" id="geboortejaar" step="1" value="" />
+                    <p>Medewerker</p>
+                    <select name="medewerker" id="medewerker">
+                        <option value="1">Ja (1)</option>
+                        <option value="0">Nee (0)</option>
+                    </select>
+                    <p>Met pensioen</p>
+                    <select name="pensioen" id="pensioen">
+                        <option value="1">Ja (1)</option>
+                        <option value="0">Nee (0)</option>
+                    </select><br><br>
+                {% elif current_table == 'leerdoelen' %}
+                    <h2>ID: <span id="text-id"></span> </h2>
+                    <input type="hidden" id="id" name="id" value="">
+                    <input type="text" id="leerdoel" name="leerdoel" value="">
+
+                {%endif%}
+
+
+                <input type="submit" class="edit-btn" value="Edit">
+            </form>
+            {% if current_table == 'vragen' %}
+            <form action="/editexception" method="POST">
+                <input type="hidden" name="id" id="exception-id" value=""> 
+                <!-- if uitzondering is false in db show this btn  -->
+                <input type="submit" id="exception-button" class="exception-button" value="Uitzondering">
+                <!-- if uitzondering is true in db show this btn  -->
+                <input type="submit" id="exception-button-remove" class="exception-button-remove" value="Verwijder Uitzondering">
+            </form>
+            {%endif%}
+        </div>
+        
+        
+
+        <h2 class="sub-header">{{current_table | capitalize}}</h2>
+        <form action="/data" class="search-form" method="get">
+            <!-- hidden field for current table for next query's  -->
+            <input type="hidden" name="table_choice" value="{{current_table}}">
+
+            <!-- if current table == vragen show these selects for further sorting -->
+            {% if current_table == 'vragen'%}
+                <div class="form-row">
+                    <span>Type fout: </span>
+                    <select class="custom-select" name="error_type" id="error_type_select" >
+                        <option value="alles" {% if current_type=='alles' %} selected {% endif %} >Alles</option>
+                        <option value="leerdoel" {% if current_type=='leerdoel' %} selected {% endif %} >Ongeldig leerdoel</option>
+                        <option value="auteur" {% if current_type=='auteur' %} selected {% endif %} >Ongeldige auteur</option>
+                        <option value="html" {% if current_type=='html' %} selected {% endif %}>HTML codes</option>
+                        <option value="empty" {% if current_type=='empty' %} selected {% endif %}>Lege kolom</option>
+                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Niet 0 of 1</option>
+                    </select>
+            
+                    <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' and current_type!='wrong_value' %} style="display: none;" {% endif %}>
+                        <!-- option for every column in table  -->
+                        {% for column in columns%}
+                            <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
+                        {% endfor%}
+                    </select>
+            {%endif%}
+            <!-- Sorting for auteurs table  -->
+            {% if current_table == 'auteurs'%}
+                <div class="form-row">
+                    <span>Type fout: </span>
+                    <select class="custom-select" name="error_type" id="error_type_select" >
+                        <option value="alles" {% if current_type=='alles' %} selected {% endif %} >Alles</option>
+                        <option value="wrong_value" {% if current_type=='wrong_value' %} selected {% endif %}>Niet 0 of 1</option>
+                    </select>
+            
+                    <select class="custom-select" name="column" id="column_select" {% if current_type!='empty' and current_type!='wrong_value' %} style="display: none;" {% endif %}>
+                        <!-- option for every column in table  -->
+                        {% for column in columns%}
+                            <option value="{{column}}" {% if current_column==column %} selected {% endif %}>{{column}}</option>
+                        {% endfor%}
+                    </select>
+            {%endif%}
+                
+      
+                </div>
+                <!-- column for select between 2 values -->
+                <p class="explain-text">Selecteer een kolom voor sorteren van minimaal, maximaal waardes</p>
+                <div class="min-max-div">
+                    <span for="">Kolom:</span>
+                    <select class="custom-select" name="between_column" id="between_column">
+                        {% for column in columns%}
+                            <!-- check if column is in the allowed_between_column list (only columns with integers) -->
+                            {%if column in allowed_between_columns %}
+                                <option value="{{column}}" {% if current_between_column==column %} selected {% endif %}>{{column}}</option>
+                            {%endif%}
+                        {% endfor%}
+                    </select> 
+                    <!-- only show uitzondering filter if table == vragen  -->
+                    {% if current_table == 'vragen'%}
+                        <span> Uitzondering:</span>
+                        <select class=" custom-select" name="uitzondering">
+                            <option value="beide"{% if current_uitzondering=="beide" %} selected {% endif %}>Beide</option>
+                            <option value="ja"{% if current_uitzondering=="ja" %} selected {% endif %}>Ja</option>
+                            <option value="nee"{% if current_uitzondering=="nee" %} selected {% endif %}>Nee</option>
+                        </select>
+                    {%endif%}
+                </div>
+
+                <!-- kolommen met mogelijkheid min-max: leerdoel, id, auteur -->
+                <div id="min-max" class="min-max-div">
+                    <!-- <p class="explain-text" id="min_max_text">Laden...</p> -->
+                    <span>Minimaal: </span>
+                    <input id="min-input" name="min" placeholder="minimaal" type="number" class="text-input" value="">
+                    <span>Maximaal: </span>
+                    <input id="max-input" name="max" placeholder="maximaal" type="number" class="text-input" value="">
+                </div>
+                <!-- submit form  -->
+                <input type="submit" value="Zoeken" class="green-submit">
+
+
+        </form>
+
+        <div class="table-items">
+            <a class="export-btn" href="/csv">+ Exporteren als csv</a>
+            {% for item in data %}  
+                <div class="table-item" id="{{item[0]}}" data-id="{{item[0]}}">
+                        {% for part in item %}
+                            <!-- check for index 1 because this is the id -->
+                            {% if(loop.index == 1) %}
+                                <p>
+                                    <!-- add link to id if current table == vragen  -->
+                                    {%if current_table == 'vragen'%}
+                                    <a class="id-link" href="question/{{ part }}" target="_blank">
+                                        <span class="item-id">ID:   
+                                            <span>{{ part }}</span> 
+                                        </span> 
+                                    </a>
+                                    {%else%}
+                                    <span class="item-id">ID:   
+                                        <span>{{ part }}</span> 
+                                    </span> 
+                                    {%endif%}
+                                </p>
+                            {% elif loop.index == 5 and current_table == ("vragen") %}
+                                {%if part == 0 %}
+                                    {%elif part == 1 %}
+                                    <p>
+                                        <span
+                                            class="exception-tag">Uitzondering
+                                        </span>
+                                </p>
+                                {% endif %}
+                            
+                                
+                            {% else %}
+                                <p class="item-attribute " >
+
+                                    <strong>{{columns[loop.index-1]}}:</strong> 
+                                    <!-- if index == 2 for leerdoel field -->   
+                                    {% if current_table == 'vragen' and loop.index == 2 and leerdoelen != None %}
+                                        <!-- check if leerdoel id exists -->
+
+                                        <!-- convert part to string in leerdoel_index  -->
+                                        {% set leerdoel_index = part | int %}
+                                        <!-- do -1 to leerdoel_index to get correct leerdoel index  -->
+                                        {% set leerdoel_index = leerdoel_index-1 | int %}
+                                        
+                                        {% if not leerdoelen[0][leerdoel_index]%}
+                                            <!-- does not exist  -->
+                                            <span class="error">{{part}}, Bestaat niet</span>
+                                        {% elif part == None %}
+                                            None
+                                        {% else %}
+                                            <!-- does exist, show text form  -->
+                                            {{leerdoelen[0][leerdoel_index][1]}} ({{part}})
+                                        {%endif%}
+                                    {% elif current_table == 'vragen' and loop.index == 4 and auteurs != None %}
+                                        <!-- check if leerdoel id exists -->
+
+                                        <!-- convert part to string in leerdoel_index  -->
+                                        {% set auteurs_index = part | int %}
+                                        <!-- do -1 to leerdoel_index to get correct leerdoel index  -->
+                                        {% set auteurs_index = auteurs_index-1 | int %}
+                                        
+                                        {% if not auteurs[0][auteurs_index]%}
+                                            <!-- does not exist  -->
+                                            <span class="error">{{part}}, Bestaat niet</span>
+
+                                        {% elif part == None %}
+                                            None
+                                        {% else %}
+                                            <!-- does exist, show text form  -->
+                                            {{auteurs[0][auteurs_index][1]}} {{auteurs[0][auteurs_index][2]}} ({{part}})
+                                        {%endif%}
+                                    {% else %}
+                                        {{ part }}
+
+
+                                    {% endif%}
+                                </p>
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </div>
+            {% endfor %}
+
+            {% if data == [] %}
+                <!-- if there are no rows from query -->
+                <p>Geen resultaten, probeer een andere zoekopdracht</p>
+            {% endif %}
+        </div>
+    </section>
+    <script>
+
+        document.onreadystatechange = function() {
+            if (document.readyState !== "complete") {
+                // show loader
+                document.getElementById('loader').style.display = 'block';
+                document.getElementById('loader-bg').style.display = 'block';
+
+            } else {
+                // remove loader
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('loader-bg').style.display = 'none';
+
+            }
+        };
+        
+
+        var elements = document.getElementsByClassName("table-item");
+        var popup = document.getElementById("popup");
+        var modal = document.getElementById('modal-content')
+        var current_table = '{{current_table}}';
+        var dataArray = [];
+
+        var myFunction = function() {
+            var attribute = this.getAttribute("data-id");
+            modal.style.display = 'block';
+            popup.style.display = "block";
+            document.getElementById('modal-content').style.display = "block";
+            // Add active class to modal for animation
+            document.getElementById('modal-content').classList.add("active");
+            console.log(attribute);
+            $.ajax({
+                type: "GET",
+                url: "/getitem",
+                data: {id : attribute, table : current_table},
+                success: function (res) {
+                    if(current_table == 'vragen'){
+                        var vraag = res[0]
+                        var leerdoelen = res[1]
+                        var auteurs = res[2]
+                        // remove all option childs to prevent dubble options
+                        while (document.getElementById("leerdoelSelect").firstChild) {
+                            document.getElementById("leerdoelSelect").removeChild(document.getElementById("leerdoelSelect").lastChild);
+                        }
+                        while (document.getElementById("auteurSelect").firstChild) {
+                            document.getElementById("auteurSelect").removeChild(document.getElementById("auteurSelect").lastChild);
+                        }
+
+                        // show/hide correct btn for uitzondering
+                        console.log("uitzondering",vraag[4])
+                        if(vraag[4] == 0){
+                            document.getElementById("exception-button").style.display = "block";
+                            document.getElementById("exception-button-remove").style.display = "none";
+                        }else{
+                            document.getElementById("exception-button").style.display = "none";
+                            document.getElementById("exception-button-remove").style.display = "block";
+                        }
+                        // set current values in modal 
+                        document.getElementById("id").value = vraag[0];
+                        document.getElementById("link-id").href = "question/"+vraag[0]
+                        document.getElementById("text-id").innerHTML = vraag[0]
+                        document.getElementById("exception-id").value = vraag[0];
+                        document.getElementById("question").value = vraag[2];
+
+                        // add all leerdoelen to select as option 
+                        for(let i = 0; i < leerdoelen[0].length; i++){
+                            const option = document.createElement("option");
+                            document.getElementById("leerdoelSelect").appendChild(option);
+                            option.innerText = leerdoelen[0][i][1]+" ("+leerdoelen[0][i][0]+")"
+                            option.value = leerdoelen[0][i][0]
+                            if(vraag[1] == leerdoelen[0][i][0]){
+                                document.getElementById("leerdoelSelect").value = vraag[1];
+                            }
+                        }
+                        // add all auteurs to select as option 
+                        for(let i = 0; i < auteurs[0].length; i++){
+                            const option = document.createElement("option");
+                            document.getElementById("auteurSelect").appendChild(option);
+                            option.innerText = auteurs[0][i][1]+" "+auteurs[0][i][2]+" ("+auteurs[0][i][0]+")"
+                            option.value = auteurs[0][i][0]
+                            if(vraag[3] == auteurs[0][i][0]){
+                                document.getElementById("auteurSelect").value = vraag[3];
+                            }
+                        }
+                    }
+                    else if(current_table == 'auteurs'){
+                        year = new Date().getFullYear()
+                        geboortejaar = document.getElementById('geboortejaar');
+                        geboortejaar.min = year-100;
+                        geboortejaar.max = year;
+
+                        var auteur = res;
+                        console.log(auteur)
+                        document.getElementById("text-id").innerText = auteur[0]
+                        document.getElementById("id").value = auteur[0]
+                        document.getElementById("voornaam").value = auteur[1]
+                        document.getElementById("achternaam").value = auteur[2]
+                        document.getElementById("geboortejaar").value = auteur[3]
+                        document.getElementById("medewerker").value = auteur[4]
+                        document.getElementById("pensioen").value = auteur[5]
+
+                    }else if(current_table == 'leerdoelen'){
+                        var leerdoel = res;
+                        document.getElementById("text-id").innerText = leerdoel[0]
+                        document.getElementById("id").value = leerdoel[0]
+                        document.getElementById("leerdoel").value = leerdoel[1]
+
+                    }
+                },
+                error: function (res, options, error) {
+                    console.log(res.status);
+                    console.log(error);
+                    console.log(options);
+                }
+            });
+        };
+
+        close = function() {
+            popup.style.display = "none"
+            document.getElementById('modal-content').style.display = "none"
+        };
+
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].addEventListener('click', myFunction, false);
+        }
+
+        // get correct select element
+        var errorSelect = document.getElementById('error_type_select');
+        var betweenSelect = document.getElementById('between_column');
+
+        // close modal (when clicked on bg and close btn)
+        document.getElementById("close-popup").addEventListener('click', close)
+        document.getElementById("popup").addEventListener('click', close)
+
+        // convert minmax to JSON so javascript can use it
+        var minmax = JSON.parse('{{minmax | tojson}}');
+
+        chosen_min = '{{chosen_min}}'
+        chosen_max = '{{chosen_max}}'
+        var selectedTable = '{{current_table}}'
+        // Check if min and max are already set by user
+        if( chosen_min != "None" && chosen_max != "None"){
+            // place chosen values in inputs
+            console.log(chosen_max)
+            document.getElementById('min-input').value = chosen_min
+            document.getElementById('max-input').value = chosen_max
+            
+        }else{
+            // set value of min max inputs with values from database
+
+            // if user loads in set to right min max values
+            selected = betweenSelect.options[betweenSelect.selectedIndex].value
+            // document.getElementById('min_max_text').innerText = "Tussen: "+minmax[selected][0]+" - "+minmax[selected][1]
+            document.getElementById('min-input').value = minmax[selectedTable][selected][0]
+            document.getElementById('max-input').value = minmax[selectedTable][selected][1]
+        }
+
+
+
+        onChange = function() {
+            // check for option where the select needs to be shown, so when this is true : it is shown
+            var shown;
+            if(this.options[this.selectedIndex].value =='empty' || this.options[this.selectedIndex].value =='wrong_value'){
+                shown = true;
+            }else{
+                shown = false;
+            }
+            
+            // hide or show select element
+            document.getElementById('column_select').style.display = shown ? 'block' : 'none';
+        };
+
+        onChangeBetween = function() {
+            // change min max values according to selected option
+            console.log(selectedTable)
+            selected = this.options[this.selectedIndex].value
+            document.getElementById('min-input').value = minmax[selectedTable][selected][0]
+            document.getElementById('max-input').value = minmax[selectedTable][selected][1]
+
+        };
+
+
+        // execute onChange if select option changes
+        if(selectedTable == 'vragen' || selectedTable == 'auteurs'){
+            // element only exists if table == vragen
+            errorSelect.addEventListener('change', onChange);
+        }
+        
+        betweenSelect.addEventListener('change', onChangeBetween);
+
+    </script>
+    
+{% endblock %}
