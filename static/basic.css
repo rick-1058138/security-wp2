@@ -638,6 +638,7 @@ footer{
     border-radius: 50%;
     border-top: 8px solid var(--green);
     animation: spin 2s ease-in-out infinite;
+    z-index: 1;
 }
 
 #loader-bg{
@@ -647,7 +648,7 @@ footer{
     height: 100%;
     top: 0;
     left: 0;
-    
+    z-index: 1;
 }
 
 .uitleg-section {
