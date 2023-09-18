@@ -180,7 +180,7 @@ class DatabaseModel:
     # Checks if the entered username and password combination is valid and returns the user's info if so.
     def validate_login(self, username, password):
         cursor = sqlite3.connect(self.database_file).cursor()
-        cursor.execute(f"SELECT * FROM users WHERE username = '{username}'")
+        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
         account = cursor.fetchone()
         if account == None or not pbkdf2_sha256.verify(password, account[3]):
             return False

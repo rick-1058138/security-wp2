@@ -1,12 +1,14 @@
+import html
 import os.path
 import sys
 import datetime
 
 
-
 from flask import Flask, jsonify, render_template, request, redirect, url_for, session, flash, make_response, Response
 from functools import wraps
 
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from lib.tablemodel import DatabaseModel
 from lib.demodatabase import create_demo_database
@@ -21,6 +23,14 @@ FLASK_DEBUG = True
 app = Flask(__name__)
 # This command creates the "<application directory>/databases/testcorrect_vragen.db" path
 DATABASE_FILE = os.path.join(app.root_path, 'databases', 'testcorrect_vragen.db')
+
+# create limiter
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://",
+)
 
 # Check if the database file exists. If not, create a demo database
 if not os.path.isfile(DATABASE_FILE):
@@ -202,6 +212,7 @@ def question_data(table = 'vragen'):
 #   If not, displays an error on the screen.
 # Website used: https://codeshack.io/login-system-python-flask-mysql/
 @app.route("/login", methods=['POST', 'GET'])
+@limiter.limit("1/second", override_defaults=False)
 def login():
     error = None
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
@@ -304,7 +315,12 @@ def getitem():
 def edit_question():
     table = request.form.get('table')
     if table == 'vragen':
-        dbm.change_question_by_id(request.form.get('question'), request.form.get('leerdoel'), request.form.get('auteur'), request.form.get('id'))
+        dbm.change_question_by_id(
+            html.escape(request.form.get('question')),
+            html.escape(request.form.get('leerdoel')),
+            html.escape(request.form.get('auteur')), 
+            html.escape(request.form.get('id'))
+        )
     elif table == 'auteurs':
         dbm.change_auteur_by_id(request.form.get('voornaam'), request.form.get('achternaam'), request.form.get('geboortejaar'), request.form.get('medewerker'), request.form.get('pensioen'), request.form.get('id'))
     elif table == 'leerdoelen':
